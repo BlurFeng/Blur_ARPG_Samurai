@@ -8,7 +8,16 @@ public class Blur_ARPG_Samurai : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"EnhancedInput",
+			"GameplayTasks",
+			"BlurARPGFramework",
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
