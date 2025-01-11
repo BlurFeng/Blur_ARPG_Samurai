@@ -3,3 +3,6 @@
 
 #include "GameFramework/Items/Weapons/BlurWeaponBase.h"
 
+ABlurWeaponBase::ABlurWeaponBase()
+{
+}

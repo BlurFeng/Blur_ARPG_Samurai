@@ -42,6 +42,7 @@ public class BlurARPGFramework : ModuleRules
 				"GameplayTags",
 				"GameplayTasks",
 				"AIModule",
+				"AnimGraphRuntime",
 				"UMG",
 				"MoviePlayer",
 				//~ End Engine.

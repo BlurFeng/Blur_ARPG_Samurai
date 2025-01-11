@@ -24,7 +24,29 @@ public:
 
 #pragma region Common
 
+	/// 根据传入的权重数组，根据权重随机并返回一个Index。
+	/// @param Weights 权重数组。 
+	/// @param WeightTotal 如果知道总权重，传入参数可以减少计算，否则自动计算总权重。
+	/// @return 随机选中的权重Index。
+	UFUNCTION(BlueprintPure, Category = "Warrior|FunctionLibrary")
+	static int32 RandomIndexByWeights(const TArray<int32>& Weights, int32 WeightTotal = 0);
 
+	/// 在三个权重值之间随机并返回对应Index。
+	/// @param Weight1 
+	/// @param Weight2 
+	/// @param Weight3 
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "Warrior|FunctionLibrary")
+	static int32 RandomIndexByWeightsForThree(const int32 Weight1, const int32 Weight2, const int32 Weight3);
+
+	/// Lerp插值，变化值不小于LimitChangeMin。
+	/// @param A 当前值。
+	/// @param B 目标值。
+	/// @param LimitChangeMin 限制变化最小值。>0时有效。
+	/// @param Alpha 
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "Warrior|FunctionLibrary")
+	static float LerpLimitChangeMin(const float A, const float B, const float LimitChangeMin, const float Alpha);
 	
 #pragma endregion
 	
