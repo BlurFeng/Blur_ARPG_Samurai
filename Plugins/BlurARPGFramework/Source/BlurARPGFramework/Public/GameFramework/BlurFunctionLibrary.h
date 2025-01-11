@@ -12,7 +12,7 @@
 #include "BlurFunctionLibrary.generated.h"
 
 enum class EBlurComparisonOp : uint8;
-class UBlurAbilitySystemComponentBase;
+class UBlurAbilitySystemComponent;
 
 // 常用方法库。
 UCLASS()
@@ -28,7 +28,7 @@ public:
 	/// @param Weights 权重数组。 
 	/// @param WeightTotal 如果知道总权重，传入参数可以减少计算，否则自动计算总权重。
 	/// @return 随机选中的权重Index。
-	UFUNCTION(BlueprintPure, Category = "Warrior|FunctionLibrary")
+	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary")
 	static int32 RandomIndexByWeights(const TArray<int32>& Weights, int32 WeightTotal = 0);
 
 	/// 在三个权重值之间随机并返回对应Index。
@@ -36,7 +36,7 @@ public:
 	/// @param Weight2 
 	/// @param Weight3 
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "Warrior|FunctionLibrary")
+	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary")
 	static int32 RandomIndexByWeightsForThree(const int32 Weight1, const int32 Weight2, const int32 Weight3);
 
 	/// Lerp插值，变化值不小于LimitChangeMin。
@@ -45,7 +45,7 @@ public:
 	/// @param LimitChangeMin 限制变化最小值。>0时有效。
 	/// @param Alpha 
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "Warrior|FunctionLibrary")
+	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary")
 	static float LerpLimitChangeMin(const float A, const float B, const float LimitChangeMin, const float Alpha);
 	
 #pragma endregion
@@ -77,7 +77,7 @@ public:
 	/// @param InActor 
 	/// @return
 	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary|GameplayAbilitySystem")
-	static UBlurAbilitySystemComponentBase* GetAbilitySystemComponentFromActor(AActor* InActor);
+	static UBlurAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* InActor);
 
 	/// 确认Actor（的技能组件）是否包含Tag。
 	/// @param InActor 目标Actor。
@@ -107,6 +107,27 @@ public:
 	/// @return 
 	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|FunctionLibrary|GameplayAbilitySystem")
 	static bool ApplyGameplayEffectSpecHandleToTargetActor(AActor* InInstigator, AActor* InTargetActor, FGameplayEffectSpecHandle& InSpecHandle);
-	
+
+	/// 创建一个 FGameplayAbilitySpec。 Gameplay Ability Specification 用于描述Ability技能的详细信息。
+	/// @param GameplayAbility 技能。
+	/// @param SourceObject 来源。比如施法者。
+	/// @param ApplyLevel 技能等级。可用于在配置表查询不同等级对应的不同数值。
+	/// @return 
+	static FGameplayAbilitySpec GetGameplayAbilitySpec(const TSubclassOf<UGameplayAbility>& GameplayAbility, const TWeakObjectPtr<UObject> SourceObject, const int32 ApplyLevel);
+
+	/// 创建一个 FGameplayAbilitySpec。 Gameplay Ability Specification 用于描述Ability技能的详细信息。
+	/// @param GameplayAbility 技能。
+	/// @param SourceObject 来源。比如施法者。
+	/// @param ApplyLevel 技能等级。可用于在配置表查询不同等级对应的不同数值。
+	/// @param InputTag 添加到 DynamicAbilityTags 的Tag。可在之后作为查询的数据。
+	/// @return 
+	static FGameplayAbilitySpec GetGameplayAbilitySpec(const TSubclassOf<UGameplayAbility>& GameplayAbility, const TWeakObjectPtr<UObject> SourceObject, const int32 ApplyLevel, const FGameplayTag InputTag);
+
+	/// 从ScalableFloat获取Float，根据Level。
+	/// @param InScalableFloat 
+	/// @param InLevel 
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary", meta = (CompactNodeTitle = "Get Value At Level"))
+	static float GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat, const float InLevel);
 #pragma endregion
 };

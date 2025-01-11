@@ -5,7 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GenericTeamAgentInterface.h"
-#include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponentBase.h"
+#include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 
 int32 UBlurFunctionLibrary::RandomIndexByWeights(const TArray<int32>& Weights, int32 WeightTotal)
 {
@@ -56,7 +56,7 @@ float UBlurFunctionLibrary::LerpLimitChangeMin(const float A, const float B, con
 	if (B == A) return B;
 	
 	float Change = Alpha * (B - A);
-
+	
 	// 变化小于限制最小变化值。
 	if (LimitChangeMin > 0 && FMath::Abs(Change) < LimitChangeMin)
 	{
@@ -132,32 +132,32 @@ bool UBlurFunctionLibrary::IsValidBlock(const AActor* InAttacker, const AActor* 
 	return false;
 }
 
-UBlurAbilitySystemComponentBase* UBlurFunctionLibrary::GetAbilitySystemComponentFromActor(AActor* InActor)
+UBlurAbilitySystemComponent* UBlurFunctionLibrary::GetAbilitySystemComponentFromActor(AActor* InActor)
 {
 	// tips：在技能调用中按ESC结束游戏会导致空。
 	// check(InActor);
 	if (!InActor) return nullptr;
 
-	return CastChecked<UBlurAbilitySystemComponentBase>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InActor));
+	return CastChecked<UBlurAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InActor));
 }
 
 bool UBlurFunctionLibrary::ActorHasMatchingGameplayTag(AActor* InActor, const FGameplayTag TagToCheck)
 {
-	const UBlurAbilitySystemComponentBase* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
+	const UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
 
 	return AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(TagToCheck);
 }
 
 bool UBlurFunctionLibrary::ActorHasAllMatchingGameplayTags(AActor* InActor, const FGameplayTagContainer& TagContainer)
 {
-	const UBlurAbilitySystemComponentBase* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
+	const UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
 
 	return AbilitySystemComponent && AbilitySystemComponent->HasAllMatchingGameplayTags(TagContainer);
 }
 
 bool UBlurFunctionLibrary::ActorHasAnyMatchingGameplayTags(AActor* InActor, const FGameplayTagContainer& TagContainer)
 {
-	const UBlurAbilitySystemComponentBase* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
+	const UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
 
 	return AbilitySystemComponent && AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
 }
@@ -165,11 +165,35 @@ bool UBlurFunctionLibrary::ActorHasAnyMatchingGameplayTags(AActor* InActor, cons
 bool UBlurFunctionLibrary::ApplyGameplayEffectSpecHandleToTargetActor(AActor* InInstigator, AActor* InTargetActor,
 	FGameplayEffectSpecHandle& InSpecHandle)
 {
-	UBlurAbilitySystemComponentBase* SourceAbilitySystemComponent = GetAbilitySystemComponentFromActor(InInstigator);
-	UBlurAbilitySystemComponentBase* TargetAbilitySystemComponent = GetAbilitySystemComponentFromActor(InTargetActor);
+	UBlurAbilitySystemComponent* SourceAbilitySystemComponent = GetAbilitySystemComponentFromActor(InInstigator);
+	UBlurAbilitySystemComponent* TargetAbilitySystemComponent = GetAbilitySystemComponentFromActor(InTargetActor);
 	if (!SourceAbilitySystemComponent || !TargetAbilitySystemComponent) return false;
 	
 	const FActiveGameplayEffectHandle ActiveGameplayEffectHandle = SourceAbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*InSpecHandle.Data, TargetAbilitySystemComponent);
 
 	return ActiveGameplayEffectHandle.WasSuccessfullyApplied();
+}
+
+FGameplayAbilitySpec UBlurFunctionLibrary::GetGameplayAbilitySpec(const TSubclassOf<UGameplayAbility>& GameplayAbility,
+	const TWeakObjectPtr<UObject> SourceObject, const int32 ApplyLevel)
+{
+	FGameplayAbilitySpec AbilitySpec(GameplayAbility); //技能。
+	AbilitySpec.SourceObject = SourceObject; //来源。比如施法者。
+	AbilitySpec.Level = ApplyLevel; //技能等级。可用于在配置表查询不同等级对应的不同数值。
+
+	return AbilitySpec;
+}
+
+FGameplayAbilitySpec UBlurFunctionLibrary::GetGameplayAbilitySpec(const TSubclassOf<UGameplayAbility>& GameplayAbility,
+	const TWeakObjectPtr<UObject> SourceObject, const int32 ApplyLevel, const FGameplayTag InputTag)
+{
+	FGameplayAbilitySpec AbilitySpec = GetGameplayAbilitySpec(GameplayAbility, SourceObject, ApplyLevel);
+	AbilitySpec.DynamicAbilityTags.AddTag(InputTag);
+
+	return AbilitySpec;
+}
+
+float UBlurFunctionLibrary::GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat, const float InLevel)
+{
+	return  InScalableFloat.GetValueAtLevel(InLevel);
 }
