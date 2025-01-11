@@ -48,6 +48,7 @@ public class BlurARPGFramework : ModuleRules
 				//~ Begin Plugins.
 				"EnhancedInput",
 				"GameplayAbilities",
+				"Niagara",
 				//~ End Plugins.
 				// ... add private dependencies that you statically link with here ...	
 			}
