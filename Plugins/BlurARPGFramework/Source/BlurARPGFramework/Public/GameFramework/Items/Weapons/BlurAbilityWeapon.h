@@ -8,7 +8,7 @@
 
 #include "BlurAbilityWeapon.generated.h"
 
-// Tips：如果你在构建可以使用不同武器的英雄，使用此类作为英雄武器的基类。
+// Tips：如果你在构建可以使用不同武器的角色，使用此类作为角色武器的基类。那样角色在使用不同武器时就能获得不同的技能。
 // 如果你只是想创建简单的小兵，直接用 ABlurWeaponBase 创建蓝图子类作为武器即可。
 
 class UBlurAbilitySystemComponent;

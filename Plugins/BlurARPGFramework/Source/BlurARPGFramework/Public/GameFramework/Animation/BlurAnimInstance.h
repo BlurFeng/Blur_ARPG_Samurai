@@ -7,7 +7,7 @@
 #include "BlurAnimInstance.generated.h"
 
 struct FGameplayTag;
-//动画实例基类。
+// 动画实例基类。
 UCLASS()
 class BLURARPGFRAMEWORK_API UBlurAnimInstance : public UAnimInstance
 {

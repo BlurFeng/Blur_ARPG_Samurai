@@ -3,9 +3,9 @@
 
 #include "GameFramework/Components/UI/BlurPawnUIComponent.h"
 
-#include "GameFramework/UserWidgets/BlurUserWidgetBase.h"
+#include "GameFramework/UserWidgets/BlurWidgetBase.h"
 
-void UBlurPawnUIComponent::RegisterDrawnWidget(UBlurUserWidgetBase* InWidgetToRegister)
+void UBlurPawnUIComponent::RegisterDrawnWidget(UBlurWidgetBase* InWidgetToRegister)
 {
 	if (DrawnWidgets.Contains(InWidgetToRegister)) return;
 	
@@ -16,7 +16,7 @@ void UBlurPawnUIComponent::RemoveDrawnWidgetsAll()
 {
 	if (DrawnWidgets.IsEmpty()) return;
 
-	for (UBlurUserWidgetBase* DrawnWidget : DrawnWidgets)
+	for (UBlurWidgetBase* DrawnWidget : DrawnWidgets)
 	{
 		if (!DrawnWidget) continue;
 

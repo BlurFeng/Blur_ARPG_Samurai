@@ -27,7 +27,7 @@ public:
 	virtual UBlurPawnUIComponent* GetPawnUIComponent() const = 0;
 
 	//此接口不是必须实现的，由继承的类决定是否实现内容。
-	//获取英雄UI组件
+	//获取角色UI组件
 	virtual UBlurCharacterUIComponent* GetCharacterUIComponent() const;
 	
 };

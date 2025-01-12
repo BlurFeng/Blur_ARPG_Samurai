@@ -5,9 +5,9 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/BlurFunctionLibrary.h"
-#include "GameFramework/Common/GameplayTagConfig.h"
 #include "GameFramework/Common/WeakObjectPtrExtensions.h"
 #include "GameFramework/Items/Weapons/BlurAbilityWeapon.h"
+#include "GameFramework/BlurGameplayTags.h"
 
 ABlurAbilityWeapon* UBlurAbilityCombatComponent::GetCarriedAbilityWeaponByTag(FGameplayTag InWeaponTag) const
 {
@@ -37,9 +37,9 @@ void UBlurAbilityCombatComponent::OnMeleeHitTargetActor(AActor* HitActor)
 	// 确认是否被格挡。
 	bool bIsValidBlock = false;
 	const bool bIsPlayerBlocking =
-		UBlurFunctionLibrary::ActorHasMatchingGameplayTag(HitActor, FGameplayTag::RequestGameplayTag(FGameplayTagConfig::Tag_CommonStatusBlocking)); // 正在格挡中。
+		UBlurFunctionLibrary::ActorHasMatchingGameplayTag(HitActor, BlurGameplayTags::Common_Status_Blocking); // 正在格挡中。
 	const bool bIsMyAttackUnBlockable =
-		UBlurFunctionLibrary::ActorHasMatchingGameplayTag(GetOwningPawn(), FGameplayTag::RequestGameplayTag(FGameplayTagConfig::Tag_CommonStatusUnblockable)); // 不可阻挡状态。
+		UBlurFunctionLibrary::ActorHasMatchingGameplayTag(GetOwningPawn(), BlurGameplayTags::Common_Status_Unblockable); // 不可阻挡状态。
 	if (bIsPlayerBlocking && !bIsMyAttackUnBlockable)
 	{
 		bIsValidBlock = UBlurFunctionLibrary::IsValidBlock(GetOwningPawn(), HitActor);
@@ -55,7 +55,7 @@ void UBlurAbilityCombatComponent::OnMeleeHitTargetActor(AActor* HitActor)
 	{
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 			HitActor,
-			FGameplayTag::RequestGameplayTag(FGameplayTagConfig::Tag_CommonEventSuccessfulBlock),
+			BlurGameplayTags::Common_Event_SuccessfulBlock,
 			Data
 			);
 	}
@@ -66,7 +66,7 @@ void UBlurAbilityCombatComponent::OnMeleeHitTargetActor(AActor* HitActor)
 		// 给拥有者Pawn发送 MeleeHit 事件。
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 			GetOwningPawn(),
-			FGameplayTag::RequestGameplayTag(FGameplayTagConfig::Tag_CommonEventMeleeHit),
+			BlurGameplayTags::Common_Event_MeleeHit,
 			Data
 			);
 	}
@@ -82,7 +82,7 @@ void UBlurAbilityCombatComponent::OnMeleePulledFromTargetActor(AActor* HitActor)
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		GetOwningPawn(),
-		FGameplayTag::RequestGameplayTag(FGameplayTagConfig::Tag_CommonEventMeleePulled),
+		BlurGameplayTags::Common_Event_MeleePulled,
 		Data
 		);
 }

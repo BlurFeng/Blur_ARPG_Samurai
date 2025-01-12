@@ -6,7 +6,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/BlurFunctionLibrary.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
-#include "GameFramework/Common/GameplayTagConfig.h"
 #include "GameFramework/Components/Combat/BlurCombatComponentBase.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 
@@ -212,12 +211,12 @@ FGameplayEffectSpecHandle UBlurGameplayAbility::MakeDamageEffectSpecHandle(
 
 	// Tips：SetByCallerTagMagnitudes 缓存到Data中的值用于计算。搜索 SetByCallerTagMagnitudes 找到使用处。
 	// 缓存基础伤害到Data。用于之后的计算。
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FGameplayTagConfig::MakeDamageEffectSpecHandle_SetByCaller_BaseDamage), InBaseDamage);
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FGameplayTagConfig::MakeDamageEffectSpecHandle_SetByCaller_BaseDamageMultiplyCoefficient), InBaseDamageMultiplyCoefficient);
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(BlurGameplayTags::GEExecCalc_SetByCaller_Attack_BaseDamage, InBaseDamage);
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(BlurGameplayTags::GEExecCalc_SetByCaller_Attack_BaseDamageMultiplyCoefficient, InBaseDamageMultiplyCoefficient);
 
 	// 缓存增伤计数和系数到Data。用于之后的计算。
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FGameplayTagConfig::MakeDamageEffectSpecHandle_SetByCaller_DamageIncreaseCount), DamageIncreaseCount);
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FGameplayTagConfig::MakeDamageEffectSpecHandle_SetByCaller_DamageIncreaseCoefficient), DamageIncreaseCoefficient);
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(BlurGameplayTags::GEExecCalc_SetByCaller_Attack_DamageIncreaseCount, DamageIncreaseCount);
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(BlurGameplayTags::GEExecCalc_SetByCaller_Attack_DamageIncreaseCoefficient, DamageIncreaseCoefficient);
 	
 	return EffectSpecHandle;
 }
@@ -234,4 +233,25 @@ FGameplayEffectSpecHandle UBlurGameplayAbility::MakeDamageEffectSpecHandleByScal
 float UBlurGameplayAbility::GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat) const
 {
 	return UBlurFunctionLibrary::GetScalableFloatValueAtLevel(InScalableFloat, GetAbilityLevel());
+}
+
+bool UBlurGameplayAbility::GetAbilityRemainingCooldownByTag(const FGameplayTag InCooldownTag, float& TotalCooldownTime,
+	float& RemainingCooldownTime) const
+{
+	TotalCooldownTime = 0.f;
+	RemainingCooldownTime = 0.f;
+	
+	check(InCooldownTag.IsValid());
+
+	const FGameplayEffectQuery CooldownQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(InCooldownTag.GetSingleTagContainer());
+	
+	const TArray<TPair<float, float>> TimeRemainingAndDuration = GetAbilitySystemComponentFromActorInfo()->GetActiveEffectsTimeRemainingAndDuration(CooldownQuery);
+
+	if (!TimeRemainingAndDuration.IsEmpty())
+	{
+		RemainingCooldownTime = TimeRemainingAndDuration[0].Key;
+		TotalCooldownTime = TimeRemainingAndDuration[0].Value;
+	}
+
+	return RemainingCooldownTime > 0.f;
 }

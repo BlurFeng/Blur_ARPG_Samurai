@@ -10,7 +10,7 @@
 
 #include "BlurCharacterBase.generated.h"
 
-class UBlurDA_CharacterStartUp;
+class UBlurDA_CharacterStartup;
 class UAbilitySystemComponent;
 class UBlurCombatComponentBase;
 class UBlurPawnUIComponent;
@@ -48,6 +48,8 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
 
+	virtual void InitStartUpData();
+
 	// 技能系统组件（属于GAS插件的一部分）。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "AbilitySystem")
 	UBlurAbilitySystemComponent* BlurAbilitySystemComponent;
@@ -62,7 +64,7 @@ protected:
 
 	// 角色启动数据资源。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
-	TSoftObjectPtr<UBlurDA_CharacterStartUp> CharacterStartUpData;
+	TSoftObjectPtr<UBlurDA_CharacterStartup> CharacterStartUpData;
 
 public:
 

@@ -3,3 +3,6 @@
 
 #include "GameFramework/GameModes/BlurGameModeBase.h"
 
+ABlurGameModeBase::ABlurGameModeBase()
+{
+}

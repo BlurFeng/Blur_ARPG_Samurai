@@ -18,7 +18,7 @@ enum class EToggleDamageType : uint8
 	RightHand,
 };
 
-//人物战斗组件基类，角色或敌人的战斗组件由此类派生。
+// 战斗组件基类。
 UCLASS()
 class BLURARPGFRAMEWORK_API UBlurCombatComponentBase : public UBlurPawnComponentBase
 {

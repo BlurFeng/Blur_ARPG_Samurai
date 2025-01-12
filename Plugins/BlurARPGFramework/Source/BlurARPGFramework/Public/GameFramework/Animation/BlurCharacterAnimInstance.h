@@ -8,7 +8,7 @@
 
 class UCharacterMovementComponent;
 class ABlurCharacterBase;
-//角色动画实例基类。
+// 角色动画实例基类。
 UCLASS()
 class BLURARPGFRAMEWORK_API UBlurCharacterAnimInstance : public UBlurAnimInstance
 {
@@ -20,7 +20,7 @@ public:
 
 protected:
 
-	//Notes：当我们定义一个成员变量时，总是添加 UPROPERTY() ，这样能让UE自动管理这个指针。否则我们需要自己处理内存回收。
+	// Notes：当我们定义一个成员变量时，总是添加 UPROPERTY() ，这样能让UE自动管理这个指针。否则我们需要自己处理内存回收。
 	
 	UPROPERTY()
 	ABlurCharacterBase* OwningCharacter;

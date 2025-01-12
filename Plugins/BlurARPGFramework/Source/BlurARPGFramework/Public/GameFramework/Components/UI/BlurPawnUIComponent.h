@@ -6,11 +6,11 @@
 #include "GameFramework/Components/BlurPawnComponentBase.h"
 #include "BlurPawnUIComponent.generated.h"
 
-class UBlurUserWidgetBase;
+class UBlurWidgetBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPercentChangedDelegate, float, NewPercent);
 
-// Pawn的UI组件。当角色比较简单，之用显示有限的信息时，可以使用此组件。比如敌人。
+// Pawn的UI组件。当Pawn比较简单，只用显示有限的信息时，可以使用此组件。比如简单的敌人。
 UCLASS()
 class BLURARPGFRAMEWORK_API UBlurPawnUIComponent : public UBlurPawnComponentBase
 {
@@ -31,12 +31,12 @@ public:
 	/// 注册Widget到UI组件。
 	/// @param InWidgetToRegister 
 	UFUNCTION(BlueprintCallable)
-	void RegisterDrawnWidget(UBlurUserWidgetBase* InWidgetToRegister);
+	void RegisterDrawnWidget(UBlurWidgetBase* InWidgetToRegister);
 
 	/// 移除所有绘制的UI。
 	UFUNCTION(BlueprintCallable)
 	void RemoveDrawnWidgetsAll();
 
 private:
-	TArray<UBlurUserWidgetBase*> DrawnWidgets;
+	TArray<UBlurWidgetBase*> DrawnWidgets;
 };

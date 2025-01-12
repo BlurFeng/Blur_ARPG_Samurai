@@ -33,6 +33,7 @@ struct FGiveAbilitySet
 	GENERATED_BODY()
 
 	// 输入Tag。决定了这个技能是怎样被使用激活的。
+	// 如果是确定不会被玩家操控的角色，可以不配置此Tag。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;
 	
@@ -58,8 +59,7 @@ struct FSpecialGiveAbilitySet : public FGiveAbilitySet
 	TSoftObjectPtr<UMaterialInterface> SoftAbilityIconMaterial;
 
 	// 技能冷却Tag。
-	// Tips：meta = (Categories = "Player.Cooldown") 限制了可选的Tag范围，便于配置。默认是注释掉的，但你按你的项目要求来使用。
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "Player.Cooldown"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "Ability.Cooldown"))
 	FGameplayTag AbilityCooldownTag;
 };
 

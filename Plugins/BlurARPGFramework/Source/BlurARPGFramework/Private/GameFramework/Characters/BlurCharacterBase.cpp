@@ -14,10 +14,10 @@ ABlurCharacterBase::ABlurCharacterBase()
 	PrimaryActorTick.bCanEverTick = false;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
-	//是否接受贴花。关闭。因为会对地面使用一些贴花投射。
+	// 是否接受贴花。关闭。因为会对地面使用一些贴花投射。
 	GetMesh()->bReceivesDecals = false;
 
-	//初始化技能系统。
+	// 初始化技能系统。
 	BlurAbilitySystemComponent = CreateDefaultSubobject<UBlurAbilitySystemComponent>(TEXT("BlurAbilitySystemComponent"));
 	BlurAttributeSet = CreateDefaultSubobject<UBlurAttributeSetBase>(TEXT("BlurAttributeSet"));
 
@@ -31,12 +31,12 @@ UAbilitySystemComponent* ABlurCharacterBase::GetAbilitySystemComponent() const
 
 UBlurCombatComponentBase* ABlurCharacterBase::GetPawnCombatComponent() const
 {
-	return nullptr; //此接口由子类实现.
+	return nullptr; // 此接口由子类实现.
 }
 
 UBlurPawnUIComponent* ABlurCharacterBase::GetPawnUIComponent() const
 {
-	return nullptr; //此接口由子类实现.
+	return nullptr; // 此接口由子类实现.
 }
 
 void ABlurCharacterBase::PossessedBy(AController* NewController)
@@ -54,4 +54,10 @@ void ABlurCharacterBase::PossessedBy(AController* NewController)
 		ensureMsgf(!CharacterStartUpData.IsNull(), TEXT("Forgot to assign start up data to %s"), *GetName());
 		// ensure(!CharacterStartUpData.IsNull());
 	}
+
+	InitStartUpData();
+}
+
+void ABlurCharacterBase::InitStartUpData()
+{
 }
