@@ -22,9 +22,9 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 	// Debug::Print(TEXT("OnAbilityInputPressed 1"));
 
 	EBlurInputType InputType = EBlurInputType::Normal;
-	if (InInputTag.MatchesTag(InputTagToggleableParentsTag))
+	if (InInputTag.MatchesTag(BlurGameplayTags::Input_Toggleable))
 		InputType = EBlurInputType::Toggleable;
-	else if (InInputTag.MatchesTag(InputTagMustBeHeldParentsTag))
+	else if (InInputTag.MatchesTag(BlurGameplayTags::Input_MustBeHeld))
 		InputType = EBlurInputType::MustBeHeld;
 
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
@@ -92,7 +92,7 @@ void UBlurAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InI
 	if (!InInputTag.IsValid()) return;
 	
 	// 如果是必须持续按住的技能，在松开时取消技能。
-	if (InInputTag.MatchesTag(InputTagMustBeHeldParentsTag))
+	if (InInputTag.MatchesTag(BlurGameplayTags::Input_MustBeHeld))
 	{
 		for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 		{

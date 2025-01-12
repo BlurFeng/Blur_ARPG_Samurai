@@ -127,7 +127,25 @@ public:
 	/// @param InScalableFloat 
 	/// @param InLevel 
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary", meta = (CompactNodeTitle = "Get Value At Level"))
+	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary|GameplayAbilitySystem", meta = (CompactNodeTitle = "Get Value At Level"))
 	static float GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat, const float InLevel);
+
+	/// 获取技能剩余冷却时间。
+	/// @param OwnerActor 所有者Actor，然后尝试从Actor获取他的技能组件。 
+	/// @param InCooldownTag 冷却GETag。 
+	/// @param TotalCooldownTime 总时间。
+	/// @param RemainingCooldownTime 剩余时间。
+	/// @return 
+	static bool GetAbilityCooldownByTag(AActor* OwnerActor, const FGameplayTag InCooldownTag, float& TotalCooldownTime, float& RemainingCooldownTime);
+
+	/// 获取技能剩余冷却时间。
+	/// @param AbilitySystemComponent 技能组件。 
+	/// @param InCooldownTag 冷却GETag。 
+	/// @param TotalCooldownTime 总时间。
+	/// @param RemainingCooldownTime 剩余时间。
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|FunctionLibrary|GameplayAbilitySystem")
+	static bool GetAbilityCooldownByTag(const UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag InCooldownTag, float& TotalCooldownTime, float& RemainingCooldownTime);
+	
 #pragma endregion
 };

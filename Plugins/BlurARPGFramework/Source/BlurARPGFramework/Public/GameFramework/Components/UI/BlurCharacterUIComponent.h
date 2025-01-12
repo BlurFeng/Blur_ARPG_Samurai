@@ -13,6 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityIconSlotUpdatedDelegate, 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAbilityCooldownBeginDelegate, FGameplayTag, AbilityInputTag, float, TotalCooldownTime, float, RemainingCooldownTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStoneInteractedDelegate, bool, bShouldDisplayInputKey);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCheckCostOrCooldown, bool, bAllow, FGameplayTag, AbilityTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSimpleUIEvent);
 
 // 角色UI组件。当角色显示的数据比较复杂时，可以使用此组件。比如玩家控制的角色。或者一个需要显示详细信息的目标。
 UCLASS()
@@ -22,37 +23,41 @@ class BLURARPGFRAMEWORK_API UBlurCharacterUIComponent : public UBlurPawnUICompon
 
 public:
 	
-	//当前体力值变化时。
+	// 当前体力值变化时。
 	UPROPERTY(BlueprintAssignable)
 	FOnPercentChangedDelegate OnCurrentVitalityChanged;
 	
-	//当前怒气值变化时。
+	// 当前怒气值变化时。
 	UPROPERTY(BlueprintAssignable)
 	FOnPercentChangedDelegate OnCurrentRageChanged;
 	
-	//当装备武器变化时。
+	// 当装备武器变化时。
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FOnEquippedWeaponChangedDelegate OnEquippedWeaponChangedDelegate;
 
-	//当取消一个技能时。
+	// 当取消一个技能时。
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FOnCheckCostOrCooldown OnCancelAbility;
 
-	//当确认技能Cooldown是否足够时。
+	// 当确认技能Cooldown是否足够时。
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FOnCheckCostOrCooldown OnCheckCooldown;
 
-	//当确认技能Cost是否足够时。
+	// 当确认技能Cost是否足够时。
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FOnCheckCostOrCooldown OnCheckCost;
 	
-	//当技能Icon槽更新时。
+	// 当技能Icon槽更新时。
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FOnAbilityIconSlotUpdatedDelegate OnAbilityIconSlotUpdatedDelegate;
 
-	//当技能CD开始时。
+	// 当技能CD开始显示时。
 	UPROPERTY(BlueprintCallable, BlueprintAssignable)
 	FOnAbilityCooldownBeginDelegate OnAbilityCooldownBegin;
+
+	// 当技能CD取消显示时。我们停止计数器防止额外的计算消耗。
+	UPROPERTY(BlueprintCallable, BlueprintAssignable)
+	FSimpleUIEvent OnAbilityCooldownCancel;
 
 	// //当和石头交互时。
 	// UPROPERTY(BlueprintCallable, BlueprintAssignable)

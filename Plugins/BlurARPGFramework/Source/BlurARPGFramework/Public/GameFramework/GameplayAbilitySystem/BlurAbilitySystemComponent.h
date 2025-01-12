@@ -18,15 +18,7 @@ class BLURARPGFRAMEWORK_API UBlurAbilitySystemComponent : public UAbilitySystemC
 
 public:
 	UBlurAbilitySystemComponent();
-
-	// 切换形式技能的输入Tag的父级Tag。用于判断输入技能的操作方式。
-	UPROPERTY(EditDefaultsOnly, Category = "BlurARPGFramework|Ability")
-	FGameplayTag InputTagToggleableParentsTag = BlurGameplayTags::Input_Toggleable;
 	
-	// 持续按住形式技能的输入Tag的父级Tag。用于判断输入技能的操作方式。
-	UPROPERTY(EditDefaultsOnly, Category = "BlurARPGFramework|Ability")
-	FGameplayTag InputTagMustBeHeldParentsTag = BlurGameplayTags::Input_MustBeHeld;
-
 	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
  	void OnAbilityInputReleased(const FGameplayTag& InInputTag);
  	void OnAbilityInputTriggered(const FGameplayTag& InInputTag);

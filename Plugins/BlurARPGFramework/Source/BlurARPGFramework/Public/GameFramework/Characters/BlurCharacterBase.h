@@ -76,5 +76,4 @@ public:
 	FORCEINLINE UBlurAbilitySystemComponent* GetBlurAbilitySystemComponent() const { return BlurAbilitySystemComponent; }
 	FORCEINLINE UBlurAttributeSetBase* GetBlurAttributeSet() const { return BlurAttributeSet; }
 
-
 };

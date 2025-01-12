@@ -18,6 +18,7 @@
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/BlurGameplayTags.h"
+#include "GameFramework/Common/BlurDebugHelper.h"
 
 ABlurPlayableCharacter::ABlurPlayableCharacter()
 {
@@ -124,23 +125,44 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// 确认InputConfigDataAsset资源是否配置，不为null。
-	checkf(InputConfigDataAsset, TEXT("Forgot to assign a valid data asset as input config."));
-
+#if WITH_EDITOR
+	if (!InputConfigDataAsset)
+	{
+		Debug::Print("Forgot to assign a valid data asset as Input Config Data Asset.", FColor::Red);
+		return;
+	}
+#else
+	checkf(InputConfigDataAsset, TEXT("Forgot to assign a valid data asset as Input Config Data Asset."));
+#endif
+	
 	// 调用父类方法，实际上里面没有具体的内容，但之后引擎更新可能会有实际实现的内容。
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// 获取本地玩家控制器。
-	ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
+	const ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
 
 	// 通过增强输入子系统来添加配置的输入映射文件。
 	// 在输入映射文件中，我们给每个InputAction配置可以出发的硬件输入，比如键盘或手柄的输入。
 	UEnhancedInputLocalPlayerSubsystem* Subsystem =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
 	check(Subsystem);
+	// 设置默认输入映射。
 	Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
 	
+#if WITH_EDITOR
+	// Tips：在项目配置中设置默认的InputComponent为UBlurEnhancedInputComponent。在 ProjectSettings > Engine-Input > Default Classes - DefaultInputComponentClass 中设置。
+	// 将输入组件转换为UWarriorInputComponent类。
+	UBlurEnhancedInputComponent* WarriorInputComponent = Cast<UBlurEnhancedInputComponent>(PlayerInputComponent);
+	if (!WarriorInputComponent)
+	{
+		Debug::Print("Please set the DefaultInputComponentClass of the project settings to BlurEnhancedInputComponent.", FColor::Red);
+		return;
+	}
+#else
+	// 将输入组件转换为UWarriorInputComponent类。
+	UBlurEnhancedInputComponent* WarriorInputComponent = CastChecked<UBlurEnhancedInputComponent>(PlayerInputComponent);
+#endif
 	// 绑定输入事件。
-	UBlurEnhancedInputComponent* WarriorInputComponent = CastChecked<UBlurEnhancedInputComponent>(PlayerInputComponent); // 将输入组件转换为UWarriorInputComponent类。
 	// 基础操作输入。
 	WarriorInputComponent->BindNativeInputAction(
 		InputConfigDataAsset, BlurGameplayTags::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);

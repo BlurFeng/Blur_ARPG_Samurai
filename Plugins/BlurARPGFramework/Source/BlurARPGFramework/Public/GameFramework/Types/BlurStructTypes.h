@@ -75,6 +75,14 @@ struct FAbilityWeaponData
 	// 武器输入映射。当装备武器时，使用此InputMap覆盖原有的。因为装备武器后操作方式会相应变化。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputMappingContext* WeaponInputMappingContext;
+
+	// 武器输入映射的优先级，应当高于角色默认的输入映射优先级。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int WeaponInputMappingPriority = 1;
+
+	// 武器默认技能等级。我们也能在运行时修改 ABlurAbilityWeapon.WeaponAbilityLevel 字段来决定最终赋予拥有者的技能等级。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int DefaultWeaponAbilityLevel = 1;
 	
 	// Tips：实际上我们的EquipAxe技能也不应当直接赋予角色，而是在角色获得Axe时赋予。
 	// 但对于这个学习项目，这样就好。否则我们还需要开发相应的道具系统和拾取道具的功能。

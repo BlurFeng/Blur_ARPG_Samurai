@@ -25,19 +25,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
 	FAbilityWeaponData AbilityWeaponData;
 
-	UFUNCTION(BlueprintCallable)
-	void HandleEquipWeapon(UBlurAbilitySystemComponent* AbilitySystemComponent, USkeletalMeshComponent* SkeletalMeshComponent = nullptr, APlayerController* PlayerController = nullptr);
+	// 武器技能等级，决定了武器赋予拥有者技能等级。
+	UPROPERTY(BlueprintReadWrite, Category = "WeaponData")
+	int WeaponAbilityLevel;
 
-	/// 将赋予所有者技能时返回的 Handle 缓存，用于之后移除技能。
-	/// @param InSpecHandles 
+	// 装备武器到所有者。
 	UFUNCTION(BlueprintCallable)
-	void AssignGrantedAbilitySpecHandles(const TArray<FGameplayAbilitySpecHandle>& InSpecHandles);
+	void HandleEquipWeapon(ABlurCharacterBase* BlurCharacterBase);
 
-	/// 获取 武器赋予技能时返回的句柄。可用此句柄移除技能。
-	/// @return 
+	// 卸下武器从所有者。
 	UFUNCTION(BlueprintCallable)
-	TArray<FGameplayAbilitySpecHandle> GetGaveAbilitySpecHandles() const;
-private:
+	void HandleUnequipWeapon(ABlurCharacterBase* BlurCharacterBase);
 	
+private:
+
+	// 赋予拥有者技能时返回的查询句柄。
 	TArray<FGameplayAbilitySpecHandle> GaveAbilitySpecHandles;
 };

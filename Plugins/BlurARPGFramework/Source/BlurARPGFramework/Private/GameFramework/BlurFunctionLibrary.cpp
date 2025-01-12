@@ -197,3 +197,32 @@ float UBlurFunctionLibrary::GetScalableFloatValueAtLevel(const FScalableFloat& I
 {
 	return  InScalableFloat.GetValueAtLevel(InLevel);
 }
+
+bool UBlurFunctionLibrary::GetAbilityCooldownByTag(AActor* OwnerActor, const FGameplayTag InCooldownTag,
+	float& TotalCooldownTime, float& RemainingCooldownTime)
+{
+	return GetAbilityCooldownByTag(GetAbilitySystemComponentFromActor(OwnerActor), InCooldownTag, TotalCooldownTime, RemainingCooldownTime);
+}
+
+bool UBlurFunctionLibrary::GetAbilityCooldownByTag(
+	const UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag InCooldownTag, float& TotalCooldownTime, float& RemainingCooldownTime)
+{
+	TotalCooldownTime = 0.f;
+	RemainingCooldownTime = 0.f;
+
+	if (!AbilitySystemComponent) return false;
+	
+	check(InCooldownTag.IsValid());
+
+	const FGameplayEffectQuery CooldownQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(InCooldownTag.GetSingleTagContainer());
+	
+	const TArray<TPair<float, float>> TimeRemainingAndDuration = AbilitySystemComponent->GetActiveEffectsTimeRemainingAndDuration(CooldownQuery);
+
+	if (!TimeRemainingAndDuration.IsEmpty())
+	{
+		RemainingCooldownTime = TimeRemainingAndDuration[0].Key;
+		TotalCooldownTime = TimeRemainingAndDuration[0].Value;
+	}
+
+	return RemainingCooldownTime > 0.f;
+}
