@@ -30,12 +30,12 @@ public:
 	int WeaponAbilityLevel;
 
 	// 装备武器到所有者。
-	UFUNCTION(BlueprintCallable)
-	void HandleEquipWeapon(ABlurCharacterBase* BlurCharacterBase);
+	UFUNCTION()
+	void HandleEquipWeapon(AActor* SelfOwner);
 
 	// 卸下武器从所有者。
-	UFUNCTION(BlueprintCallable)
-	void HandleUnequipWeapon(ABlurCharacterBase* BlurCharacterBase);
+	UFUNCTION()
+	void HandleUnequipWeapon(AActor* SelfOwner);
 	
 private:
 

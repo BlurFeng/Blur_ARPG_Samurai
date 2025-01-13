@@ -4,29 +4,122 @@
 #include "GameFramework/Components/Combat/BlurCombatComponentBase.h"
 
 #include "Components/BoxComponent.h"
+#include "GameFramework/Common/BlurDebugHelper.h"
+#include "GameFramework/Items/Weapons/BlurAbilityWeapon.h"
 #include "GameFramework/Items/Weapons/BlurWeapon.h"
 
-void UBlurCombatComponentBase::RegisterSpawnedWeapon(
-	FGameplayTag InWeaponTagToRegister, ABlurWeapon* InWeaponToRegister, const bool bRegisterAsEquippedWeapon)
+bool UBlurCombatComponentBase::GetWeapon(const FGameplayTag InWeaponTag, ABlurWeapon* InWeapon, const bool bRegisterAsEquippedWeapon)
 {
-	checkf(!CarriedWeaponsMap.Contains(InWeaponTagToRegister), TEXT("A named %s has already been added as carried weapon"), *InWeaponTagToRegister.ToString());
-	check(InWeaponToRegister);
-
-	CarriedWeaponsMap.Emplace(InWeaponTagToRegister, InWeaponToRegister);
-
-	// 绑定回调方法到武器委托。
-	InWeaponToRegister->OnWeaponMeleeHitTarget.BindUObject(this, &UBlurCombatComponentBase::OnMeleeHitTargetActor);
-	InWeaponToRegister->OnWeaponMeleePulledFromTarget.BindUObject(this, &UBlurCombatComponentBase::OnMeleePulledFromTargetActor);
+	if (!RegisterWeapon(InWeaponTag, InWeapon))
+	{
+		Debug::Print(FString::Printf(TEXT("A named %s has already been added as carried weapon."), *InWeaponTag.ToString()));
+		return false;
+	}
 
 	// 当生成武器时，如果武器直接进行装备时，直接设置CurrentEquippedWeaponTag。
 	// 否则一般通过“装备武器”技能，并在Ability蓝图中修改。
 	if(bRegisterAsEquippedWeapon)
 	{
-		CurrentEquippedWeaponTag = InWeaponTagToRegister;
+		Equip(InWeaponTag);
 	}
 
-	// const FString WeaponString =  FString::Printf(TEXT("A weapon named: %s has been registered using the tag %s"), *InWeaponToRegister->GetName(), *InWeaponTagToRegister.ToString());
-	// Debug::Print(WeaponString);
+	return true;
+}
+
+bool UBlurCombatComponentBase::DiscardWeapon(const FGameplayTag InWeaponTag)
+{
+	if (!IsCarriedWeapon(InWeaponTag))
+	{
+		Debug::Print(FString::Printf(TEXT("A named %s has not find in carried weapon."), *InWeaponTag.ToString()));
+		return false;
+	}
+
+	// 如果是装备中的装备，先卸下装备。
+	if (IsCurrentEquippedWeapon(InWeaponTag))
+	{
+		Unequip(InWeaponTag);
+	}
+
+	// 反注册武器。
+	UnregisterWeapon(InWeaponTag);
+	
+	return true;
+}
+
+bool UBlurCombatComponentBase::Equip(const FGameplayTag InWeaponTag)
+{
+	if (!IsCarriedWeapon(InWeaponTag)) return false;
+	if (CurrentEquippedWeaponTag == InWeaponTag) return false;
+
+	// 装备其他武器时，先卸下当前的。
+	if (CurrentEquippedWeaponTag != FGameplayTag::EmptyTag)
+	{
+		if (!Unequip(CurrentEquippedWeaponTag))
+			return false;
+	}
+	
+	ABlurWeapon* Weapon = CarriedWeaponsMap.FindRef(InWeaponTag);
+	
+	// TODO：装备武器的流程。
+	if (ABlurAbilityWeapon* AbilityWeapon = Cast<ABlurAbilityWeapon>(Weapon))
+	{
+		AbilityWeapon->HandleEquipWeapon(GetOwner());
+	}
+	CurrentEquippedWeaponTag = InWeaponTag;
+
+	return true;
+}
+
+bool UBlurCombatComponentBase::Unequip(const FGameplayTag InWeaponTag)
+{
+	if (!IsCarriedWeapon(InWeaponTag)) return false;
+	if (CurrentEquippedWeaponTag != InWeaponTag) return false;
+
+	ABlurWeapon* Weapon = CarriedWeaponsMap.FindRef(InWeaponTag);
+	
+	// TODO：卸下武器的流程。
+	if (ABlurAbilityWeapon* AbilityWeapon = Cast<ABlurAbilityWeapon>(Weapon))
+	{
+		AbilityWeapon->HandleUnequipWeapon(GetOwner());
+	}
+	
+	CurrentEquippedWeaponTag = FGameplayTag::EmptyTag;
+	return true;
+}
+
+bool UBlurCombatComponentBase::UnequipCurrent()
+{
+	if (CurrentEquippedWeaponTag == FGameplayTag::EmptyTag)
+		return false;
+	return Unequip(CurrentEquippedWeaponTag);
+}
+
+bool UBlurCombatComponentBase::RegisterWeapon(FGameplayTag InWeaponTag, ABlurWeapon* InWeapon)
+{
+	if (CarriedWeaponsMap.Contains(InWeaponTag)) return false;
+	check(InWeapon);
+
+	CarriedWeaponsMap.Emplace(InWeaponTag, InWeapon);
+
+	// 绑定回调方法到武器委托。
+	InWeapon->OnWeaponMeleeHitTarget.BindUObject(this, &UBlurCombatComponentBase::OnMeleeHitTargetActor);
+	InWeapon->OnWeaponMeleePulledFromTarget.BindUObject(this, &UBlurCombatComponentBase::OnMeleePulledFromTargetActor);
+	
+	return true;
+}
+
+bool UBlurCombatComponentBase::UnregisterWeapon(const FGameplayTag InWeaponTag)
+{
+	if (!CarriedWeaponsMap.Contains(InWeaponTag)) return false;
+
+	ABlurWeapon* Weapon = CarriedWeaponsMap.FindRef(InWeaponTag);
+
+	// 解绑委托。
+	Weapon->OnWeaponMeleeHitTarget.Unbind();
+	Weapon->OnWeaponMeleePulledFromTarget.Unbind();
+	
+	CarriedWeaponsMap.Remove(InWeaponTag);
+	return true;
 }
 
 ABlurWeapon* UBlurCombatComponentBase::GetCarriedWeaponByTag(const FGameplayTag InWeaponTagToGet) const
@@ -49,11 +142,21 @@ ABlurWeapon* UBlurCombatComponentBase::GetCarriedWeaponByTag(const FGameplayTag 
 	return nullptr;
 }
 
+bool UBlurCombatComponentBase::IsCarriedWeapon(const FGameplayTag InWeaponTag) const
+{
+	return CarriedWeaponsMap.Contains(InWeaponTag);
+}
+
 ABlurWeapon* UBlurCombatComponentBase::GetCurrentEquippedWeapon() const
 {
 	if(!CurrentEquippedWeaponTag.IsValid()) return nullptr;
 	
 	return GetCarriedWeaponByTag(CurrentEquippedWeaponTag);
+}
+
+bool UBlurCombatComponentBase::IsCurrentEquippedWeapon(const FGameplayTag InWeaponTag) const
+{
+	return CurrentEquippedWeaponTag == InWeaponTag;
 }
 
 void UBlurCombatComponentBase::ToggleWeaponCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
