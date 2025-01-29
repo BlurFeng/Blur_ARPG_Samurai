@@ -33,6 +33,11 @@ public:
 	{
 		return InputTag.IsValid() && InputAction;
 	}
+
+	bool operator==(const FGameplayTag& InInputTag) const
+	{
+		return InInputTag == InputTag;
+	}
 };
 
 // 输入配置资源。

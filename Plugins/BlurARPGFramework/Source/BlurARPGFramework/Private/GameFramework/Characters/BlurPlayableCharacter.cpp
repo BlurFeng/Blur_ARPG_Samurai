@@ -163,11 +163,17 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	UBlurEnhancedInputComponent* WarriorInputComponent = CastChecked<UBlurEnhancedInputComponent>(PlayerInputComponent);
 #endif
 	// 绑定输入事件。
-	// 基础操作输入。
-	WarriorInputComponent->BindNativeInputAction(
-		InputConfigDataAsset, BlurGameplayTags::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
-	WarriorInputComponent->BindNativeInputAction(
-		InputConfigDataAsset, BlurGameplayTags::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
+	// 基础操作输入。如果子类自己在蓝图中实现，可以不配置这些输入事件。
+	if (InputConfigDataAsset->NativeInputActions.Contains(BlurGameplayTags::Input_Move))
+	{
+		WarriorInputComponent->BindNativeInputAction(
+			InputConfigDataAsset, BlurGameplayTags::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+	}
+	if (InputConfigDataAsset->NativeInputActions.Contains(BlurGameplayTags::Input_Look))
+	{
+		WarriorInputComponent->BindNativeInputAction(
+			InputConfigDataAsset, BlurGameplayTags::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
+	}
 	
 	// 切换目标输入。根据用途可以达到不同的效果。比如激活目标锁定技能后，切换目标输入。
 	const FGameplayTag Input_SwitchTarget = BlurGameplayTags::Input_SwitchTarget;
