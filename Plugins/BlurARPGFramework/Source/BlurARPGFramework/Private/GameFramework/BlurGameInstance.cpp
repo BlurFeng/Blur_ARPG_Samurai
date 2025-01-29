@@ -1,11 +1,11 @@
 // Blur Feng All Rights Reserved.
 
 
-#include "GameFramework/BlurGameInstanceBase.h"
+#include "GameFramework/BlurGameInstance.h"
 
 #include "MoviePlayer.h"
 
-void UBlurGameInstanceBase::Init()
+void UBlurGameInstance::Init()
 {
 	Super::Init();
 
@@ -13,7 +13,7 @@ void UBlurGameInstanceBase::Init()
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &ThisClass::OnDestinationWorldLoaded);
 }
 
-void UBlurGameInstanceBase::OnPreloadMap(const FString& MapName)
+void UBlurGameInstance::OnPreloadMap(const FString& MapName)
 {
 	FLoadingScreenAttributes LoadingScreenAttributes;
 	LoadingScreenAttributes.bAutoCompleteWhenLoadingCompletes = true;
@@ -24,12 +24,12 @@ void UBlurGameInstanceBase::OnPreloadMap(const FString& MapName)
 	GetMoviePlayer()->SetupLoadingScreen(LoadingScreenAttributes);
 }
 
-void UBlurGameInstanceBase::OnDestinationWorldLoaded(UWorld* LoadedWorld)
+void UBlurGameInstance::OnDestinationWorldLoaded(UWorld* LoadedWorld)
 {
 	GetMoviePlayer()->StopMovie();
 }
 
-TSoftObjectPtr<UWorld> UBlurGameInstanceBase::GetGameLevelByTag(const FGameplayTag InTag) const
+TSoftObjectPtr<UWorld> UBlurGameInstance::GetGameLevelByTag(const FGameplayTag InTag) const
 {
 	for (const FBlurGameLevelSet& GameLevelSet : GameLevelSets)
 	{

@@ -1,14 +1,14 @@
 // Blur Feng All Rights Reserved.
 
 
-#include "GameFramework/Components/Combat/BlurCombatComponentBase.h"
+#include "GameFramework/Components/Combat/BlurCombatComponent.h"
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/Common/BlurDebugHelper.h"
 #include "GameFramework/Items/Weapons/BlurAbilityWeapon.h"
 #include "GameFramework/Items/Weapons/BlurWeapon.h"
 
-bool UBlurCombatComponentBase::GetWeapon(const FGameplayTag InWeaponTag, ABlurWeapon* InWeapon, const bool bRegisterAsEquippedWeapon)
+bool UBlurCombatComponent::GetWeapon(const FGameplayTag InWeaponTag, ABlurWeapon* InWeapon, const bool bRegisterAsEquippedWeapon)
 {
 	if (!RegisterWeapon(InWeaponTag, InWeapon))
 	{
@@ -26,7 +26,7 @@ bool UBlurCombatComponentBase::GetWeapon(const FGameplayTag InWeaponTag, ABlurWe
 	return true;
 }
 
-bool UBlurCombatComponentBase::DiscardWeapon(const FGameplayTag InWeaponTag)
+bool UBlurCombatComponent::DiscardWeapon(const FGameplayTag InWeaponTag)
 {
 	if (!IsCarriedWeapon(InWeaponTag))
 	{
@@ -46,7 +46,7 @@ bool UBlurCombatComponentBase::DiscardWeapon(const FGameplayTag InWeaponTag)
 	return true;
 }
 
-bool UBlurCombatComponentBase::Equip(const FGameplayTag InWeaponTag)
+bool UBlurCombatComponent::Equip(const FGameplayTag InWeaponTag)
 {
 	if (!IsCarriedWeapon(InWeaponTag)) return false;
 	if (CurrentEquippedWeaponTag == InWeaponTag) return false;
@@ -70,7 +70,7 @@ bool UBlurCombatComponentBase::Equip(const FGameplayTag InWeaponTag)
 	return true;
 }
 
-bool UBlurCombatComponentBase::Unequip(const FGameplayTag InWeaponTag)
+bool UBlurCombatComponent::Unequip(const FGameplayTag InWeaponTag)
 {
 	if (!IsCarriedWeapon(InWeaponTag)) return false;
 	if (CurrentEquippedWeaponTag != InWeaponTag) return false;
@@ -87,14 +87,14 @@ bool UBlurCombatComponentBase::Unequip(const FGameplayTag InWeaponTag)
 	return true;
 }
 
-bool UBlurCombatComponentBase::UnequipCurrent()
+bool UBlurCombatComponent::UnequipCurrent()
 {
 	if (CurrentEquippedWeaponTag == FGameplayTag::EmptyTag)
 		return false;
 	return Unequip(CurrentEquippedWeaponTag);
 }
 
-bool UBlurCombatComponentBase::RegisterWeapon(FGameplayTag InWeaponTag, ABlurWeapon* InWeapon)
+bool UBlurCombatComponent::RegisterWeapon(FGameplayTag InWeaponTag, ABlurWeapon* InWeapon)
 {
 	if (CarriedWeaponsMap.Contains(InWeaponTag)) return false;
 	check(InWeapon);
@@ -102,13 +102,13 @@ bool UBlurCombatComponentBase::RegisterWeapon(FGameplayTag InWeaponTag, ABlurWea
 	CarriedWeaponsMap.Emplace(InWeaponTag, InWeapon);
 
 	// 绑定回调方法到武器委托。
-	InWeapon->OnWeaponMeleeHitTarget.BindUObject(this, &UBlurCombatComponentBase::OnMeleeHitTargetActor);
-	InWeapon->OnWeaponMeleePulledFromTarget.BindUObject(this, &UBlurCombatComponentBase::OnMeleePulledFromTargetActor);
+	InWeapon->OnWeaponMeleeHitTarget.BindUObject(this, &UBlurCombatComponent::OnMeleeHitTargetActor);
+	InWeapon->OnWeaponMeleePulledFromTarget.BindUObject(this, &UBlurCombatComponent::OnMeleePulledFromTargetActor);
 	
 	return true;
 }
 
-bool UBlurCombatComponentBase::UnregisterWeapon(const FGameplayTag InWeaponTag)
+bool UBlurCombatComponent::UnregisterWeapon(const FGameplayTag InWeaponTag)
 {
 	if (!CarriedWeaponsMap.Contains(InWeaponTag)) return false;
 
@@ -122,7 +122,7 @@ bool UBlurCombatComponentBase::UnregisterWeapon(const FGameplayTag InWeaponTag)
 	return true;
 }
 
-ABlurWeapon* UBlurCombatComponentBase::GetCarriedWeaponByTag(const FGameplayTag InWeaponTagToGet) const
+ABlurWeapon* UBlurCombatComponent::GetCarriedWeaponByTag(const FGameplayTag InWeaponTagToGet) const
 {
 	// Notes：双重指针。
 	// TMap存储的实际上是指向常量指针的指针，我们通过解指针获得需要的指向常量的指针并作为返回值。
@@ -142,24 +142,24 @@ ABlurWeapon* UBlurCombatComponentBase::GetCarriedWeaponByTag(const FGameplayTag 
 	return nullptr;
 }
 
-bool UBlurCombatComponentBase::IsCarriedWeapon(const FGameplayTag InWeaponTag) const
+bool UBlurCombatComponent::IsCarriedWeapon(const FGameplayTag InWeaponTag) const
 {
 	return CarriedWeaponsMap.Contains(InWeaponTag);
 }
 
-ABlurWeapon* UBlurCombatComponentBase::GetCurrentEquippedWeapon() const
+ABlurWeapon* UBlurCombatComponent::GetCurrentEquippedWeapon() const
 {
 	if(!CurrentEquippedWeaponTag.IsValid()) return nullptr;
 	
 	return GetCarriedWeaponByTag(CurrentEquippedWeaponTag);
 }
 
-bool UBlurCombatComponentBase::IsCurrentEquippedWeapon(const FGameplayTag InWeaponTag) const
+bool UBlurCombatComponent::IsCurrentEquippedWeapon(const FGameplayTag InWeaponTag) const
 {
 	return CurrentEquippedWeaponTag == InWeaponTag;
 }
 
-void UBlurCombatComponentBase::ToggleWeaponCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
+void UBlurCombatComponent::ToggleWeaponCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
 {
 	if(ToggleDamageType == EToggleDamageType::CurrentEquippedWeapon)
 	{
@@ -171,15 +171,15 @@ void UBlurCombatComponentBase::ToggleWeaponCollision(const bool bShouldEnable, c
 	}
 }
 
-void UBlurCombatComponentBase::OnMeleeHitTargetActor(AActor* HitActor)
+void UBlurCombatComponent::OnMeleeHitTargetActor(AActor* HitActor)
 {
 }
 
-void UBlurCombatComponentBase::OnMeleePulledFromTargetActor(AActor* HitActor)
+void UBlurCombatComponent::OnMeleePulledFromTargetActor(AActor* HitActor)
 {
 }
 
-void UBlurCombatComponentBase::ToggleCurrentEquippedWeaponCollision(const bool bShouldEnable)
+void UBlurCombatComponent::ToggleCurrentEquippedWeaponCollision(const bool bShouldEnable)
 {
 	const ABlurWeapon* WeaponToToggle = GetCurrentEquippedWeapon();
 
@@ -202,7 +202,7 @@ void UBlurCombatComponentBase::ToggleCurrentEquippedWeaponCollision(const bool b
 	}
 }
 
-void UBlurCombatComponentBase::ToggleBodyCollisionBoxCollision(const bool bShouldEnable,
+void UBlurCombatComponent::ToggleBodyCollisionBoxCollision(const bool bShouldEnable,
 	const EToggleDamageType ToggleDamageType)
 {
 }

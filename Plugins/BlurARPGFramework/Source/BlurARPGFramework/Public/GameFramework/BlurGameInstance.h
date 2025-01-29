@@ -6,7 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "GameplayTagContainer.h"
 
-#include "BlurGameInstanceBase.generated.h"
+#include "BlurGameInstance.generated.h"
 
 USTRUCT(BlueprintType)
 struct FBlurGameLevelSet
@@ -30,7 +30,7 @@ struct FBlurGameLevelSet
 // 游戏实例。可用于全局数据管理。
 // 提供了常用的需要配置的数据。
 UCLASS()
-class BLURARPGFRAMEWORK_API UBlurGameInstanceBase : public UGameInstance
+class BLURARPGFRAMEWORK_API UBlurGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 

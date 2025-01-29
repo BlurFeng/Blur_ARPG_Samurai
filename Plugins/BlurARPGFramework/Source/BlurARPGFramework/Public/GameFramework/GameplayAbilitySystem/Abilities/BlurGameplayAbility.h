@@ -12,7 +12,7 @@ class UBlurPawnUIComponent;
 class ABlurCharacterBase;
 class IPawnUIInterface;
 class UBlurAbilitySystemComponent;
-class UBlurCombatComponentBase;
+class UBlurCombatComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCheckCostOrCooldownDelegate, const bool, bAllow, const FGameplayTag, AbilityTag);
 
@@ -77,7 +77,7 @@ protected:
 	/// 获取角色战斗组件。
 	/// @return 
 	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability")
-	UBlurCombatComponentBase* GetPawnCombatComponentFromActorInfo() const;
+	UBlurCombatComponent* GetPawnCombatComponentFromActorInfo() const;
 
 	/// 获取角色UI组件。
 	/// @return 

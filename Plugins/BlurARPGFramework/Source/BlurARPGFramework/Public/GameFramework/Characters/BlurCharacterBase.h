@@ -12,10 +12,10 @@
 
 class UBlurDA_CharacterStartup;
 class UAbilitySystemComponent;
-class UBlurCombatComponentBase;
+class UBlurCombatComponent;
 class UBlurPawnUIComponent;
 class UBlurAbilitySystemComponent;
-class UBlurAttributeSetBase;
+class UBlurAttributeSet;
 class UMotionWarpingComponent;
 
 // 角色基础类。
@@ -36,7 +36,7 @@ public:
 	//~ End IAbilitySystemInterface Interface
 
 	//~ Begin IPawnCombatInterface Interface.
-	virtual UBlurCombatComponentBase* GetPawnCombatComponent() const override;
+	virtual UBlurCombatComponent* GetPawnCombatComponent() const override;
 	//~ End IPawnCombatInterface Interface
 
 	//~ Begin IPawnUIInterface Interface.
@@ -56,7 +56,7 @@ protected:
 
 	// 属性集（属于GAS插件的一部分）。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "AbilitySystem")
-	UBlurAttributeSetBase* BlurAttributeSet;
+	UBlurAttributeSet* BlurAttributeSet;
 
 	// 运动变形组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "MotionWarping")
@@ -74,6 +74,6 @@ public:
 	// 但需要注意，这会导致代码膨胀，不适合用于较大的函数。否则会增加缓存压力，适得其反。
 	
 	FORCEINLINE UBlurAbilitySystemComponent* GetBlurAbilitySystemComponent() const { return BlurAbilitySystemComponent; }
-	FORCEINLINE UBlurAttributeSetBase* GetBlurAttributeSet() const { return BlurAttributeSet; }
+	FORCEINLINE UBlurAttributeSet* GetBlurAttributeSet() const { return BlurAttributeSet; }
 
 };

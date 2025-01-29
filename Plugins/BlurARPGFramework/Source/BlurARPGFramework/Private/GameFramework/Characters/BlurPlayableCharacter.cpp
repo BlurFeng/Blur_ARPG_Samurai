@@ -54,7 +54,7 @@ ABlurPlayableCharacter::ABlurPlayableCharacter()
 	HeroUIComponent = CreateDefaultSubobject<UBlurCharacterUIComponent>(TEXT("CharacterUIComponent"));
 }
 
-UBlurCombatComponentBase* ABlurPlayableCharacter::GetPawnCombatComponent() const
+UBlurCombatComponent* ABlurPlayableCharacter::GetPawnCombatComponent() const
 {
 	return HeroCombatComponent;
 }

@@ -4,13 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
-#include "BlurAttributeSetBase.generated.h"
+#include "BlurAttributeSet.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class BLURARPGFRAMEWORK_API UBlurAttributeSetBase : public UAttributeSet
+class BLURARPGFRAMEWORK_API UBlurAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 	

@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Components/Combat/BlurCombatComponentBase.h"
+#include "GameFramework/Components/Combat/BlurCombatComponent.h"
 #include "BlurAbilityCombatComponent.generated.h"
 
 class ABlurAbilityWeapon;
 
 UCLASS()
-class BLURARPGFRAMEWORK_API UBlurAbilityCombatComponent : public UBlurCombatComponentBase
+class BLURARPGFRAMEWORK_API UBlurAbilityCombatComponent : public UBlurCombatComponent
 {
 	GENERATED_BODY()
 

@@ -43,7 +43,7 @@ ABlurSimpleAICharacter::ABlurSimpleAICharacter()
 	
 }
 
-UBlurCombatComponentBase* ABlurSimpleAICharacter::GetPawnCombatComponent() const
+UBlurCombatComponent* ABlurSimpleAICharacter::GetPawnCombatComponent() const
 {
 	return AbilityCombatComponent;
 }

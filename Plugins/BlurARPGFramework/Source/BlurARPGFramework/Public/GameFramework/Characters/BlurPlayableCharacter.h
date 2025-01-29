@@ -23,7 +23,7 @@ public:
 	ABlurPlayableCharacter();
 
 	//~ Begin IPawnCombatInterface Interface.
-	virtual UBlurCombatComponentBase* GetPawnCombatComponent() const override;
+	virtual UBlurCombatComponent* GetPawnCombatComponent() const override;
 	//~ End IPawnCombatInterface Interface
 
 	//~ Begin IPawnUIInterface Interface.

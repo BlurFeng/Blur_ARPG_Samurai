@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "BlurPawnCombatInterface.generated.h"
 
-class UBlurCombatComponentBase;
+class UBlurCombatComponent;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -28,5 +28,5 @@ public:
 	//纯虚函数必须被继承者实现，因为纯虚函数没有默认实现。所以在接口中，我们经常使用纯虚函数。
 	//包含纯虚函数的类是 抽象类（abstract class），不能直接被实例化。
 	
-	virtual UBlurCombatComponentBase* GetPawnCombatComponent() const = 0;
+	virtual UBlurCombatComponent* GetPawnCombatComponent() const = 0;
 };

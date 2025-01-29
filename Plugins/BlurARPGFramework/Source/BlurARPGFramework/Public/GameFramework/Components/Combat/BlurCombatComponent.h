@@ -6,7 +6,7 @@
 #include "GameFramework/Components/BlurPawnComponentBase.h"
 #include "GameplayTagContainer.h"
 
-#include "BlurCombatComponentBase.generated.h"
+#include "BlurCombatComponent.generated.h"
 
 class ABlurWeapon;
 
@@ -20,7 +20,7 @@ enum class EToggleDamageType : uint8
 
 // 战斗组件基类。
 UCLASS()
-class BLURARPGFRAMEWORK_API UBlurCombatComponentBase : public UBlurPawnComponentBase
+class BLURARPGFRAMEWORK_API UBlurCombatComponent : public UBlurPawnComponentBase
 {
 	GENERATED_BODY()
 

@@ -4,7 +4,7 @@
 #include "GameFramework/Characters/BlurCharacterBase.h"
 
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
-#include "GameFramework/GameplayAbilitySystem/BlurAttributeSetBase.h"
+#include "GameFramework/GameplayAbilitySystem/BlurAttributeSet.h"
 #include "MotionWarpingComponent.h"
 #include "GameFramework/Common/BlurDebugHelper.h"
 
@@ -20,7 +20,7 @@ ABlurCharacterBase::ABlurCharacterBase()
 
 	// 初始化技能系统。
 	BlurAbilitySystemComponent = CreateDefaultSubobject<UBlurAbilitySystemComponent>(TEXT("BlurAbilitySystemComponent"));
-	BlurAttributeSet = CreateDefaultSubobject<UBlurAttributeSetBase>(TEXT("BlurAttributeSet"));
+	BlurAttributeSet = CreateDefaultSubobject<UBlurAttributeSet>(TEXT("BlurAttributeSet"));
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 }
@@ -30,7 +30,7 @@ UAbilitySystemComponent* ABlurCharacterBase::GetAbilitySystemComponent() const
 	return GetBlurAbilitySystemComponent();
 }
 
-UBlurCombatComponentBase* ABlurCharacterBase::GetPawnCombatComponent() const
+UBlurCombatComponent* ABlurCharacterBase::GetPawnCombatComponent() const
 {
 	return nullptr; // 此接口由子类实现.
 }

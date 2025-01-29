@@ -6,7 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/BlurFunctionLibrary.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
-#include "GameFramework/Components/Combat/BlurCombatComponentBase.h"
+#include "GameFramework/Components/Combat/BlurCombatComponent.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 
 UBlurGameplayAbility::UBlurGameplayAbility()
@@ -91,10 +91,10 @@ ABlurCharacterBase* UBlurGameplayAbility::GetCharacterFromActorInfo()
 	return CachedBlurCharacterBase.IsValid() ? CachedBlurCharacterBase.Get() : nullptr;
 }
 
-UBlurCombatComponentBase* UBlurGameplayAbility::GetPawnCombatComponentFromActorInfo() const
+UBlurCombatComponent* UBlurGameplayAbility::GetPawnCombatComponentFromActorInfo() const
 {
 	// FindComponentByClass通过遍历查找返回第一个有效的目标。当存在多个UPawnCombatComponent的子类时可能无法按预期工作。
-	return GetAvatarActorFromActorInfo()->FindComponentByClass<UBlurCombatComponentBase>();
+	return GetAvatarActorFromActorInfo()->FindComponentByClass<UBlurCombatComponent>();
 }
 
 UBlurPawnUIComponent* UBlurGameplayAbility::GetPawnUIComponentFromActorInfo()

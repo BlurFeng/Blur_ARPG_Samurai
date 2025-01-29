@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
-#include "BlurPlayerStateBase.generated.h"
+#include "BlurPlayerState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class BLURARPGFRAMEWORK_API ABlurPlayerStateBase : public APlayerState
+class BLURARPGFRAMEWORK_API ABlurPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
