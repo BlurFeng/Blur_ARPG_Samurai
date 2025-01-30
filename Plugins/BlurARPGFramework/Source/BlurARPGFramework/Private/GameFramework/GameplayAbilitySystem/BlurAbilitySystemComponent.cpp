@@ -32,7 +32,7 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 		// Tips：InInputTag 通过 UBlurFunctionLibrary::GetGameplayAbilitySpec 方法在赋予技能时添加到 DynamicAbilityTags。
 		
 		// 确认输入的技能是否存在，通过对比InInputTag。此Tag应当在启动时被添加。
-		if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag)) continue;
+		if (!AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag)) continue;
 
 		if (InputType == EBlurInputType::Normal)
 		{
@@ -69,7 +69,7 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 				if (const IBlurPawnUIInterface* PawnUIInterface = Cast<IBlurPawnUIInterface>(GetAvatarActor()))
 				{
 					if (PawnUIInterface->GetCharacterUIComponent())
-						PawnUIInterface->GetCharacterUIComponent()->OnCancelAbility.Broadcast(Allow, AbilitySpec.GetPrimaryInstance()->AbilityTags.First());
+						PawnUIInterface->GetCharacterUIComponent()->OnCancelAbility.Broadcast(Allow, AbilitySpec.GetPrimaryInstance()->GetAssetTags().First());
 				}
 			}
 		}
@@ -97,7 +97,7 @@ void UBlurAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InI
 		for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 		{
 			// 取消正在激活中的技能。
-			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag) && AbilitySpec.IsActive())
+			if (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag) && AbilitySpec.IsActive())
 			{
 				// 清空缓存的需要持续按住触发的技能Spec。
 				CachedMustBeHeldGameplayAbilityInputTag = FGameplayTag::EmptyTag;

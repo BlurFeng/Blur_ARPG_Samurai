@@ -53,7 +53,7 @@ bool UBlurGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle,
 {
 	const bool bAllow = Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags);
 
-	OnCheckCostDelegate.Broadcast(bAllow, AbilityTags.First());
+	OnCheckCostDelegate.Broadcast(bAllow, GetAssetTags().First());
 	
 	return bAllow;
 }
@@ -63,7 +63,7 @@ bool UBlurGameplayAbility::CheckCooldown(const FGameplayAbilitySpecHandle Handle
 {
 	const bool bAllow = Super::CheckCooldown(Handle, ActorInfo, OptionalRelevantTags);
 
-	OnCheckCooldownDelegate.Broadcast(bAllow, AbilityTags.First());
+	OnCheckCooldownDelegate.Broadcast(bAllow, GetAssetTags().First());
 
 	return bAllow;
 }

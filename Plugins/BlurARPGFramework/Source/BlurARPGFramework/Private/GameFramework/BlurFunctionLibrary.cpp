@@ -188,7 +188,7 @@ FGameplayAbilitySpec UBlurFunctionLibrary::GetGameplayAbilitySpec(const TSubclas
 	const TWeakObjectPtr<UObject> SourceObject, const int32 ApplyLevel, const FGameplayTag InputTag)
 {
 	FGameplayAbilitySpec AbilitySpec = GetGameplayAbilitySpec(GameplayAbility, SourceObject, ApplyLevel);
-	AbilitySpec.DynamicAbilityTags.AddTag(InputTag);
+	AbilitySpec.GetDynamicSpecSourceTags().AddTag(InputTag);
 
 	return AbilitySpec;
 }
