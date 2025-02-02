@@ -72,52 +72,41 @@ UBlurCharacterUIComponent* ABlurPlayableCharacter::GetCharacterUIComponent() con
 void ABlurPlayableCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+}
 
-	// if(WarriorAbilitySystemComponent && WarriorAttributeSet)
+void ABlurPlayableCharacter::InitStartUpData()
+{
+	Super::InitStartUpData();
+
+	if(CharacterStartUpData.IsNull()) return;
+
+	UBlurDA_CharacterStartup* LoadedData = CharacterStartUpData.LoadSynchronous();
+	if (!LoadedData) return;
+
+	// int32 AbilityApplyLevel = 1;
+	//
+	// // 根据游戏难度设置技能等级。
+	// // Tips：游戏没有技能升级机制，所以此处将技能等级和游戏难度相关。
+	// if (const ABlurGameModeBase* BaseGameMode = GetWorld()->GetAuthGameMode<ABlurGameModeBase>())
 	// {
-	// 	const FString ASCText =
-	// 		FString::Printf(TEXT("Owner Actor: %s, Avatar Actor: %s"),
-	// 			*WarriorAbilitySystemComponent->GetOwnerActor()->GetActorLabel(),
-	// 			*WarriorAbilitySystemComponent->GetAvatarActor()->GetActorLabel());
-	// 	Debug::Print(TEXT("Ability system component valid. ") + ASCText, FColor::Green);
-	// 	Debug::Print(TEXT("Attribute Set valid. ") + ASCText, FColor::Green);
+	// 	switch (BaseGameMode->GetCurrentGameDifficulty())
+	// 	{
+	// 	case EBlurGameDifficulty::Easy:
+	// 		AbilityApplyLevel = 4;
+	// 		break;
+	// 	case EBlurGameDifficulty::Normal:
+	// 		AbilityApplyLevel = 3;
+	// 		break;
+	// 	case EBlurGameDifficulty::Hard:
+	// 		AbilityApplyLevel = 2;
+	// 		break;
+	// 	case EBlurGameDifficulty::VeryHard:
+	// 		AbilityApplyLevel = 1;
+	// 		break;
+	// 	}
 	// }
-
-	if(!CharacterStartUpData.IsNull())
-	{
-		// Notes：同步加载和异步加载。
-		// 因为CharacterStartUpData中的内容我们希望在一开始就加载好，所以使用Synchronous Loading同步加载。
-		// 如果不是立刻使用，或者需要大量时间加载的，建议使用Asynchronous Loading异步加载。比如敌人，场景等。
-		// 这里是同步加载的范例，异步加载的范例可以查看加载敌人相关资源时的代码。
-		
-		if(UBlurDA_CharacterStartup* LoadedData = CharacterStartUpData.LoadSynchronous())
-		{
-			// int32 AbilityApplyLevel = 1;
-			//
-			// // 根据游戏难度设置技能等级。
-			// // Tips：游戏没有技能升级机制，所以此处将技能等级和游戏难度相关。
-			// if (const ABlurGameModeBase* BaseGameMode = GetWorld()->GetAuthGameMode<ABlurGameModeBase>())
-			// {
-			// 	switch (BaseGameMode->GetCurrentGameDifficulty())
-			// 	{
-			// 	case EBlurGameDifficulty::Easy:
-			// 		AbilityApplyLevel = 4;
-			// 		break;
-			// 	case EBlurGameDifficulty::Normal:
-			// 		AbilityApplyLevel = 3;
-			// 		break;
-			// 	case EBlurGameDifficulty::Hard:
-			// 		AbilityApplyLevel = 2;
-			// 		break;
-			// 	case EBlurGameDifficulty::VeryHard:
-			// 		AbilityApplyLevel = 1;
-			// 		break;
-			// 	}
-			// }
 			
-			LoadedData->GiveToAbilitySystemComponent(BlurAbilitySystemComponent);
-		}
-	}
+	LoadedData->GiveToAbilitySystemComponent(BlurAbilitySystemComponent);
 }
 
 void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

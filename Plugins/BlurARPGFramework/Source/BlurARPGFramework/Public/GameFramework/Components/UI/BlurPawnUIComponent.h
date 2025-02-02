@@ -26,7 +26,7 @@ public:
 	
 	// 当前血量变化时。
 	UPROPERTY(BlueprintAssignable)
-	FOnPercentChangedDelegate OnCurrentHealthChanged;
+	FOnPercentChangedDelegate OnHealthChanged;
 
 	/// 注册Widget到UI组件。
 	/// @param InWidgetToRegister 

@@ -10,14 +10,7 @@
 
 #include "BlurCharacterBase.generated.h"
 
-class UBlurDA_CharacterStartup;
-class UAbilitySystemComponent;
-class UBlurCombatComponent;
-class UBlurPawnUIComponent;
-class UBlurAbilitySystemComponent;
-class UBlurAttributeSet;
-class UMotionWarpingComponent;
-
+struct FGameplayTagContainer;
 // 角色基础类。
 UCLASS()
 class BLURARPGFRAMEWORK_API ABlurCharacterBase : public ACharacter, public IAbilitySystemInterface, public IBlurPawnCombatInterface, public IBlurPawnUIInterface
@@ -51,20 +44,16 @@ protected:
 	virtual void InitStartUpData();
 
 	// 技能系统组件（属于GAS插件的一部分）。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "AbilitySystem")
-	UBlurAbilitySystemComponent* BlurAbilitySystemComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Ability System")
+	class UBlurAbilitySystemComponent* BlurAbilitySystemComponent;
 
 	// 属性集（属于GAS插件的一部分）。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "AbilitySystem")
-	UBlurAttributeSet* BlurAttributeSet;
-
-	// 运动变形组件。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "MotionWarping")
-	UMotionWarpingComponent* MotionWarpingComponent;
+	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Ability System")
+	 class UBlurAttributeSet* BlurAttributeSet;
 
 	// 角色启动数据资源。
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
-	TSoftObjectPtr<UBlurDA_CharacterStartup> CharacterStartUpData;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Data")
+	TSoftObjectPtr<class UBlurDA_CharacterStartup> CharacterStartUpData;
 
 public:
 
@@ -76,4 +65,43 @@ public:
 	FORCEINLINE UBlurAbilitySystemComponent* GetBlurAbilitySystemComponent() const { return BlurAbilitySystemComponent; }
 	FORCEINLINE UBlurAttributeSet* GetBlurAttributeSet() const { return BlurAttributeSet; }
 
+	// 属性集相关方法。用于快速获取属性集的内容。
+#pragma region Attribute Set
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetMaxHealth() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetHealth() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetMaxStamina() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetStamina() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetMaxRage() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetRage() const;
+
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetMaxExperienceValue() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetExperienceValue() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetAttackPower() const;
+	
+	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	float GetDefensePower() const;
+#pragma endregion
+
+	/// 尝试通过 Tag 激活技能。
+	/// @param AbilityTags 
+	/// @param AllowRemoteActivation 
+	/// @return 
+	UFUNCTION(BlueprintCallable, Category = "Ability System")
+	bool ActivateAbilitiesByTag(const FGameplayTagContainer AbilityTags, const bool AllowRemoteActivation);
 };

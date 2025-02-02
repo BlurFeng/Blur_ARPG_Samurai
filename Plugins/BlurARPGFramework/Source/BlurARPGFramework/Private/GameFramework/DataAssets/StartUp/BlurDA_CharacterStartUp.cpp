@@ -31,6 +31,15 @@ void UBlurDA_CharacterStartup::GiveToAbilitySystemComponent(UBlurAbilitySystemCo
 				ApplyLevel,
 				InAbilitySystemComponent->MakeEffectContext()
 				);
+
+			// // 其他添加GE的方式。
+			// FGameplayEffectContextHandle EffectContext = InAbilitySystemComponent->MakeEffectContext();
+			// EffectContext.AddSourceObject(this);
+			// FGameplayEffectSpecHandle EffectSpecHandle = InAbilitySystemComponent->MakeOutgoingSpec(EffectClass, 1.f, EffectContext);
+			// if (EffectSpecHandle.IsValid())
+			// {
+			// 	FActiveGameplayEffectHandle ActiveHandle = InAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+			// }
 		}
 	}
 

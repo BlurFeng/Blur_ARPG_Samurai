@@ -141,6 +141,26 @@ UBlurAbilitySystemComponent* UBlurFunctionLibrary::GetAbilitySystemComponentFrom
 	return CastChecked<UBlurAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InActor));
 }
 
+void UBlurFunctionLibrary::AddGameplayTagToActorIfNone(AActor* InActor, FGameplayTag TagToAdd)
+{
+	UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
+
+	if(AbilitySystemComponent && !AbilitySystemComponent->HasMatchingGameplayTag(TagToAdd))
+	{
+		AbilitySystemComponent->AddLooseGameplayTag(TagToAdd);
+	}
+}
+
+void UBlurFunctionLibrary::RemoveGameplayTagFromActorIfFound(AActor* InActor, FGameplayTag TagToRemove)
+{
+	UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
+
+	if(AbilitySystemComponent && AbilitySystemComponent->HasMatchingGameplayTag(TagToRemove))
+	{
+		AbilitySystemComponent->RemoveLooseGameplayTag(TagToRemove);
+	}
+}
+
 bool UBlurFunctionLibrary::ActorHasMatchingGameplayTag(AActor* InActor, const FGameplayTag TagToCheck)
 {
 	const UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);

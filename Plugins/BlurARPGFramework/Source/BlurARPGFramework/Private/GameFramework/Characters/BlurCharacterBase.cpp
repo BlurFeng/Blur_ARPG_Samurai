@@ -5,7 +5,6 @@
 
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAttributeSet.h"
-#include "MotionWarpingComponent.h"
 #include "GameFramework/Common/BlurDebugHelper.h"
 
 // Sets default values
@@ -20,9 +19,8 @@ ABlurCharacterBase::ABlurCharacterBase()
 
 	// 初始化技能系统。
 	BlurAbilitySystemComponent = CreateDefaultSubobject<UBlurAbilitySystemComponent>(TEXT("BlurAbilitySystemComponent"));
+	BlurAbilitySystemComponent->SetIsReplicated(true);
 	BlurAttributeSet = CreateDefaultSubobject<UBlurAttributeSet>(TEXT("BlurAttributeSet"));
-
-	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 }
 
 UAbilitySystemComponent* ABlurCharacterBase::GetAbilitySystemComponent() const
@@ -69,3 +67,72 @@ void ABlurCharacterBase::InitStartUpData()
 {
 	// 由具体子类实现。
 }
+
+#pragma region Attribute Set
+float ABlurCharacterBase::GetMaxHealth() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetMaxHealth();
+}
+
+float ABlurCharacterBase::GetHealth() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetHealth();
+}
+
+float ABlurCharacterBase::GetMaxStamina() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetMaxStamina();
+}
+
+float ABlurCharacterBase::GetStamina() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetStamina();
+}
+
+float ABlurCharacterBase::GetMaxRage() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetMaxRage();
+}
+
+float ABlurCharacterBase::GetRage() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetRage();
+}
+
+float ABlurCharacterBase::GetMaxExperienceValue() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetMaxExperienceValue();
+}
+
+float ABlurCharacterBase::GetExperienceValue() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetExperienceValue();
+}
+
+float ABlurCharacterBase::GetAttackPower() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetAttackPower();
+}
+
+float ABlurCharacterBase::GetDefensePower() const
+{
+	if (!BlurAttributeSet) return .0f;
+	return BlurAttributeSet->GetDefensePower();
+}
+
+bool ABlurCharacterBase::ActivateAbilitiesByTag( const FGameplayTagContainer AbilityTags, const bool AllowRemoteActivation)
+{
+	if (!BlurAbilitySystemComponent) return false;
+
+	return BlurAbilitySystemComponent->TryActivateAbilitiesByTag(AbilityTags, AllowRemoteActivation);
+}
+#pragma endregion

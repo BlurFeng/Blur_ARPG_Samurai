@@ -35,6 +35,8 @@ protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
+
+	virtual void InitStartUpData() override;
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
@@ -70,7 +72,7 @@ private:
 
 #pragma region Inputs
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Data", meta = (AllowPrivateAccess = "true"))
 	UBlurDA_InputConfig* InputConfigDataAsset;
 
 	UPROPERTY()
