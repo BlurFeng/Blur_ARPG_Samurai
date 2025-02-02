@@ -54,7 +54,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	// 炮弹伤害策略，击中还是穿过。
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, category = "Projectile")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Projectile")
 	EProjectileDamagePolicy ProjectileDamagePolicy;
 
 	// 炮弹可以造成效果的目标。未配置时默认所有目标。
@@ -66,22 +66,22 @@ protected:
 	int32 BlockTargets;
 
 	// 炮弹碰撞器。
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, category = "Projectile")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Projectile")
 	UBoxComponent* ProjectileCollisionBox;
 
 	// 炮弹Niagara特效。
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, category = "Projectile")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Projectile")
 	UNiagaraComponent* ProjectileNiagaraComponent;
 
 	// 炮弹移动组件。
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, category = "Projectile")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Projectile")
 	UProjectileMovementComponent* ProjectileMovementComponent;
 	
 	// Notes：ExposeOnSpawn 暴露数据在生成时。
 	// 使用 ExposeOnSpawn 可以让某个成员参数在蓝图中Spawn生成时，直接显示在Spawn节点中供传入。
 	
 	// 炮弹伤害效果配置数据。
-	UPROPERTY(BlueprintReadOnly, category = "Projectile", meta = (ExposeOnSpawn = "true"))
+	UPROPERTY(BlueprintReadOnly, Category = "Blur ARPG Framework | Projectile", meta = (ExposeOnSpawn = "true"))
 	FGameplayEffectSpecHandle ProjectileDamageEffectSpecHandle;
 
 	// 当炮弹撞击时。

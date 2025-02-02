@@ -17,18 +17,18 @@ public:
 	/// 获取持有的武器，根据Tag。
 	/// @param InWeaponTag 武器Tag。
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|AbilityCombat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability Combat")
 	ABlurAbilityWeapon* GetCarriedAbilityWeaponByTag(FGameplayTag InWeaponTag) const;
 
 	/// 获取当前装备的武器。
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|AbilityCombat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability Combat")
 	ABlurAbilityWeapon* GetCurrentEquippedAbilityWeapon() const;
 
 	/// 获取当前装备武器的伤害。根据Level。
 	/// @param InLevel 武器伤害Level。武器基础伤害实际上配置了曲线，根据输入Level获取相应的基础伤害。
 	/// @return 武器基础伤害。
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|AbilityCombat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability Combat")
 	float GetCurrentEquippedAbilityWeaponDamageAtLevel(const float InLevel) const;
 
 	//** 回调 **//

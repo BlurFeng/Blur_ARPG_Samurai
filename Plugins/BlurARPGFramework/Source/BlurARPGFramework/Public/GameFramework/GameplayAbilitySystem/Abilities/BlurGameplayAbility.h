@@ -51,15 +51,15 @@ protected:
 	
 public:
 	// 当尝试触发技能，确认Cost是否足够时。
-	UPROPERTY(BlueprintAssignable, Category = "BlurARPGFramework|Ability", meta = (DisplayName = "On Check Cost"))
+	UPROPERTY(BlueprintAssignable, Category = "Blur ARPG Framework | Ability", meta = (DisplayName = "On Check Cost"))
 	FOnCheckCostOrCooldownDelegate OnCheckCostDelegate;
 
 	// 当尝试触发技能，确认Cooldown是否结束。
-	UPROPERTY(BlueprintAssignable, Category = "BlurARPGFramework|Ability", meta = (DisplayName = "On Check Cool down"))
+	UPROPERTY(BlueprintAssignable, Category = "Blur ARPG Framework | Ability", meta = (DisplayName = "On Check Cool down"))
 	FOnCheckCostOrCooldownDelegate OnCheckCooldownDelegate;
 
 	// 条件确认方法。允许蓝图覆盖的方法。
-	UFUNCTION(BlueprintNativeEvent, BlueprintPure, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintNativeEvent, BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	bool CheckConditionOnToggleableCancelAbility();
 
 	// 条件确认方法。C++中实现的方法。
@@ -68,25 +68,25 @@ public:
 protected:
 
 	// 技能激活策略。根据策略不同会以不同的形式运行这个技能。
-	UPROPERTY(EditDefaultsOnly, Category = "BlurARPGFramework|Ability")
+	UPROPERTY(EditDefaultsOnly, Category = "Blur ARPG Framework | Ability")
 	EAbilityActivationPolicy AbilityActivationPolicy = EAbilityActivationPolicy::OnTriggered;
 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	ABlurCharacterBase* GetCharacterFromActorInfo();
 	
 	/// 获取角色战斗组件。
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	UBlurCombatComponent* GetPawnCombatComponentFromActorInfo() const;
 
 	/// 获取角色UI组件。
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	UBlurPawnUIComponent* GetPawnUIComponentFromActorInfo();
 
 	/// 获取技能组件
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	UBlurAbilitySystemComponent* GetBlurAbilitySystemComponentFromActorInfo() const;
 
 	FActiveGameplayEffectHandle NativeApplyEffectSpecHandleTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle) const;
@@ -96,7 +96,7 @@ protected:
 	/// @param InSpecHandle 
 	/// @param OutSuccessType 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Ability", meta = (DisplayName = "Apply Gameplay Effect Spec Handle To Target Actor", ExpandEnumAsExecs = "OutSuccessType"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability", meta = (DisplayName = "Apply Gameplay Effect Spec Handle To Target Actor", ExpandEnumAsExecs = "OutSuccessType"))
 	FActiveGameplayEffectHandle BP_ApplyEffectSpecHandleTarget(AActor* TargetActor, const FGameplayEffectSpecHandle& InSpecHandle, EBlurSuccessType& OutSuccessType);
 
 	/// 应用一个GE到FHitResult碰撞探测目标数组。
@@ -105,13 +105,13 @@ protected:
 	/// @param TargetFlags 目标Flags。
 	/// @param HitReactEventTag 发送到目标的被击中事件Tag。
 	/// @param InHitResults Trace获得的Hit目标。
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Ability", meta = (Bitmask, BitmaskEnum = "ETeamAttitudeFlags"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability", meta = (Bitmask, BitmaskEnum = "ETeamAttitudeFlags"))
 	void ApplyGameplayEffectSpecHandleToHitResults(const FGameplayEffectSpecHandle& InSpecHandle, const int32 TargetFlags, const FGameplayTag HitReactEventTag, const TArray<FHitResult>& InHitResults);
 
 	/// 创建GE查询句柄，用于施加GE。
 	/// @param EffectClass 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability")
 	FGameplayEffectSpecHandle MakeSpecHandle(const TSubclassOf<UGameplayEffect> EffectClass) const;
 
 	/// 创建GE查询句柄，用于施加GE。
@@ -119,7 +119,7 @@ protected:
 	/// @param GameplayTag 查询用Tag。
 	/// @param Magnitude 传递数值。
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability")
 	FGameplayEffectSpecHandle MakeSpecHandleSetByCallerMagnitude(const TSubclassOf<UGameplayEffect> EffectClass, const FGameplayTag GameplayTag, const float Magnitude) const;
 
 	/// 创建伤害效果查询句柄。然后可以应用GE到目标上。
@@ -129,7 +129,7 @@ protected:
 	/// @param DamageIncreaseCount 增伤计数。增伤幅度为 1 + DamageIncreaseCount * DamageIncreaseCoefficient。
 	/// @param DamageIncreaseCoefficient 增伤系数。增伤幅度为 1 + DamageIncreaseCount * DamageIncreaseCoefficient。
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability", meta = (DisplayName = "Make Damage Effect Spec Handle",InBaseDamage = "10", InBaseDamageMultiplyCoefficient = "1", DamageIncreaseCount = "0", DamageIncreaseCoefficient = "0.15"))
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability", meta = (DisplayName = "Make Damage Effect Spec Handle",InBaseDamage = "10", InBaseDamageMultiplyCoefficient = "1", DamageIncreaseCount = "0", DamageIncreaseCoefficient = "0.15"))
 	FGameplayEffectSpecHandle MakeDamageEffectSpecHandle(
 		const TSubclassOf<UGameplayEffect> EffectClass, const float InBaseDamage, const float InBaseDamageMultiplyCoefficient, const int32 DamageIncreaseCount, const float DamageIncreaseCoefficient) const;
 
@@ -140,14 +140,14 @@ protected:
 	/// @param DamageIncreaseCount 增伤计数。增伤幅度为 1 + DamageIncreaseCount * DamageIncreaseCoefficient。
 	/// @param DamageIncreaseCoefficient 增伤系数。增伤幅度为 1 + DamageIncreaseCount * DamageIncreaseCoefficient。
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability", meta = (DisplayName = "Make Damage Effect Spec Handle", InBaseDamageMultiplyCoefficient = "1", DamageIncreaseCount = "0", DamageIncreaseCoefficient = "0.15"))
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability", meta = (DisplayName = "Make Damage Effect Spec Handle", InBaseDamageMultiplyCoefficient = "1", DamageIncreaseCount = "0", DamageIncreaseCoefficient = "0.15"))
 	FGameplayEffectSpecHandle MakeDamageEffectSpecHandleByScalableFloat(
 	const TSubclassOf<UGameplayEffect> EffectClass, const FScalableFloat& InBaseDamageScalableFloat, const float InBaseDamageMultiplyCoefficient, const int32 DamageIncreaseCount, const float DamageIncreaseCoefficient) const;
 	
 	/// 获取可变float值根据自身AbilityLevel。
 	/// @param InScalableFloat 
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability", meta = (CompactNodeTitle = "Get Value At Level"))
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability", meta = (CompactNodeTitle = "Get Value At Level"))
 	float GetScalableFloatValueAtLevel(const FScalableFloat& InScalableFloat) const;
 
 	/// 获取技能冷却剩余时间。
@@ -155,7 +155,7 @@ protected:
 	/// @param TotalCooldownTime 总时间。
 	/// @param RemainingCooldownTime 剩余时间。
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	bool GetAbilityRemainingCooldownByTag(const FGameplayTag InCooldownTag, float& TotalCooldownTime, float& RemainingCooldownTime) const;
 
 private:

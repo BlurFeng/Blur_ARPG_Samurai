@@ -28,7 +28,7 @@ public:
 	/// @param InSpecialWeaponAbilities 
 	/// @param ApplyLevel 
 	/// @param OutGaveAbilitySpecHandles 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Ability", meta = (ApplyLevel = 1))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability", meta = (ApplyLevel = 1))
 	void GiveWeaponAbilities(const TArray<FGiveAbilitySet> InDefaultWeaponAbilities, const TArray<FSpecialGiveAbilitySet> InSpecialWeaponAbilities, int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGaveAbilitySpecHandles);
 
 	// Notes：使用UPARAM(ref)宏告知UE此参数不是输出参数。
@@ -37,14 +37,14 @@ public:
 
 	/// 移除赋予的武器技能。在卸下装备时使用此方法移除装备技能。
 	/// @param InSpecHandlesToRemove 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability")
 	void RemoveGaveWeaponAbilities(UPARAM(ref) TArray<FGameplayAbilitySpecHandle>& InSpecHandlesToRemove);
 
 	/// 尝试激活技能，根据Tag。
 	/// 查询所有符合Tag要求的技能，并随机激活其中一个。
 	/// @param AbilityTagToActivate 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Ability")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability")
 	bool TryActivateAbilityByTag(const FGameplayTag AbilityTagToActivate);
 
 private:

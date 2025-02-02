@@ -61,18 +61,18 @@ private:
 	UCameraComponent* FollowCamera;
 
 	//战斗组件，用于管理武器和攻击方式。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat", meta = (AllowPrivateAccess = "true"))
 	UBlurAbilityCombatComponent* HeroCombatComponent;
 
 	//英雄UI组件。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI", meta = (AllowPrivateAccess = "true"))
 	UBlurCharacterUIComponent* HeroUIComponent;
 	
 #pragma endregion
 
 #pragma region Inputs
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Data", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data", meta = (AllowPrivateAccess = "true"))
 	UBlurDA_InputConfig* InputConfigDataAsset;
 
 	UPROPERTY()

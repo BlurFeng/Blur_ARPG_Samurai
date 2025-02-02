@@ -29,14 +29,14 @@ protected:
 	UCharacterMovementComponent* OwningMovementComponent;
 
 	// 地面速度速速率[0-1]，当前速度达到最大速度时候为1。
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Anim Data | LocomotionData")
 	float GroundSpeedRate;
 
 	// 拥有加速度。
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Anim Data | LocomotionData")
 	bool bHasAcceleration;
 
 	// 移动方向。
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Anim Data | LocomotionData")
 	float LocomotionDirection;
 };

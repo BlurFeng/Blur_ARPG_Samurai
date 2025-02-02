@@ -26,22 +26,22 @@ class BLURARPGFRAMEWORK_API UBlurCombatComponent : public UBlurPawnComponentBase
 
 public:
 	//当前装备武器Tag。应当在使用“装备武器”技能Ability时修改。
-	UPROPERTY(BlueprintReadOnly, Category = "BlurARPGFramework|Combat")
+	UPROPERTY(BlueprintReadOnly, Category = "Blur ARPG Framework | Combat")
 	FGameplayTag CurrentEquippedWeaponTag;
 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	bool GetWeapon(FGameplayTag InWeaponTag, ABlurWeapon* InWeapon, const bool bRegisterAsEquippedWeapon);
 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	bool DiscardWeapon(const FGameplayTag InWeaponTag);
 	
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	bool Equip(const FGameplayTag InWeaponTag);
 	
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	bool Unequip(const FGameplayTag InWeaponTag);
 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	bool UnequipCurrent();
 
 	/// 注册一个持有武器。当获得武器时调用。
@@ -54,30 +54,30 @@ public:
 	/// 获取角色当前持有的武器，通过Tag。
 	/// @param InWeaponTagToGet 武器Tag。
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	ABlurWeapon* GetCarriedWeaponByTag(const FGameplayTag InWeaponTagToGet) const;
 
 	/// 是持有的武器。
 	/// @param InWeaponTag 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	bool IsCarriedWeapon(const FGameplayTag InWeaponTag) const;
 
 	/// 获取角色当前装备的武器。
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	ABlurWeapon* GetCurrentEquippedWeapon() const;
 
 	/// 确认是否是当前持有武器。 
 	/// @param InWeaponTag 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	bool IsCurrentEquippedWeapon(const FGameplayTag InWeaponTag) const;
 
 	/// 开关武器碰撞盒
 	/// @param bShouldEnable 
 	/// @param ToggleDamageType 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Combat")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
 	void ToggleWeaponCollision(const bool bShouldEnable,const EToggleDamageType ToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
 
 	//** 回调 **//

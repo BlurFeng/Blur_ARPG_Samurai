@@ -28,12 +28,13 @@ public:
 
 	/// 添加Tag。
 	/// 添加已经存在的Tag并不能叠加。
-	/// @param Tag 
+	/// @param Tag
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Item")
 	void AddGameplayTag(const FGameplayTag& Tag);
 
 	/// 移除Tag。
 	/// @param Tag 
-	UFUNCTION(BlueprintCallable, Category = "Item")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Item")
 	void RemoveGameplayTag(const FGameplayTag& Tag);
 
 protected:
@@ -43,7 +44,7 @@ protected:
 	// 比如释放一个技能，将所有的瓦罐击碎。比起确认Class，Tag是更加易用的方式。
 	
 	// 游戏Tag组件，用于设置查询Tag。
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Blur ARPG Framework | Item")
 	FGameplayTagContainer GameplayTagContainer;
 	
 };

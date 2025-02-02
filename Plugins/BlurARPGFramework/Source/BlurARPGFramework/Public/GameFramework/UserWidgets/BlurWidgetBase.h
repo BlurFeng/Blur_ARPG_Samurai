@@ -23,11 +23,11 @@ protected:
 	// C++ 不用实现此方法。
 
 	// 当Widget初始化时。
-	UFUNCTION(BlueprintImplementableEvent, Category = "BlurARPGFramework|Widget", meta = (DisplayName = "On Initialized"))
+	UFUNCTION(BlueprintImplementableEvent, Category = "Blur ARPG Framework | Widget", meta = (DisplayName = "On Initialized"))
 	void BP_OnInitialized(UBlurPawnUIComponent* OwningPawnUIComponent);
 
 	// 当Widget初始化时。
-	UFUNCTION(BlueprintImplementableEvent, Category = "BlurARPGFramework|Widget", meta = (DisplayName = "On Initialized Via Character UI Component"))
+	UFUNCTION(BlueprintImplementableEvent, Category = "Blur ARPG Framework | Widget", meta = (DisplayName = "On Initialized Via Character UI Component"))
 	void BP_OnInitializedViaCharacterUIComponent(UBlurCharacterUIComponent* OwningCharacterUIComponent);
 	
 public:
@@ -37,10 +37,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitWidget(AActor* OwningActor);
 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Widget", meta = (ExpandEnumAsExecs = "OutValidType"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Widget", meta = (ExpandEnumAsExecs = "OutValidType"))
 	UBlurPawnUIComponent* GetPawnUIComponent(EBlurValidType& OutValidType);
 
-	UFUNCTION(BlueprintCallable, Category = "BlurARPGFramework|Widget", meta = (ExpandEnumAsExecs = "OutValidType"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Widget", meta = (ExpandEnumAsExecs = "OutValidType"))
 	UBlurPawnUIComponent* GetCharacterUIComponent(EBlurValidType& OutValidType);
 	
 private:

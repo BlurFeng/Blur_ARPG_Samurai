@@ -44,15 +44,15 @@ protected:
 	virtual void InitStartUpData();
 
 	// 技能系统组件（属于GAS插件的一部分）。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Ability System")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Blur ARPG Framework | Ability System")
 	class UBlurAbilitySystemComponent* BlurAbilitySystemComponent;
 
 	// 属性集（属于GAS插件的一部分）。
-	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Ability System")
+	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Blur ARPG Framework | Ability System")
 	 class UBlurAttributeSet* BlurAttributeSet;
 
 	// 角色启动数据资源。
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data")
 	TSoftObjectPtr<class UBlurDA_CharacterStartup> CharacterStartUpData;
 
 public:
@@ -67,34 +67,34 @@ public:
 
 	// 属性集相关方法。用于快速获取属性集的内容。
 #pragma region Attribute Set
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetMaxHealth() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetHealth() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetMaxStamina() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetStamina() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetMaxRage() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetRage() const;
 
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetMaxExperienceValue() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetExperienceValue() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetAttackPower() const;
 	
-	UFUNCTION(BlueprintPure, Category = "Ability System | Attribute Set")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability System | Attribute Set")
 	float GetDefensePower() const;
 #pragma endregion
 
@@ -102,6 +102,6 @@ public:
 	/// @param AbilityTags 
 	/// @param AllowRemoteActivation 
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "Ability System")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability System")
 	bool ActivateAbilitiesByTag(const FGameplayTagContainer AbilityTags, const bool AllowRemoteActivation);
 };

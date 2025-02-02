@@ -82,13 +82,13 @@ public:
 	/// 向Actor（的技能组件）添加一个还未包含的Tag。
 	/// @param InActor 目标Actor。
 	/// @param TagToAdd 添加Tag。
-	UFUNCTION(BlueprintCallable, Category = "Warrior | Function Library")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Warrior | Function Library")
 	static void AddGameplayTagToActorIfNone(AActor* InActor, FGameplayTag TagToAdd);
 
 	/// 移除一个Tag从Actor。
 	/// @param InActor 目标Actor。
 	/// @param TagToRemove 移除Tag。
-	UFUNCTION(BlueprintCallable, Category = "Warrior | Function Library")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Warrior | Function Library")
 	static void RemoveGameplayTagFromActorIfFound(AActor* InActor, FGameplayTag TagToRemove);
 
 	/// 确认Actor（的技能组件）是否包含Tag。

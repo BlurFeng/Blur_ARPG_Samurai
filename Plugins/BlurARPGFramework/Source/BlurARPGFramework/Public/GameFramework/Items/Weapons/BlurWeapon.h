@@ -26,11 +26,11 @@ public:
 	FOnTargetInteractedDelegate OnWeaponMeleePulledFromTarget;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapons")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Weapons")
 	UStaticMeshComponent* WeaponMesh;
 
 	// 武器碰撞盒，用于检测攻击碰撞。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapons")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Weapons")
 	UBoxComponent* WeaponCollisionBox;
 
 	// 武器可以造成效果的目标。未配置时默认所有目标。

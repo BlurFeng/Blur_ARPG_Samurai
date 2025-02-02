@@ -22,11 +22,11 @@ class BLURARPGFRAMEWORK_API ABlurAbilityWeapon : public ABlurWeapon
 
 public:
 	// 技能武器数据。
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WeaponData")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Weapon Data")
 	FAbilityWeaponData AbilityWeaponData;
 
 	// 武器技能等级，决定了武器赋予拥有者技能等级。
-	UPROPERTY(BlueprintReadWrite, Category = "WeaponData")
+	UPROPERTY(BlueprintReadWrite, Category = "Blur ARPG Framework | Weapon Data")
 	int WeaponAbilityLevel;
 
 	// 装备武器到所有者。

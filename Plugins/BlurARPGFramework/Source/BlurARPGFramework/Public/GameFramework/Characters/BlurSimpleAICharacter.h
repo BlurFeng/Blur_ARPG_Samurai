@@ -40,19 +40,19 @@ protected:
 	virtual void InitStartUpData() override;
 	
 	// 战斗组件。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat")
 	UBlurAbilityCombatComponent* AbilityCombatComponent;
 	
 	// 角色UI组件。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI")
 	UBlurCharacterUIComponent* CharacterUIComponent;
 
 	// 血条UI组件。之后可以再蓝图配置具体生生的Widget类。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI")
 	UWidgetComponent* HealthWidgetComponent;
 
 	// AI控制器。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI")
 	ABlurAIController* WarriorAIController;
 
 public:
