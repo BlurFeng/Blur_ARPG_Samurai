@@ -24,6 +24,30 @@ public:
 
 #pragma region Common
 
+	// Notes：Latent Action 潜在事件节点。
+	// 通过 Latent Action 我们可以实现一些蓝图的异步节点。比如常用的 Delay 就是一个 Latent Action。
+	// Notes：元数据说明符。
+	// Latent：标记此方法为 Latent 方法。
+	// LatentInfo：此方法必须有 FLatentActionInfo 参数并通过 LatentInfo 标记。
+	// WorldContext：自动获得 WorldContextObject 参数。当我们的方法需要 世界 信息时，可以通过此方式自动获取。在生成Actor，计时器，全局设置等时候。
+	// UPARAM(DisplayName = "Output")：我们可以在参数前使用UPARAM()进行说明。这里重设了显示名称以防止过长的文字。
+
+	/// 倒计时异步方法。
+	/// @param WorldContextObject 
+	/// @param TotalTime 总时间。为负数时会一直执行直到取消。
+	/// @param UpdateInterval 更新间隔。
+	/// @param ExecuteOnFirst 在开始的第一帧执行。
+	/// @param PausedWithGame 随游戏暂停计时。
+	/// @param OutRemainingTime 剩余时间。
+	/// @param OutDeltaTime 每帧变化时间。（它不等于 UpdateInterval 时间。）
+	/// @param CountDownInput 输入执行引脚。
+	/// @param CountDownOutput 输出执行引脚。
+	/// @param LatentInfo 
+	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "CountDownInput|CountDownOutput", TotalTime = "1.0", UpdateInterval = "0.1", ExecuteOnFirst = "true", PausedWithGame = "true"))
+	static void CountDown(const UObject* WorldContextObject, const float TotalTime, const float UpdateInterval, const bool ExecuteOnFirst, const bool PausedWithGame,
+		float& OutRemainingTime,  float& OutDeltaTime, const EBlurCountDownActionInput CountDownInput, UPARAM(DisplayName = "Output") EBlurCountDownActionOutput& CountDownOutput,
+		const FLatentActionInfo LatentInfo);
+
 	/// 根据传入的权重数组，根据权重随机并返回一个Index。
 	/// @param Weights 权重数组。 
 	/// @param WeightTotal 如果知道总权重，传入参数可以减少计算，否则自动计算总权重。

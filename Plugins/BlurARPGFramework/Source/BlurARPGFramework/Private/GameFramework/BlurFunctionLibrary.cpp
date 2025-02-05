@@ -5,7 +5,49 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GenericTeamAgentInterface.h"
+#include "GameFramework/Common/BlurCountDownAction.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
+
+void UBlurFunctionLibrary::CountDown(const UObject* WorldContextObject, const float TotalTime, const float UpdateInterval,
+	const bool ExecuteOnFirst, const bool PausedWithGame, float& OutRemainingTime, float& OutDeltaTime,
+	const EBlurCountDownActionInput CountDownInput, EBlurCountDownActionOutput& CountDownOutput, const FLatentActionInfo LatentInfo)
+{
+	// 确认World可用。
+	UWorld* World = nullptr;
+	if (GEngine)
+	{
+		World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	}
+	if (!World) return;
+
+	// 查找LatentAction。
+	FLatentActionManager& LatentActionManager = World->GetLatentActionManager();
+	FBlurCountDownAction* FoundAction = LatentActionManager.FindExistingAction<FBlurCountDownAction>(LatentInfo.CallbackTarget, LatentInfo.UUID);
+
+	// 输入执行为开始。
+	if (CountDownInput == EBlurCountDownActionInput::Start)
+	{
+		// 创建LatentAction。
+		// 此处 new 的类将由 LatentActionManager 进行管理，我们无需担心内存泄露问题。
+		if (!FoundAction)
+		{
+			LatentActionManager.AddNewAction(
+				LatentInfo.CallbackTarget,
+				LatentInfo.UUID, new FBlurCountDownAction(WorldContextObject, TotalTime, UpdateInterval, ExecuteOnFirst, PausedWithGame, OutRemainingTime, OutDeltaTime, CountDownOutput, LatentInfo)
+				);
+		}
+	}
+
+	// 输入执行为取消。
+	if (CountDownInput == EBlurCountDownActionInput::Cancel)
+	{
+		// 取消LatentAction。
+		if (FoundAction)
+		{
+			FoundAction->CancelAction();
+		}
+	}
+}
 
 int32 UBlurFunctionLibrary::RandomIndexByWeights(const TArray<int32>& Weights, int32 WeightTotal)
 {
