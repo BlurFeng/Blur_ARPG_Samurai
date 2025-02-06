@@ -6,11 +6,12 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/Common/BlurCountDownAction.h"
+#include "GameFramework/Common/BlurDelayAction.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 
 void UBlurFunctionLibrary::CountDown(const UObject* WorldContextObject, const float TotalTime, const float UpdateInterval,
 	const bool ExecuteOnFirst, const bool PausedWithGame, float& OutRemainingTime, float& OutDeltaTime,
-	const EBlurCountDownActionInput CountDownInput, EBlurCountDownActionOutput& CountDownOutput, const FLatentActionInfo LatentInfo)
+	const ELatentActionInput LatentActionInput, ELatentActionOutput& LatentActionOutput, const FLatentActionInfo LatentInfo)
 {
 	// 确认World可用。
 	UWorld* World = nullptr;
@@ -25,7 +26,7 @@ void UBlurFunctionLibrary::CountDown(const UObject* WorldContextObject, const fl
 	FBlurCountDownAction* FoundAction = LatentActionManager.FindExistingAction<FBlurCountDownAction>(LatentInfo.CallbackTarget, LatentInfo.UUID);
 
 	// 输入执行为开始。
-	if (CountDownInput == EBlurCountDownActionInput::Start)
+	if (LatentActionInput == ELatentActionInput::Start)
 	{
 		// 创建LatentAction。
 		// 此处 new 的类将由 LatentActionManager 进行管理，我们无需担心内存泄露问题。
@@ -33,13 +34,53 @@ void UBlurFunctionLibrary::CountDown(const UObject* WorldContextObject, const fl
 		{
 			LatentActionManager.AddNewAction(
 				LatentInfo.CallbackTarget,
-				LatentInfo.UUID, new FBlurCountDownAction(WorldContextObject, TotalTime, UpdateInterval, ExecuteOnFirst, PausedWithGame, OutRemainingTime, OutDeltaTime, CountDownOutput, LatentInfo)
+				LatentInfo.UUID, new FBlurCountDownAction(WorldContextObject, TotalTime, UpdateInterval, ExecuteOnFirst, PausedWithGame, OutRemainingTime, OutDeltaTime, LatentActionOutput, LatentInfo)
 				);
 		}
 	}
 
 	// 输入执行为取消。
-	if (CountDownInput == EBlurCountDownActionInput::Cancel)
+	if (LatentActionInput == ELatentActionInput::Cancel)
+	{
+		// 取消LatentAction。
+		if (FoundAction)
+		{
+			FoundAction->CancelAction();
+		}
+	}
+}
+
+void UBlurFunctionLibrary::Delay(const UObject* WorldContextObject, const float Duration, const bool PausedWithGame,
+	const ELatentActionInput LatentActionInput, ELatentActionOutput& LatentActionOutput, const FLatentActionInfo LatentInfo)
+{
+	// 确认World可用。
+	UWorld* World = nullptr;
+	if (GEngine)
+	{
+		World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	}
+	if (!World) return;
+
+	// 查找LatentAction。
+	FLatentActionManager& LatentActionManager = World->GetLatentActionManager();
+	FBlurDelayAction* FoundAction = LatentActionManager.FindExistingAction<FBlurDelayAction>(LatentInfo.CallbackTarget, LatentInfo.UUID);
+
+	// 输入执行为开始。
+	if (LatentActionInput == ELatentActionInput::Start)
+	{
+		// 创建LatentAction。
+		// 此处 new 的类将由 LatentActionManager 进行管理，我们无需担心内存泄露问题。
+		if (!FoundAction)
+		{
+			LatentActionManager.AddNewAction(
+				LatentInfo.CallbackTarget,
+				LatentInfo.UUID, new FBlurDelayAction(WorldContextObject, Duration, PausedWithGame, LatentActionOutput, LatentInfo)
+				);
+		}
+	}
+
+	// 输入执行为取消。
+	if (LatentActionInput == ELatentActionInput::Cancel)
 	{
 		// 取消LatentAction。
 		if (FoundAction)
@@ -98,11 +139,11 @@ float UBlurFunctionLibrary::LerpLimitChangeMin(const float A, const float B, con
 	if (B == A) return B;
 	
 	float Change = Alpha * (B - A);
-	
-	// 变化小于限制最小变化值。
+
+	//变化小于限制最小变化值
 	if (LimitChangeMin > 0 && FMath::Abs(Change) < LimitChangeMin)
 	{
-		if ( Change > 0.f )
+		if (Change > 0.f)
 		{
 			if (A + LimitChangeMin <= B)
 			{
@@ -115,7 +156,7 @@ float UBlurFunctionLibrary::LerpLimitChangeMin(const float A, const float B, con
 		}
 		else
 		{
-			if (A + LimitChangeMin >= B)
+			if (A - LimitChangeMin >= B)
 			{
 				Change = -LimitChangeMin;
 			}

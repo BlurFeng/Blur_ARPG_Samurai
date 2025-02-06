@@ -46,7 +46,7 @@ enum class EBlurSuccessType : uint8
 };
 
 UENUM()
-enum class EBlurCountDownActionInput : uint8
+enum class ELatentActionInput : uint8
 {
 	//开始。
 	Start,
@@ -55,7 +55,7 @@ enum class EBlurCountDownActionInput : uint8
 };
 
 UENUM()
-enum class EBlurCountDownActionOutput : uint8
+enum class ELatentActionOutput : uint8
 {
 	//更新。
 	Update,

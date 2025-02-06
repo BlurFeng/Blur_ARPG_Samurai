@@ -15,7 +15,7 @@ void FBlurCountDownAction::UpdateOperation(FLatentResponse& Response)
 	// 取消。
 	if (bNeedToCancel)
 	{
-		CountDownOutput = EBlurCountDownActionOutput::Cancelled;
+		CountDownOutput = ELatentActionOutput::Cancelled;
 		Response.FinishAndTriggerIf(true, ExecutionFunction, OutputLink, CallbackTarget);
 		return;
 	}
@@ -23,7 +23,7 @@ void FBlurCountDownAction::UpdateOperation(FLatentResponse& Response)
 	// 完成。
 	if (TotalCountDownTime > 0 && TimerFromStart >= TotalCountDownTime)
 	{
-		CountDownOutput = EBlurCountDownActionOutput::Completed;
+		CountDownOutput = ELatentActionOutput::Completed;
 		Response.FinishAndTriggerIf(true, ExecutionFunction, OutputLink, CallbackTarget);
 		return;
 	}
@@ -48,7 +48,7 @@ void FBlurCountDownAction::UpdateOperation(FLatentResponse& Response)
 		{
 			ExecuteOnFirst = false;
 			OutRemainingTime = TotalCountDownTime;
-			CountDownOutput = EBlurCountDownActionOutput::Update; // 输出执行引脚。
+			CountDownOutput = ELatentActionOutput::Update; // 输出执行引脚。
 			Response.TriggerLink(ExecutionFunction, OutputLink, CallbackTarget);
 		}
 	}
@@ -62,7 +62,7 @@ void FBlurCountDownAction::UpdateOperation(FLatentResponse& Response)
 	{
 		OutRemainingTime = TotalCountDownTime - TimerFromStart;
 		OutRemainingTime = OutRemainingTime > 0.f ? OutRemainingTime : 0.f;
-		CountDownOutput = EBlurCountDownActionOutput::Update; //输出执行引脚
+		CountDownOutput = ELatentActionOutput::Update; //输出执行引脚
 		Response.TriggerLink(ExecutionFunction, OutputLink, CallbackTarget);
 	}
 }

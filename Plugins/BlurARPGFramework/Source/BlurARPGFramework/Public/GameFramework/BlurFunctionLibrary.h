@@ -40,13 +40,24 @@ public:
 	/// @param PausedWithGame 随游戏暂停计时。
 	/// @param OutRemainingTime 剩余时间。
 	/// @param OutDeltaTime 每帧变化时间。（它不等于 UpdateInterval 时间。）
-	/// @param CountDownInput 输入执行引脚。
-	/// @param CountDownOutput 输出执行引脚。
+	/// @param LatentActionInput 输入执行引脚。
+	/// @param LatentActionOutput 输出执行引脚。
 	/// @param LatentInfo 
-	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "CountDownInput|CountDownOutput", TotalTime = "1.0", UpdateInterval = "0.1", ExecuteOnFirst = "true", PausedWithGame = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", TotalTime = "1.0", UpdateInterval = "0.1", ExecuteOnFirst = "true", PausedWithGame = "true"))
 	static void CountDown(const UObject* WorldContextObject, const float TotalTime, const float UpdateInterval, const bool ExecuteOnFirst, const bool PausedWithGame,
-		float& OutRemainingTime,  float& OutDeltaTime, const EBlurCountDownActionInput CountDownInput, UPARAM(DisplayName = "Output") EBlurCountDownActionOutput& CountDownOutput,
+		float& OutRemainingTime,  float& OutDeltaTime, const ELatentActionInput LatentActionInput, UPARAM(DisplayName = "Output") ELatentActionOutput& LatentActionOutput,
 		const FLatentActionInfo LatentInfo);
+
+	/// 允许取消的Delay方法。
+	/// @param WorldContextObject 
+	/// @param Duration 持续时间。
+	/// @param PausedWithGame 随游戏暂停计时。
+	/// @param LatentActionInput 输入执行引脚。
+	/// @param LatentActionOutput 输出执行引脚。
+	/// @param LatentInfo 
+	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", PausedWithGame = "true"))
+	static void Delay(const UObject* WorldContextObject, const float Duration, const bool PausedWithGame,
+		const ELatentActionInput LatentActionInput, UPARAM(DisplayName = "Output") ELatentActionOutput&LatentActionOutput, const FLatentActionInfo LatentInfo);
 
 	/// 根据传入的权重数组，根据权重随机并返回一个Index。
 	/// @param Weights 权重数组。 

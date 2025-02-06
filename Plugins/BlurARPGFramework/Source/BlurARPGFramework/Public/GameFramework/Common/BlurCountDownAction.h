@@ -17,7 +17,7 @@ public:
 	
 	FBlurCountDownAction(
 		const UObject* WorldContextObject, const float InTotalCountTime, const float InUpdateInterval, const bool InExecuteOnFirst, const bool InPausedWithGame,
-		float& InOutRemainingTime, float& InOutDeltaTime, EBlurCountDownActionOutput& InCountDownOutput, const FLatentActionInfo& LatentInfo)
+		float& InOutRemainingTime, float& InOutDeltaTime, ELatentActionOutput& InCountDownOutput, const FLatentActionInfo& LatentInfo)
 	: WorldContextObject(WorldContextObject), bNeedToCancel(false),
 	TotalCountDownTime(InTotalCountTime), UpdateInterval(InUpdateInterval), ExecuteOnFirst(InExecuteOnFirst), PausedWithGame(InPausedWithGame),
 	OutRemainingTime(InOutRemainingTime), OutDeltaTime(InOutDeltaTime), CountDownOutput(InCountDownOutput),
@@ -42,7 +42,7 @@ private:
 	const bool PausedWithGame; // 随游戏停止。
 	float& OutRemainingTime; // 剩余时间。
 	float& OutDeltaTime;
-	EBlurCountDownActionOutput& CountDownOutput; // 输出执行引脚。
+	ELatentActionOutput& CountDownOutput; // 输出执行引脚。
 	FName ExecutionFunction;
 	int32 OutputLink;
 	FWeakObjectPtr CallbackTarget;

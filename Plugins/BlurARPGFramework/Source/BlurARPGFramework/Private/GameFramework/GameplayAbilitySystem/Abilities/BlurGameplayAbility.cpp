@@ -6,7 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/BlurFunctionLibrary.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
-#include "GameFramework/Components/Combat/BlurCombatComponent.h"
+#include "GameFramework/Components/Combat/BlurAbilityCombatComponent.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 
 UBlurGameplayAbility::UBlurGameplayAbility()
@@ -83,6 +83,8 @@ bool UBlurGameplayAbility::CheckConditionOnToggleableCancelAbility_Implementatio
 
 ABlurCharacterBase* UBlurGameplayAbility::GetCharacterFromActorInfo()
 {
+	if (!CurrentActorInfo) return nullptr;
+	
 	if(!CachedBlurCharacterBase.IsValid())
 	{
 		CachedBlurCharacterBase = Cast<ABlurCharacterBase>(CurrentActorInfo->AvatarActor);
@@ -91,15 +93,26 @@ ABlurCharacterBase* UBlurGameplayAbility::GetCharacterFromActorInfo()
 	return CachedBlurCharacterBase.IsValid() ? CachedBlurCharacterBase.Get() : nullptr;
 }
 
-UBlurCombatComponent* UBlurGameplayAbility::GetPawnCombatComponentFromActorInfo() const
+UBlurAbilityCombatComponent* UBlurGameplayAbility::GetCombatComponentFromActorInfo() const
 {
+	if (!CurrentActorInfo) return nullptr;
+	
 	// FindComponentByClass通过遍历查找返回第一个有效的目标。当存在多个UPawnCombatComponent的子类时可能无法按预期工作。
-	return GetAvatarActorFromActorInfo()->FindComponentByClass<UBlurCombatComponent>();
+	return GetAvatarActorFromActorInfo()->FindComponentByClass<UBlurAbilityCombatComponent>();
 }
 
 UBlurPawnUIComponent* UBlurGameplayAbility::GetPawnUIComponentFromActorInfo()
 {
+	if (!CurrentActorInfo) return nullptr;
+	
 	return GetCharacterFromActorInfo()->GetPawnUIComponent();
+}
+
+UBlurCharacterUIComponent* UBlurGameplayAbility::GetCharacterUIComponentFromActorInfo()
+{
+	if (!CurrentActorInfo) return nullptr;
+	
+	return GetCharacterFromActorInfo()->GetCharacterUIComponent();
 }
 
 UBlurAbilitySystemComponent* UBlurGameplayAbility::GetBlurAbilitySystemComponentFromActorInfo() const
@@ -110,6 +123,8 @@ UBlurAbilitySystemComponent* UBlurGameplayAbility::GetBlurAbilitySystemComponent
 FActiveGameplayEffectHandle UBlurGameplayAbility::NativeApplyEffectSpecHandleTarget(AActor* TargetActor,
 	const FGameplayEffectSpecHandle& InSpecHandle) const
 {
+	if (!CurrentActorInfo) return FActiveGameplayEffectHandle();
+	
 	UAbilitySystemComponent* TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	return GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
 		*InSpecHandle.Data,

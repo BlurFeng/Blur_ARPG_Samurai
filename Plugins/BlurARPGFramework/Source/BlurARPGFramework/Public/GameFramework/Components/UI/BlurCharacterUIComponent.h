@@ -13,6 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityIconSlotUpdatedDelegate, 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAbilityCooldownBeginDelegate, FGameplayTag, AbilityInputTag, float, TotalCooldownTime, float, RemainingCooldownTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStoneInteractedDelegate, bool, bShouldDisplayInputKey);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCheckCostOrCooldown, bool, bAllow, FGameplayTag, AbilityTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTryActivateAbilityFailedDelegate, FGameplayTag, AbilityTag);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSimpleUIEvent);
 
 // 角色UI组件。当角色显示的数据比较复杂时，可以使用此组件。比如玩家控制的角色。或者一个需要显示详细信息的目标。
@@ -46,6 +47,10 @@ public:
 	// 当确认技能Cost是否足够时。
 	UPROPERTY(BlueprintAssignable)
 	FOnCheckCostOrCooldown OnCheckCost;
+
+	//尝试激活一个技能失败时。
+	UPROPERTY(BlueprintAssignable)
+	FOnTryActivateAbilityFailedDelegate OnTryActivateAbilityFailed;
 	
 	// 当技能Icon槽更新时。
 	UPROPERTY(BlueprintAssignable)

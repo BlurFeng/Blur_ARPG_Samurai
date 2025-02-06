@@ -8,11 +8,12 @@
 
 #include "BlurGameplayAbility.generated.h"
 
+class UBlurAbilityCombatComponent;
+class UBlurCharacterUIComponent;
 class UBlurPawnUIComponent;
 class ABlurCharacterBase;
 class IPawnUIInterface;
 class UBlurAbilitySystemComponent;
-class UBlurCombatComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCheckCostOrCooldownDelegate, const bool, bAllow, const FGameplayTag, AbilityTag);
 
@@ -71,18 +72,25 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Blur ARPG Framework | Ability")
 	EAbilityActivationPolicy AbilityActivationPolicy = EAbilityActivationPolicy::OnTriggered;
 
+	/// 获取角色。
+	/// @return 
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	ABlurCharacterBase* GetCharacterFromActorInfo();
 	
 	/// 获取角色战斗组件。
 	/// @return 
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
-	UBlurCombatComponent* GetPawnCombatComponentFromActorInfo() const;
+	UBlurAbilityCombatComponent* GetCombatComponentFromActorInfo() const;
+
+	/// 获取PawnUI组件。
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
+	UBlurPawnUIComponent* GetPawnUIComponentFromActorInfo();
 
 	/// 获取角色UI组件。
 	/// @return 
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
-	UBlurPawnUIComponent* GetPawnUIComponentFromActorInfo();
+	UBlurCharacterUIComponent* GetCharacterUIComponentFromActorInfo();
 
 	/// 获取技能组件
 	/// @return 

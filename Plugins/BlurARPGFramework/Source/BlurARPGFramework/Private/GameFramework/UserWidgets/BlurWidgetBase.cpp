@@ -8,6 +8,8 @@
 void UBlurWidgetBase::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+
+	InitWidget(GetOwningPlayerPawn());
 }
 
 void UBlurWidgetBase::InitWidget(AActor* OwningActor)
@@ -24,7 +26,7 @@ void UBlurWidgetBase::InitWidget(AActor* OwningActor)
 		{
 			CharacterUIComponent = TWeakObjectPtr<UBlurCharacterUIComponent>(GotCharacterUIComponent);
 
-			BP_OnInitializedViaCharacterUIComponent(GotCharacterUIComponent);
+			BP_OnInitializedCharacterUIComponent(GotCharacterUIComponent);
 		}
 		else
 		{
@@ -33,7 +35,7 @@ void UBlurWidgetBase::InitWidget(AActor* OwningActor)
 	}
 }
 
-UBlurPawnUIComponent* UBlurWidgetBase::GetPawnUIComponent(EBlurValidType& OutValidType)
+UBlurPawnUIComponent* UBlurWidgetBase::GetPawnUIComponent(EBlurValidType& OutValidType) const
 {
 	if (PawnUIComponent.IsValid())
 	{
@@ -45,7 +47,7 @@ UBlurPawnUIComponent* UBlurWidgetBase::GetPawnUIComponent(EBlurValidType& OutVal
 	return nullptr;
 }
 
-UBlurPawnUIComponent* UBlurWidgetBase::GetCharacterUIComponent(EBlurValidType& OutValidType)
+UBlurPawnUIComponent* UBlurWidgetBase::GetCharacterUIComponent(EBlurValidType& OutValidType) const
 {
 	if (CharacterUIComponent.IsValid())
 	{
