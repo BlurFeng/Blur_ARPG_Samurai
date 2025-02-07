@@ -53,7 +53,7 @@ protected:
 
 	// AI控制器。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI")
-	ABlurAIController* WarriorAIController;
+	ABlurAIController* BlurAIController;
 
 public:
 	FORCEINLINE UBlurAbilityCombatComponent* GetAbilityCombatComponent() const {return AbilityCombatComponent;}

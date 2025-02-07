@@ -39,7 +39,7 @@ enum class EBlurValidType : uint8
 };
 
 UENUM()
-enum class EBlurSuccessType : uint8
+enum class ESuccessType : uint8
 {
 	Successful,
 	Failed

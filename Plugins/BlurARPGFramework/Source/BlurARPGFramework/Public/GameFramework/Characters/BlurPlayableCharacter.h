@@ -62,11 +62,11 @@ private:
 
 	//战斗组件，用于管理武器和攻击方式。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat", meta = (AllowPrivateAccess = "true"))
-	UBlurAbilityCombatComponent* HeroCombatComponent;
+	UBlurAbilityCombatComponent* AbilityCombatComponent;
 
-	//英雄UI组件。
+	//UI组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI", meta = (AllowPrivateAccess = "true"))
-	UBlurCharacterUIComponent* HeroUIComponent;
+	UBlurCharacterUIComponent* CharacterUIComponent;
 	
 #pragma endregion
 
@@ -96,5 +96,5 @@ private:
 #pragma endregion
 
 public:
-	FORCEINLINE UBlurAbilityCombatComponent* GetHeroCombatComponent() const { return HeroCombatComponent; }
+	FORCEINLINE UBlurAbilityCombatComponent* GetAbilityCombatComponent() const { return AbilityCombatComponent; }
 };

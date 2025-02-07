@@ -43,7 +43,7 @@ public:
 	/// @param LatentActionInput 输入执行引脚。
 	/// @param LatentActionOutput 输出执行引脚。
 	/// @param LatentInfo 
-	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", TotalTime = "1.0", UpdateInterval = "0.1", ExecuteOnFirst = "true", PausedWithGame = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", TotalTime = "1.0", UpdateInterval = "0.1", ExecuteOnFirst = "true", PausedWithGame = "true"))
 	static void CountDown(const UObject* WorldContextObject, const float TotalTime, const float UpdateInterval, const bool ExecuteOnFirst, const bool PausedWithGame,
 		float& OutRemainingTime,  float& OutDeltaTime, const ELatentActionInput LatentActionInput, UPARAM(DisplayName = "Output") ELatentActionOutput& LatentActionOutput,
 		const FLatentActionInfo LatentInfo);
@@ -55,7 +55,7 @@ public:
 	/// @param LatentActionInput 输入执行引脚。
 	/// @param LatentActionOutput 输出执行引脚。
 	/// @param LatentInfo 
-	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", PausedWithGame = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", PausedWithGame = "true"))
 	static void Delay(const UObject* WorldContextObject, const float Duration, const bool PausedWithGame,
 		const ELatentActionInput LatentActionInput, UPARAM(DisplayName = "Output") ELatentActionOutput&LatentActionOutput, const FLatentActionInfo LatentInfo);
 
@@ -117,13 +117,13 @@ public:
 	/// 向Actor（的技能组件）添加一个还未包含的Tag。
 	/// @param InActor 目标Actor。
 	/// @param TagToAdd 添加Tag。
-	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Warrior | Function Library")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library")
 	static void AddGameplayTagToActorIfNone(AActor* InActor, FGameplayTag TagToAdd);
 
 	/// 移除一个Tag从Actor。
 	/// @param InActor 目标Actor。
 	/// @param TagToRemove 移除Tag。
-	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Warrior | Function Library")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library")
 	static void RemoveGameplayTagFromActorIfFound(AActor* InActor, FGameplayTag TagToRemove);
 
 	/// 确认Actor（的技能组件）是否包含Tag。
@@ -147,12 +147,30 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System")
 	static bool ActorHasAnyMatchingGameplayTags(AActor* InActor, const FGameplayTagContainer& TagContainer);
 
+	/// 获取激活的技能，通过Tags。
+	/// @param AbilitySystemComponent 用于查询的技能组件。
+	/// @param Tags 
+	/// @param ActiveAbilities
+	/// @param SuccessType 
+	/// @param MatchExactTag 精确匹配Tag。
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System", meta = (ExpandEnumAsExecs = "SuccessType"))
+	static void GetActiveAbilitiesWithTags(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTagContainer Tags, TArray<UGameplayAbility*>& ActiveAbilities, UPARAM(DisplayName = "Output") ESuccessType& SuccessType, const bool MatchExactTag = true);
+	
+	/// 获取激活的技能，通过Tags。
+	/// @param InActor 拥有AbilitySystemComponent技能组件的Actor。一般为Character。
+	/// @param Tags 
+	/// @param ActiveAbilities
+	/// @param SuccessType 
+	/// @param MatchExactTag 精确匹配Tag。
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System", DisplayName = "Get Active Abilities with Tags and Actor", meta = (ExpandEnumAsExecs = "SuccessType"))
+	static void GetActiveAbilitiesWithTags_Actor(AActor* InActor, const FGameplayTagContainer Tags, TArray<UGameplayAbility*>& ActiveAbilities, UPARAM(DisplayName = "Output") ESuccessType& SuccessType, const bool MatchExactTag = true);
+
 	/// 将GE应用到目标Actor上。
 	/// @param InInstigator 施法者。
 	/// @param InTargetActor 目标Actor。
 	/// @param InSpecHandle GE说明句柄。
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System" , DisplayName = "Apply Gameplay Effect with SpecHandle")
 	static bool ApplyGameplayEffectSpecHandleToTargetActor(AActor* InInstigator, AActor* InTargetActor, FGameplayEffectSpecHandle& InSpecHandle);
 
 	/// 创建一个 FGameplayAbilitySpec。 Gameplay Ability Specification 用于描述Ability技能的详细信息。

@@ -151,7 +151,7 @@ void UBlurAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 		if (GetHealth() == 0.f)
 		{
 			// Debug::Print(TEXT("Need to Death."), FColor::Red);
-			// 通过给角色添加 Shared_Status_Dead 来触发 GA_Enemy_Death_Base 死亡技能。在死亡技能中，我们配置了此GA的触发方式为添加 Shared_Status_Dead Tag时。
+			// 通过给角色添加 Common_Status_Dead 来触发死亡技能。在死亡技能中，我们配置了此GA的触发方式为添加 Common_Status_Dead Tag时。
 			UBlurFunctionLibrary::AddGameplayTagToActorIfNone(Data.Target.GetAvatarActor(), BlurGameplayTags::Common_Status_Dead);
 		}
 

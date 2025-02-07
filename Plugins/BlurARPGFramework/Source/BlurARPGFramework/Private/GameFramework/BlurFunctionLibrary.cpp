@@ -265,14 +265,47 @@ bool UBlurFunctionLibrary::ActorHasAnyMatchingGameplayTags(AActor* InActor, cons
 	return AbilitySystemComponent && AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
 }
 
+void UBlurFunctionLibrary::GetActiveAbilitiesWithTags_Actor(AActor* InActor, const FGameplayTagContainer Tags,
+	TArray<UGameplayAbility*>& ActiveAbilities, ESuccessType& SuccessType, const bool MatchExactTag)
+{
+	SuccessType = ESuccessType::Failed;
+	UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);
+	if (!AbilitySystemComponent) return;
+
+	GetActiveAbilitiesWithTags(AbilitySystemComponent, Tags, ActiveAbilities, SuccessType, MatchExactTag);
+}
+
+void UBlurFunctionLibrary::GetActiveAbilitiesWithTags(UAbilitySystemComponent* AbilitySystemComponent,
+                                                      const FGameplayTagContainer Tags, TArray<UGameplayAbility*>& ActiveAbilities, ESuccessType& SuccessType,
+                                                      const bool MatchExactTag)
+{
+	SuccessType = ESuccessType::Failed;
+	if (!AbilitySystemComponent || Tags.IsEmpty()) return;
+
+	TArray<FGameplayAbilitySpec*> AbilitySpecs;
+	AbilitySystemComponent->GetActivatableGameplayAbilitySpecsByAllMatchingTags(Tags, AbilitySpecs, MatchExactTag);
+	if (AbilitySpecs.IsEmpty()) return;
+
+	for (const FGameplayAbilitySpec* AbilitySpec : AbilitySpecs)
+	{
+		TArray<UGameplayAbility*> ActiveInstances = AbilitySpec->GetAbilityInstances();
+		for (UGameplayAbility* Ability : ActiveInstances)
+		{
+			ActiveAbilities.Add(Ability);
+		}
+	}
+
+	SuccessType = ActiveAbilities.IsEmpty() ? ESuccessType::Failed : ESuccessType::Successful;
+}
+
 bool UBlurFunctionLibrary::ApplyGameplayEffectSpecHandleToTargetActor(AActor* InInstigator, AActor* InTargetActor,
-	FGameplayEffectSpecHandle& InSpecHandle)
+                                                                      FGameplayEffectSpecHandle& InSpecHandle)
 {
 	UBlurAbilitySystemComponent* SourceAbilitySystemComponent = GetAbilitySystemComponentFromActor(InInstigator);
 	UBlurAbilitySystemComponent* TargetAbilitySystemComponent = GetAbilitySystemComponentFromActor(InTargetActor);
 	if (!SourceAbilitySystemComponent || !TargetAbilitySystemComponent) return false;
 	
-	const FActiveGameplayEffectHandle ActiveGameplayEffectHandle = SourceAbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*InSpecHandle.Data, TargetAbilitySystemComponent);
+	const FActiveGameplayEffectHandle ActiveGameplayEffectHandle = SourceAbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*InSpecHandle.Data.Get(), TargetAbilitySystemComponent);
 
 	return ActiveGameplayEffectHandle.WasSuccessfullyApplied();
 }

@@ -20,18 +20,18 @@ public:
 	virtual void OnCheckCost(const bool bAllow, const FGameplayTag AbilityTag) override;
 	virtual void OnCheckCooldown(const bool bAllow, const FGameplayTag AbilityTag) override;
 	
-	/// 获取英雄角色
+	/// 获取可游玩角色。
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "Warrior|Ability")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	ABlurPlayableCharacter* GetPlayableCharacterFromActorInfo();
 
-	/// 获取英雄控制器
+	/// 获取玩家控制器。
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "Warrior|Ability")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	ABlurPlayerController* GetPlayerControllerFromActorInfo();
 
 private:
 	
-	TWeakObjectPtr<ABlurPlayableCharacter> CachedWarriorHeroCharacter;
-	TWeakObjectPtr<ABlurPlayerController> CachedWarriorHeroController;
+	TWeakObjectPtr<ABlurPlayableCharacter> CachedBlurPlayableCharacter;
+	TWeakObjectPtr<ABlurPlayerController> CachedBlurPlayerController;
 };

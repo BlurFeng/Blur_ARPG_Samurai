@@ -63,7 +63,7 @@ void ABlurSimpleAICharacter::BeginPlay()
 	Super::BeginPlay();
 
 	// 获取自身AI控制器。
-	WarriorAIController = Cast<ABlurAIController>(UAIBlueprintHelperLibrary::GetAIController(this));
+	BlurAIController = Cast<ABlurAIController>(UAIBlueprintHelperLibrary::GetAIController(this));
 
 	// 初始化血条UI组件。
 	if (UBlurWidgetBase* HealthWidget = Cast<UBlurWidgetBase>(HealthWidgetComponent->GetUserWidgetObject()))

@@ -20,6 +20,9 @@ void UBlurPlayableCharacterGameplayAbility::OnCheckCooldown(const bool bAllow, c
 {
 	Super::OnCheckCooldown(bAllow, AbilityTag);
 
+	// Tips: 在技能通过GiveAbility方法被赋予给技能组件时，此处会被调用到一次。
+	// 然而 CurrentActorInfo 实际上并未准备好，为null。
+
 	if (GetCharacterUIComponentFromActorInfo())
 		GetCharacterUIComponentFromActorInfo()->OnCheckCooldown.Broadcast(bAllow, AbilityTag);
 }
@@ -28,20 +31,20 @@ ABlurPlayableCharacter* UBlurPlayableCharacterGameplayAbility::GetPlayableCharac
 {
 	if (!CurrentActorInfo) return nullptr;
 	
-	if(!CachedWarriorHeroCharacter.IsValid())
+	if(!CachedBlurPlayableCharacter.IsValid())
 	{
-		CachedWarriorHeroCharacter = Cast<ABlurPlayableCharacter>(CurrentActorInfo->AvatarActor);
+		CachedBlurPlayableCharacter = Cast<ABlurPlayableCharacter>(CurrentActorInfo->AvatarActor);
 	}
 	
-	return CachedWarriorHeroCharacter.IsValid() ? CachedWarriorHeroCharacter.Get() : nullptr;
+	return CachedBlurPlayableCharacter.IsValid() ? CachedBlurPlayableCharacter.Get() : nullptr;
 }
 
 ABlurPlayerController* UBlurPlayableCharacterGameplayAbility::GetPlayerControllerFromActorInfo()
 {
-	if(!CachedWarriorHeroController.IsValid())
+	if(!CachedBlurPlayerController.IsValid())
 	{
-		CachedWarriorHeroController = Cast<ABlurPlayerController>(CurrentActorInfo->PlayerController);
+		CachedBlurPlayerController = Cast<ABlurPlayerController>(CurrentActorInfo->PlayerController);
 	}
 
-	return CachedWarriorHeroController.IsValid() ? CachedWarriorHeroController.Get() : nullptr;
+	return CachedBlurPlayerController.IsValid() ? CachedBlurPlayerController.Get() : nullptr;
 }

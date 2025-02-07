@@ -47,26 +47,26 @@ ABlurPlayableCharacter::ABlurPlayableCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 400.f; // 最大移动速度。
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f; // 刹车减速度。
 
-	// 创建英雄战斗组件。
-	HeroCombatComponent = CreateDefaultSubobject<UBlurAbilityCombatComponent>(TEXT("AbilityCombatComponent"));
+	// 创建技能战斗组件。
+	AbilityCombatComponent = CreateDefaultSubobject<UBlurAbilityCombatComponent>(TEXT("AbilityCombatComponent"));
 
-	// 创建英雄UI组件。
-	HeroUIComponent = CreateDefaultSubobject<UBlurCharacterUIComponent>(TEXT("CharacterUIComponent"));
+	// 创建角色UI组件。
+	CharacterUIComponent = CreateDefaultSubobject<UBlurCharacterUIComponent>(TEXT("CharacterUIComponent"));
 }
 
 UBlurCombatComponent* ABlurPlayableCharacter::GetPawnCombatComponent() const
 {
-	return HeroCombatComponent;
+	return AbilityCombatComponent;
 }
 
 UBlurPawnUIComponent* ABlurPlayableCharacter::GetPawnUIComponent() const
 {
-	return HeroUIComponent;
+	return CharacterUIComponent;
 }
 
 UBlurCharacterUIComponent* ABlurPlayableCharacter::GetCharacterUIComponent() const
 {
-	return HeroUIComponent;
+	return CharacterUIComponent;
 }
 
 void ABlurPlayableCharacter::PossessedBy(AController* NewController)
@@ -140,44 +140,42 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	
 #if WITH_EDITOR
 	// Tips：在项目配置中设置默认的InputComponent为UBlurEnhancedInputComponent。在 ProjectSettings > Engine-Input > Default Classes - DefaultInputComponentClass 中设置。
-	// 将输入组件转换为UWarriorInputComponent类。
-	UBlurEnhancedInputComponent* WarriorInputComponent = Cast<UBlurEnhancedInputComponent>(PlayerInputComponent);
-	if (!WarriorInputComponent)
+	UBlurEnhancedInputComponent* BlurEnhancedInputComponent = Cast<UBlurEnhancedInputComponent>(PlayerInputComponent);
+	if (!BlurEnhancedInputComponent)
 	{
 		Debug::Print("Please set the DefaultInputComponentClass of the project settings to BlurEnhancedInputComponent.", FColor::Red);
 		return;
 	}
 #else
-	// 将输入组件转换为UWarriorInputComponent类。
-	UBlurEnhancedInputComponent* WarriorInputComponent = CastChecked<UBlurEnhancedInputComponent>(PlayerInputComponent);
+	UBlurEnhancedInputComponent* BlurEnhancedInputComponent = CastChecked<UBlurEnhancedInputComponent>(PlayerInputComponent);
 #endif
 	// 绑定输入事件。
 	// 基础操作输入。如果子类自己在蓝图中实现，可以不配置这些输入事件。
 	if (InputConfigDataAsset->NativeInputActions.Contains(BlurGameplayTags::Input_Move))
 	{
-		WarriorInputComponent->BindNativeInputAction(
+		BlurEnhancedInputComponent->BindNativeInputAction(
 			InputConfigDataAsset, BlurGameplayTags::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
 	}
 	if (InputConfigDataAsset->NativeInputActions.Contains(BlurGameplayTags::Input_Look))
 	{
-		WarriorInputComponent->BindNativeInputAction(
+		BlurEnhancedInputComponent->BindNativeInputAction(
 			InputConfigDataAsset, BlurGameplayTags::Input_Look, ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
 	}
 	
 	// 切换目标输入。根据用途可以达到不同的效果。比如激活目标锁定技能后，切换目标输入。
 	const FGameplayTag Input_SwitchTarget = BlurGameplayTags::Input_SwitchTarget;
-	WarriorInputComponent->BindNativeInputAction(
+	BlurEnhancedInputComponent->BindNativeInputAction(
 		InputConfigDataAsset, Input_SwitchTarget, ETriggerEvent::Triggered, this, &ThisClass::Input_SwitchTargetTriggered);
-	WarriorInputComponent->BindNativeInputAction(
+	BlurEnhancedInputComponent->BindNativeInputAction(
 		InputConfigDataAsset, Input_SwitchTarget, ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetCompleted);
 
 	// 拾取物品输入。
-	WarriorInputComponent->BindNativeInputAction(
+	BlurEnhancedInputComponent->BindNativeInputAction(
 		InputConfigDataAsset, BlurGameplayTags::Input_PickUp, ETriggerEvent::Started, this,
 		&ThisClass::Input_PickUpStonesStarted);
 	
 	// 技能输入。
-	WarriorInputComponent->BindAbilityInputAction(
+	BlurEnhancedInputComponent->BindAbilityInputAction(
 		InputConfigDataAsset, this, &ThisClass::Input_AbilityInputPressed,
 		&ThisClass::Input_AbilityInputReleased, &ThisClass::Input_AbilityInputTriggered);
 }
@@ -185,8 +183,6 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 void ABlurPlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Debug::Print(TEXT("WarriorHeroCharacter BeginPlay."));
 }
 
 void ABlurPlayableCharacter::Input_Move(const FInputActionValue& InputActionValue)

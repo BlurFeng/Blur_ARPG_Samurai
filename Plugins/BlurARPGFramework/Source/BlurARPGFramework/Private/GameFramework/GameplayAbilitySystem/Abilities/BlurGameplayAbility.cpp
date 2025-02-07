@@ -134,11 +134,11 @@ FActiveGameplayEffectHandle UBlurGameplayAbility::NativeApplyEffectSpecHandleTar
 
 // Tips：这里不适用const方法，是应为const后方法在蓝图中是非执行节点，没有Exec节点可以连接。
 FActiveGameplayEffectHandle UBlurGameplayAbility::BP_ApplyEffectSpecHandleTarget(AActor* TargetActor,
-	const FGameplayEffectSpecHandle& InSpecHandle, EBlurSuccessType& OutSuccessType)
+	const FGameplayEffectSpecHandle& InSpecHandle, ESuccessType& OutSuccessType)
 {
 	const FActiveGameplayEffectHandle ActiveGameplayEffectHandle = NativeApplyEffectSpecHandleTarget(TargetActor, InSpecHandle);
 
-	OutSuccessType = ActiveGameplayEffectHandle.WasSuccessfullyApplied() ? EBlurSuccessType::Successful : EBlurSuccessType::Failed;
+	OutSuccessType = ActiveGameplayEffectHandle.WasSuccessfullyApplied() ? ESuccessType::Successful : ESuccessType::Failed;
 
 	return ActiveGameplayEffectHandle;
 }
