@@ -8,6 +8,7 @@
 #include "GameFramework/Common/BlurCountDownAction.h"
 #include "GameFramework/Common/BlurDelayAction.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UBlurFunctionLibrary::CountDown(const UObject* WorldContextObject, const float TotalTime, const float UpdateInterval,
 	const bool ExecuteOnFirst, const bool PausedWithGame, float& OutRemainingTime, float& OutDeltaTime,
@@ -90,6 +91,15 @@ void UBlurFunctionLibrary::Delay(const UObject* WorldContextObject, const float 
 	}
 }
 
+void UBlurFunctionLibrary::IsEditor(EBlurConfirmType& OutConfirmType)
+{
+#if WITH_EDITOR
+	OutConfirmType = EBlurConfirmType::Yes;
+#else
+	OutConfirmType = EBlurConfirmType::No;
+#endif
+}
+
 int32 UBlurFunctionLibrary::RandomIndexByWeights(const TArray<int32>& Weights, int32 WeightTotal)
 {
 	if (Weights.IsEmpty()) return 0;
@@ -136,6 +146,8 @@ int32 UBlurFunctionLibrary::RandomIndexByWeightsForThree(const int32 Weight1, co
 float UBlurFunctionLibrary::LerpLimitChangeMin(const float A, const float B, const float LimitChangeMin,
 	const float Alpha)
 {
+	// UKismetMathLibrary::Lerp(A, B, Alpha);
+	
 	if (B == A) return B;
 	
 	float Change = Alpha * (B - A);
@@ -168,6 +180,35 @@ float UBlurFunctionLibrary::LerpLimitChangeMin(const float A, const float B, con
 	}
 	
 	return A + Change;
+}
+
+FVector UBlurFunctionLibrary::RotateVectorToTarget(const FVector& FromVector, const FVector& ToVector, const float Rate)
+{
+	// 归一化向量。
+	const FVector FromVectorNor = FromVector.GetSafeNormal();
+	const FVector ToVectorNor = ToVector.GetSafeNormal();
+
+	if (Rate >= 1)
+		return ToVectorNor;
+
+	// 计算夹角。
+	const float Angle = FMath::Acos(FVector::DotProduct(FromVectorNor, ToVectorNor));
+
+	if (FMath::IsNearlyZero(Angle, KINDA_SMALL_NUMBER))
+	{
+		return ToVectorNor;
+	}
+
+	// 计算旋转轴。
+	FVector RotationAxis = FVector::CrossProduct(FromVectorNor, ToVectorNor).GetSafeNormal();
+
+	float InterpolatedAngle = Angle * FMath::Clamp(Rate, 0.0f, 1.0f);
+
+	// 构造旋转。
+	const FQuat RotationQuat = FQuat(RotationAxis, InterpolatedAngle);
+
+	// 应用旋转。
+	return RotationQuat.RotateVector(FromVectorNor);
 }
 
 ETeamAttitudeFlags UBlurFunctionLibrary::CheckTeamAttitude(const APawn* QueryPawn, const APawn* TargetPawn)
@@ -213,6 +254,51 @@ bool UBlurFunctionLibrary::IsValidBlock(const AActor* InAttacker, const AActor* 
 	}
 	
 	return false;
+}
+
+AActor* UBlurFunctionLibrary::GetBestTargetFromActors(const UObject* WorldContextObject,
+	const TArray<AActor*>& InActors, const FVector& Origin, const FVector& Forward, const float DisSquaredMax,
+	const float AngleMax, const bool LimitToDis, const bool LimitToAngle, const int DisWeight, const int AngleWeight,
+	const bool bDrawDebug)
+{
+	AActor* BestActor = nullptr;
+	float ScoreBest = 0.f;
+	const float DotMax = UKismetMathLibrary::MapRangeClamped(AngleMax, 0, 180, 2, 0);
+	
+	for (AActor* TargetActor : InActors)
+	{
+		if (TargetActor)
+		{
+			// 计算距离和角度。
+			const FVector DirToTarget = TargetActor->GetActorLocation() - Origin;
+			const float DisSquared = DirToTarget.SizeSquared();
+			if (LimitToDis && DisSquared > DisSquaredMax) continue; // 排除超出最大距离的目标。
+			const float Dot = FVector::DotProduct(Forward, DirToTarget.GetSafeNormal()) + 1.f;
+			if (LimitToAngle && Dot < DotMax) continue; // 排除超出最大夹角的目标。
+			
+			// 计算距离和角度分数，然后按权重计算最终得分。
+			const float Score_Dis = (DisSquaredMax - DisSquared) / DisSquaredMax;
+			const float Score_Angle = (Dot + 1.f) / 2.f;
+			const float Score = (Score_Dis * DisWeight + Score_Angle * AngleWeight) / (DisWeight + AngleWeight);
+
+			if (bDrawDebug)
+			{
+				DrawDebugString(
+					WorldContextObject->GetWorld(),
+					TargetActor->GetActorLocation() + FVector::UpVector * 500.f,
+					FString::Printf(TEXT("Score_Dis:%f  Score_Angle:%f  Score:%f"),Score_Dis,Score_Angle,Score));
+			}
+			
+			// 获取分数高的。
+			if (!BestActor || Score > ScoreBest)
+			{
+				BestActor = TargetActor;
+				ScoreBest = Score;
+			}
+		}
+	}
+
+	return BestActor;
 }
 
 UBlurAbilitySystemComponent* UBlurFunctionLibrary::GetAbilitySystemComponentFromActor(AActor* InActor)
@@ -265,8 +351,33 @@ bool UBlurFunctionLibrary::ActorHasAnyMatchingGameplayTags(AActor* InActor, cons
 	return AbilitySystemComponent && AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
 }
 
+void UBlurFunctionLibrary::RemoveActorsByTag(TArray<AActor*>& InActors, FGameplayTag TagToRemove,
+	TArray<AActor*>& OutActors)
+{
+	for (int32 i = InActors.Num() - 1; i >= 0; i--)
+	{
+		if (ActorHasMatchingGameplayTag(InActors[i], TagToRemove))
+			InActors.RemoveAt(i);
+	}
+
+	OutActors = InActors;
+}
+
+void UBlurFunctionLibrary::RemoveActorsByHasAnyTag(TArray<AActor*>& InActors, FGameplayTagContainer TagsToRemove,
+	TArray<AActor*>& OutActors)
+{
+	for (int32 i = InActors.Num() - 1; i >= 0; i--)
+	{
+		const UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActors[i]);
+		if (AbilitySystemComponent && AbilitySystemComponent->HasAnyMatchingGameplayTags(TagsToRemove))
+			InActors.RemoveAt(i);
+	}
+
+	OutActors = InActors;
+}
+
 int32 UBlurFunctionLibrary::TryActivateAbilityByGameplayEvent(UAbilitySystemComponent* AbilitySystemComponent,
-	const FGameplayTag EventTag, const FGameplayEventData Payload)
+                                                              const FGameplayTag EventTag, const FGameplayEventData Payload)
 {
 	if (!AbilitySystemComponent) return 0;
 

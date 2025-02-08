@@ -45,26 +45,26 @@ private:
 	
 #pragma region Components
 
-	//Notes:
-	//UPROPERTY宏用来标记UE类中的成员变量，告知引擎如何管理这些成员变量。
-	//VisibleAnywhere：在UE编辑器的任何地方可见。只读。
-	//BlueprintReadOnly：蓝图中只读。如果想要编辑使用BlueprintReadWrite。
-	//Category：分类，有助于整理代码。蓝图中也会显示到相应分类下。
-	//meta = (AllowPrivateAccess = "true")：允许蓝图或编辑器访问private成员变量。
+	// Notes:
+	// UPROPERTY宏用来标记UE类中的成员变量，告知引擎如何管理这些成员变量。
+	// VisibleAnywhere：在UE编辑器的任何地方可见。只读。
+	// BlueprintReadOnly：蓝图中只读。如果想要编辑使用BlueprintReadWrite。
+	// Category：分类，有助于整理代码。蓝图中也会显示到相应分类下。
+	// meta = (AllowPrivateAccess = "true")：允许蓝图或编辑器访问private成员变量。
 
-	//相机臂。
+	// 相机臂。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
-	//自动跟随的相机。
+	// 自动跟随的相机。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
-	//战斗组件，用于管理武器和攻击方式。
+	// 战斗组件，用于管理武器和攻击方式。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat", meta = (AllowPrivateAccess = "true"))
 	UBlurAbilityCombatComponent* AbilityCombatComponent;
 
-	//UI组件。
+	// UI组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI", meta = (AllowPrivateAccess = "true"))
 	UBlurCharacterUIComponent* CharacterUIComponent;
 	
@@ -74,21 +74,19 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data", meta = (AllowPrivateAccess = "true"))
 	UBlurDA_InputConfig* InputConfigDataAsset;
-
-	UPROPERTY()
-	FVector2D SwitchDirection = FVector2D::ZeroVector;
-
-	//基础输入
+	
+	// 基础输入。
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
-	//切换目标输入。在锁定目标时。
+	// 切换目标输入。在锁定目标时。
 	void Input_SwitchTargetTriggered(const FInputActionValue& InputActionValue);
 	void Input_SwitchTargetCompleted(const FInputActionValue& InputActionValue);
+	void Input_ResetView(const FInputActionValue& InputActionValue);
 
 	void Input_PickUpStonesStarted(const FInputActionValue& InputActionValue);
 	
-	//Tips：这里没有使用const和&关键字，因为此回调方法最终作为UEnhancedInputComponent->BindAction()方法的参数使用，而此类对回调方法的格式是这么要求的。
-	//技能输入。
+	// Tips：这里没有使用const和&关键字，因为此回调方法最终作为UEnhancedInputComponent->BindAction()方法的参数使用，而此类对回调方法的格式是这么要求的。
+	// 技能输入。
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputReleased(FGameplayTag InInputTag);
 	void Input_AbilityInputTriggered(FGameplayTag InInputTag);

@@ -36,7 +36,7 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 	// 搜索对应 InInputTag 的技能。
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
-		// Tips：InInputTag 通过 UWarriorFunctionLibrary::NativeGetGameplayAbilitySpec 方法在赋予技能时添加到 DynamicAbilityTags。
+		// Tips：InInputTag 通过 UBlurFunctionLibrary::GetGameplayAbilitySpec 方法在赋予技能时添加到 DynamicAbilityTags。
 		
 		// 确认输入的技能是否存在，通过对比InInputTag。此Tag应当在启动时被添加。
 		if (!AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag)) continue;
@@ -74,10 +74,10 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 				bool Allow = false; // 允许取消技能。
 				// 切换形式的技能如果想在取消时进行确认，可重写 CheckCondition() 方法。不重写时默认返回true。
 				// 且需要技能是Actor形式的，否则 GetPrimaryInstance() 无法获得他的实例。
-				if (UBlurGameplayAbility* WarriorGameplayAbility = Cast<UBlurGameplayAbility>(AbilitySpec.GetPrimaryInstance()))
+				if (UBlurGameplayAbility* GameplayAbility = Cast<UBlurGameplayAbility>(AbilitySpec.GetPrimaryInstance()))
 				{
 					// 确认自定义的确认条件是否允许取消。
-					if (WarriorGameplayAbility->CheckConditionOnToggleableCancelAbility())
+					if (GameplayAbility->CheckConditionOnToggleableCancelAbility())
 					{
 						Allow = true;
 					}

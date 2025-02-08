@@ -80,7 +80,8 @@ UENUM()
 enum class EBlurInputMode : uint8
 {
 	GameOnly,
-	UIOnly
+	UIOnly,
+	GameAndUI,
 };
 
 //输入类型。

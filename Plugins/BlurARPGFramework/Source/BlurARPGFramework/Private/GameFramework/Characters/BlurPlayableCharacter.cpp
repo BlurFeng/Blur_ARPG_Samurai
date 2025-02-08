@@ -163,11 +163,14 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	}
 	
 	// 切换目标输入。根据用途可以达到不同的效果。比如激活目标锁定技能后，切换目标输入。
-	const FGameplayTag Input_SwitchTarget = BlurGameplayTags::Input_SwitchTarget;
 	BlurEnhancedInputComponent->BindNativeInputAction(
-		InputConfigDataAsset, Input_SwitchTarget, ETriggerEvent::Triggered, this, &ThisClass::Input_SwitchTargetTriggered);
+		InputConfigDataAsset, BlurGameplayTags::Input_SwitchTarget, ETriggerEvent::Triggered, this, &ThisClass::Input_SwitchTargetTriggered);
 	BlurEnhancedInputComponent->BindNativeInputAction(
-		InputConfigDataAsset, Input_SwitchTarget, ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetCompleted);
+		InputConfigDataAsset, BlurGameplayTags::Input_SwitchTarget, ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetCompleted);
+
+	// 重置玩家视角。
+	BlurEnhancedInputComponent->BindNativeInputAction(
+		InputConfigDataAsset, BlurGameplayTags::Input_ResetView, ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetCompleted);
 
 	// 拾取物品输入。
 	BlurEnhancedInputComponent->BindNativeInputAction(
@@ -227,19 +230,32 @@ void ABlurPlayableCharacter::Input_Look(const FInputActionValue& InputActionValu
 
 void ABlurPlayableCharacter::Input_SwitchTargetTriggered(const FInputActionValue& InputActionValue)
 {
-	// 获取触发时输入。
-	SwitchDirection = InputActionValue.Get<FVector2D>();
+	FGameplayEventData Data;
+	Data.EventMagnitude = InputActionValue.Get<FVector2D>().X;
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		BlurGameplayTags::Common_Event_SwitchTarget_Triggered,
+		Data);
 }
 
 void ABlurPlayableCharacter::Input_SwitchTargetCompleted(const FInputActionValue& InputActionValue)
 {
-	// 移动鼠标，根据移动方向切换锁定目标。
+	FGameplayEventData Data;
+	Data.EventMagnitude = InputActionValue.Get<FVector2D>().X;
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		BlurGameplayTags::Common_Event_SwitchTarget_Completed,
+		Data);
+}
+
+void ABlurPlayableCharacter::Input_ResetView(const FInputActionValue& InputActionValue)
+{
 	const FGameplayEventData Data;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		this,
-		SwitchDirection.X > 0.f ?
-		BlurGameplayTags::Common_Event_SwitchTarget_Right
-		: BlurGameplayTags::Common_Event_SwitchTarget_Left,
+		BlurGameplayTags::Common_Event_ResetView,
 		Data);
 }
 

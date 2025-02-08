@@ -20,6 +20,8 @@ class BLURARPGFRAMEWORK_API ABlurCharacterBase : public ACharacter, public IAbil
 public:
 	// Sets default values for this character's properties
 	ABlurCharacterBase();
+
+	virtual void BeginPlay() override;
 	
 	// Notes：IAbilitySystemInterface 接口是GAS和Character通信的重要接口。
 	// GAS通过此接口和Character通信。此接口在GAS系统的各种地方使用到。
@@ -54,6 +56,10 @@ protected:
 	// 角色启动数据资源。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data")
 	TSoftObjectPtr<class UBlurDA_CharacterStartup> CharacterStartUpData;
+
+	// 角色胶囊体默认高度。游戏启动时从Capsule上获取。
+	UPROPERTY(BlueprintReadOnly, Category = "CharacterData")
+	float CapsuleHalfHeightCached;
 
 public:
 

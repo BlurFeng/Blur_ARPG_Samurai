@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "GameFramework/BlurGameplayTags.h"
 #include "GameFramework/Types/BlurEnumTypes.h"
 
 #include "BlurGameplayAbility.generated.h"
@@ -111,11 +112,20 @@ protected:
 	/// 可以使用 BoxTrace 等探测方式来获得目标FHitResult。
 	/// @param InSpecHandle GE说明句柄。
 	/// @param TargetFlags 目标Flags。
-	/// @param HitReactEventTag 发送到目标的被击中事件Tag。
-	/// @param InHitResults Trace获得的Hit目标。
+	/// @param InHitReactEventTag 发送到目标的被击中事件Tag。无效时默认使用 BlurGameplayTags::Common_Event_HitReact。
+	/// @param InHitResults Trace获得的Hit目标数组。
 	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability", meta = (Bitmask, BitmaskEnum = "ETeamAttitudeFlags"))
-	void ApplyGameplayEffectSpecHandleToHitResults(const FGameplayEffectSpecHandle& InSpecHandle, const int32 TargetFlags, const FGameplayTag HitReactEventTag, const TArray<FHitResult>& InHitResults);
+	void ApplyGameplayEffectSpecHandleToHitResults(const FGameplayEffectSpecHandle& InSpecHandle, const int32 TargetFlags, const FGameplayTag InHitReactEventTag, const TArray<FHitResult>& InHitResults);
 
+	/// 应用一个GE到FHitResult碰撞探测目标。
+	/// 可以使用 BoxTrace 等探测方式来获得目标FHitResult。
+	/// @param InSpecHandle GE说明句柄。
+	/// @param TargetFlags 目标Flags。
+	/// @param InHitReactEventTag 发送到目标的被击中事件Tag。无效时默认使用 BlurGameplayTags::Common_Event_HitReact。
+	/// @param InHitResult Trace获得的Hit目标。
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability")
+	void ApplyGameplayEffectSpecHandleToHitResult(const FGameplayEffectSpecHandle& InSpecHandle, const int32 TargetFlags, const FGameplayTag InHitReactEventTag, const FHitResult& InHitResult);
+	
 	/// 创建GE查询句柄，用于施加GE。
 	/// @param EffectClass 
 	/// @return 

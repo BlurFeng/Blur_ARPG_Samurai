@@ -44,6 +44,7 @@ public class BlurARPGFramework : ModuleRules
 				"AIModule",
 				"AnimGraphRuntime",
 				"UMG",
+				"NavigationSystem",
 				"MoviePlayer",
 				//~ End Engine.
 				//~ Begin Plugins.

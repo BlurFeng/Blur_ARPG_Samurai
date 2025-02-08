@@ -22,7 +22,7 @@ class BLURARPGFRAMEWORK_API UBlurFunctionLibrary : public UBlueprintFunctionLibr
 
 public:
 
-#pragma region Common
+#pragma region Common And Math
 
 	// Notes：Latent Action 潜在事件节点。
 	// 通过 Latent Action 我们可以实现一些蓝图的异步节点。比如常用的 Delay 就是一个 Latent Action。
@@ -43,7 +43,7 @@ public:
 	/// @param LatentActionInput 输入执行引脚。
 	/// @param LatentActionOutput 输出执行引脚。
 	/// @param LatentInfo 
-	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", TotalTime = "1.0", UpdateInterval = "0.1", ExecuteOnFirst = "true", PausedWithGame = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | FunctionLibrary | Common", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", TotalTime = "1.0", UpdateInterval = "0.1", ExecuteOnFirst = "true", PausedWithGame = "true"))
 	static void CountDown(const UObject* WorldContextObject, const float TotalTime, const float UpdateInterval, const bool ExecuteOnFirst, const bool PausedWithGame,
 		float& OutRemainingTime,  float& OutDeltaTime, const ELatentActionInput LatentActionInput, UPARAM(DisplayName = "Output") ELatentActionOutput& LatentActionOutput,
 		const FLatentActionInfo LatentInfo);
@@ -55,15 +55,24 @@ public:
 	/// @param LatentActionInput 输入执行引脚。
 	/// @param LatentActionOutput 输出执行引脚。
 	/// @param LatentInfo 
-	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | FunctionLibrary", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", PausedWithGame = "true"))
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | FunctionLibrary | Common", meta = (Latent, WorldContext = "WorldContextObject", LatentInfo = "LatentInfo", ExpandEnumAsExecs = "LatentActionInput|LatentActionOutput", PausedWithGame = "true"))
 	static void Delay(const UObject* WorldContextObject, const float Duration, const bool PausedWithGame,
 		const ELatentActionInput LatentActionInput, UPARAM(DisplayName = "Output") ELatentActionOutput&LatentActionOutput, const FLatentActionInfo LatentInfo);
+
+	/// 是否在引擎编辑器。
+	/// @param OutConfirmType 
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | FunctionLibrary | Common", meta = (ExpandEnumAsExecs = "OutConfirmType"))
+	static void IsEditor(EBlurConfirmType& OutConfirmType);
+
+#pragma endregion
+
+#pragma region Math
 
 	/// 根据传入的权重数组，根据权重随机并返回一个Index。
 	/// @param Weights 权重数组。 
 	/// @param WeightTotal 如果知道总权重，传入参数可以减少计算，否则自动计算总权重。
 	/// @return 随机选中的权重Index。
-	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Math")
 	static int32 RandomIndexByWeights(const TArray<int32>& Weights, int32 WeightTotal = 0);
 
 	/// 在三个权重值之间随机并返回对应Index。
@@ -71,7 +80,7 @@ public:
 	/// @param Weight2 
 	/// @param Weight3 
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Math")
 	static int32 RandomIndexByWeightsForThree(const int32 Weight1, const int32 Weight2, const int32 Weight3);
 
 	/// Lerp插值，变化值不小于LimitChangeMin。
@@ -80,8 +89,16 @@ public:
 	/// @param LimitChangeMin 限制变化最小值。>0时有效。
 	/// @param Alpha 
 	/// @return 
-	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Math")
 	static float LerpLimitChangeMin(const float A, const float B, const float LimitChangeMin, const float Alpha);
+
+	/// 将一个向量向目标向量旋转一定的幅度。
+	/// @param FromVector 
+	/// @param ToVector 
+	/// @param Rate 旋转比率。[0,1]。为1时完全旋转到ToVector。
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Math")
+	static FVector RotateVectorToTarget(const FVector& FromVector, const FVector& ToVector, const float Rate);
 	
 #pragma endregion
 	
@@ -104,6 +121,24 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Gameplay")
 	static bool IsValidBlock(const AActor* InAttacker, const AActor* InDefender, const float RightCheckNum = -0.2f, const EBlurComparisonOp Comparison = EBlurComparisonOp::LessThanEquals);
 
+	/// 获取最佳目标Actor。
+	/// @param WorldContextObject
+	/// @param InActors 进行评分的Actors。
+	/// @param Origin 自身位置。
+	/// @param Forward 正面朝向。越接近此方向的目标，角度分数越高。
+	/// @param DisSquaredMax 最大距离平方，决定了距离分数。一般为探测方法的最大距离。不准确的最大距离将导致不准确的距离分数，从而影响最终评分。
+	/// @param AngleMax 最大Dot（夹角角度），决定了角度分数。[0,180]。
+	/// @param DisWeight 距离分数权重。越高时，越会选择距离自己最近目标。
+	/// @param AngleWeight 角度分数权重。越高时，越会选择靠近 Forward 面向的目标。
+	/// @param LimitToDis 限制在距离内的目标。超出距离的目标直接忽略。
+	/// @param LimitToAngle 限制在角度内的目标。超出距离的目标直接忽略。
+	/// @param bDrawDebug 绘制Debug信息。
+	/// @return 
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay", meta = (WorldContext = "WorldContextObject", DisWeight = "1", AngleWeight = "1" , LimitToDis = "false", LimitToAngle = "false", bDrawDebug = "false"))
+	static AActor* GetBestTargetFromActors(
+		const UObject* WorldContextObject, const TArray<AActor*>& InActors, const FVector& Origin, const FVector& Forward, const float DisSquaredMax, const float AngleMax,
+		const bool LimitToDis, const bool LimitToAngle, const int DisWeight, const int AngleWeight, const bool bDrawDebug);
+	
 #pragma endregion
 
 #pragma region Gameplay Ability System
@@ -147,12 +182,26 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System")
 	static bool ActorHasAnyMatchingGameplayTags(AActor* InActor, const FGameplayTagContainer& TagContainer);
 
+	/// 从Actors数组中移除包含某个Tag的Actor。
+	/// @param InActors 
+	/// @param TagToRemove
+	/// @param OutActors
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System")
+	static void RemoveActorsByTag(UPARAM(ref) TArray<AActor*>& InActors, FGameplayTag TagToRemove, TArray<AActor*>& OutActors);
+
+	/// 从Actors数组中移除包含任一Tag的Actor。
+	/// @param InActors 
+	/// @param TagsToRemove 
+	/// @param OutActors 
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System")
+	static void RemoveActorsByHasAnyTag(UPARAM(ref) TArray<AActor*>& InActors, FGameplayTagContainer TagsToRemove, TArray<AActor*>& OutActors);
+
 	/// 尝试通过 Tag 事件触发技能。如果有多个技能配置了此 Tag，就会有多个技能被同时触发。
 	/// @param AbilitySystemComponent 
 	/// @param EventTag 
 	/// @param Payload 
 	/// @return 成功激活的数量。
-	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary")
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System")
 	static int32 TryActivateAbilityByGameplayEvent(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag EventTag, const FGameplayEventData Payload);
 	
 	/// 获取激活的技能，通过Tags。

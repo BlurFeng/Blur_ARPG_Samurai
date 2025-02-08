@@ -81,8 +81,8 @@ public:
 	void ToggleWeaponCollision(const bool bShouldEnable,const EToggleDamageType ToggleDamageType = EToggleDamageType::CurrentEquippedWeapon);
 
 	//** 回调 **//
-	virtual void OnMeleeHitTargetActor(AActor* HitActor); //当武器命中目标时
-	virtual void OnMeleePulledFromTargetActor(AActor* HitActor); //当武器离开目标时
+	virtual void OnMeleeHitTargetActor(AActor* HitActor); // 当武器命中目标时。
+	virtual void OnMeleePulledFromTargetActor(AActor* HitActor); // 当武器离开目标时。
 
 protected:
 	virtual void ToggleCurrentEquippedWeaponCollision(const bool bShouldEnable);

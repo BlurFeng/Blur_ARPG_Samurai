@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/BlurFunctionLibrary.h"
+#include "GameFramework/BlurGameplayTags.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
 #include "GameFramework/Components/Combat/BlurAbilityCombatComponent.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
@@ -143,36 +144,44 @@ FActiveGameplayEffectHandle UBlurGameplayAbility::BP_ApplyEffectSpecHandleTarget
 	return ActiveGameplayEffectHandle;
 }
 
-// Tips：这里不为方法添加 const，否则此方法在蓝图中为成为 Pure 相同的节点，没有执行引脚。
 void UBlurGameplayAbility::ApplyGameplayEffectSpecHandleToHitResults(const FGameplayEffectSpecHandle& InSpecHandle,
-	const int32 TargetFlags, const FGameplayTag HitReactEventTag, const TArray<FHitResult>& InHitResults)
+	const int32 TargetFlags, const FGameplayTag InHitReactEventTag, const TArray<FHitResult>& InHitResults)
 {
 	if (InHitResults.IsEmpty()) return;
-	
-	const APawn* OwningPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
-	if (!OwningPawn) return;
-	
+
 	for (const FHitResult& HitResult : InHitResults)
 	{
-		if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
-		{
-			if (TargetFlags == 0 || TargetFlags & 1 << static_cast<int32>(UBlurFunctionLibrary::CheckTeamAttitude(OwningPawn, HitPawn)))
-			{
-				// 对目标造成伤害影响。
-				FActiveGameplayEffectHandle ActiveGameplayEffectHandle = NativeApplyEffectSpecHandleTarget(HitPawn, InSpecHandle);
-				
-				if (ActiveGameplayEffectHandle.WasSuccessfullyApplied())
-				{
-					FGameplayEventData Data;
-					Data.Instigator = OwningPawn;
-					Data.Target = HitPawn;
+		ApplyGameplayEffectSpecHandleToHitResult(InSpecHandle, TargetFlags, InHitReactEventTag, HitResult);
+	}
+}
 
-					// 目标被击中事件。
-					UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-						HitPawn,
-						HitReactEventTag,
-						Data);
-				}
+void UBlurGameplayAbility::ApplyGameplayEffectSpecHandleToHitResult(const FGameplayEffectSpecHandle& InSpecHandle,
+	const int32 TargetFlags, const FGameplayTag InHitReactEventTag, const FHitResult& InHitResult)
+{
+	const APawn* OwningPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
+	if (!OwningPawn) return;
+
+	FGameplayTag HitReactEventTag = InHitReactEventTag;
+	if (!HitReactEventTag.IsValid()) HitReactEventTag = BlurGameplayTags::Common_Event_HitReact;
+	
+	if (APawn* HitPawn = Cast<APawn>(InHitResult.GetActor()))
+	{
+		if (TargetFlags == 0 || TargetFlags & 1 << static_cast<int32>(UBlurFunctionLibrary::CheckTeamAttitude(OwningPawn, HitPawn)))
+		{
+			// 对目标造成伤害影响。
+			const FActiveGameplayEffectHandle ActiveGameplayEffectHandle = NativeApplyEffectSpecHandleTarget(HitPawn, InSpecHandle);
+				
+			if (ActiveGameplayEffectHandle.WasSuccessfullyApplied())
+			{
+				FGameplayEventData Data;
+				Data.Instigator = OwningPawn;
+				Data.Target = HitPawn;
+
+				// 目标被击中事件。
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					HitPawn,
+					HitReactEventTag,
+					Data);
 			}
 		}
 	}

@@ -3,6 +3,7 @@
 
 #include "GameFramework/Characters/BlurCharacterBase.h"
 
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAttributeSet.h"
 #include "GameFramework/Common/BlurDebugHelper.h"
@@ -21,6 +22,13 @@ ABlurCharacterBase::ABlurCharacterBase()
 	BlurAbilitySystemComponent = CreateDefaultSubobject<UBlurAbilitySystemComponent>(TEXT("BlurAbilitySystemComponent"));
 	BlurAbilitySystemComponent->SetIsReplicated(true);
 	BlurAttributeSet = CreateDefaultSubobject<UBlurAttributeSet>(TEXT("BlurAttributeSet"));
+}
+
+void ABlurCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CapsuleHalfHeightCached = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 }
 
 UAbilitySystemComponent* ABlurCharacterBase::GetAbilitySystemComponent() const

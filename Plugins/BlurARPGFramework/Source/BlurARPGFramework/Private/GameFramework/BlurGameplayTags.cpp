@@ -18,6 +18,7 @@ namespace BlurGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Look, "Input.Look");
 	UE_DEFINE_GAMEPLAY_TAG(Input_PickUp, "Input.PickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Input_SwitchTarget, "Input.SwitchTarget");
+	UE_DEFINE_GAMEPLAY_TAG(Input_ResetView, "Input.ResetView");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Input_Toggleable, "Input.Toggleable");
 	UE_DEFINE_GAMEPLAY_TAG(Input_MustBeHeld, "Input.MustBeHeld");
@@ -36,14 +37,16 @@ namespace BlurGameplayTags
 
 	//** Common Event **//
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_PickUp, "Common.Event.PickUp");
-	UE_DEFINE_GAMEPLAY_TAG(Common_Event_SwitchTarget_Left, "Common.Event.SwitchTarget.Left");
-	UE_DEFINE_GAMEPLAY_TAG(Common_Event_SwitchTarget_Right, "Common.Event.SwitchTarget.Right");
+	UE_DEFINE_GAMEPLAY_TAG(Common_Event_SwitchTarget_Triggered, "Common.Event.SwitchTarget.Triggered");
+	UE_DEFINE_GAMEPLAY_TAG(Common_Event_SwitchTarget_Completed, "Common.Event.SwitchTarget.Completed");
+	UE_DEFINE_GAMEPLAY_TAG(Common_Event_ResetView, "Common.Event.ResetView");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_MeleeHit, "Common.Event.MeleeHit");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_MeleePulled, "Common.Event.MeleePulled");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_SuccessfulBlock, "Common.Event.SuccessfulBlock");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_Blocking, "Common.Event.Blocking");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_Unblockable, "Common.Event.Unblockable");
+	UE_DEFINE_GAMEPLAY_TAG(Common_Event_HitReact, "Common.Event.HitReact");
 
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_RepeatInputWhenAbilityActive, "Common.Event.RepeatInputWhenAbilityActive");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_Combo_WaitInput, "Common.Event.Combo.WaitInput");
