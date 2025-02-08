@@ -265,8 +265,16 @@ bool UBlurFunctionLibrary::ActorHasAnyMatchingGameplayTags(AActor* InActor, cons
 	return AbilitySystemComponent && AbilitySystemComponent->HasAnyMatchingGameplayTags(TagContainer);
 }
 
+int32 UBlurFunctionLibrary::TryActivateAbilityByGameplayEvent(UAbilitySystemComponent* AbilitySystemComponent,
+	const FGameplayTag EventTag, const FGameplayEventData Payload)
+{
+	if (!AbilitySystemComponent) return 0;
+
+	return AbilitySystemComponent->HandleGameplayEvent(EventTag, &Payload);
+}
+
 void UBlurFunctionLibrary::GetActiveAbilitiesWithTags_Actor(AActor* InActor, const FGameplayTagContainer Tags,
-	TArray<UGameplayAbility*>& ActiveAbilities, ESuccessType& SuccessType, const bool MatchExactTag)
+                                                            TArray<UGameplayAbility*>& ActiveAbilities, ESuccessType& SuccessType, const bool MatchExactTag)
 {
 	SuccessType = ESuccessType::Failed;
 	UBlurAbilitySystemComponent* AbilitySystemComponent = GetAbilitySystemComponentFromActor(InActor);

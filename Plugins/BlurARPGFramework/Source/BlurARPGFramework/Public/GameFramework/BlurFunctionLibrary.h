@@ -147,6 +147,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Function Library | Gameplay Ability System")
 	static bool ActorHasAnyMatchingGameplayTags(AActor* InActor, const FGameplayTagContainer& TagContainer);
 
+	/// 尝试通过 Tag 事件触发技能。如果有多个技能配置了此 Tag，就会有多个技能被同时触发。
+	/// @param AbilitySystemComponent 
+	/// @param EventTag 
+	/// @param Payload 
+	/// @return 成功激活的数量。
+	UFUNCTION(BlueprintCallable, Category = "Warrior|FunctionLibrary")
+	static int32 TryActivateAbilityByGameplayEvent(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag EventTag, const FGameplayEventData Payload);
+	
 	/// 获取激活的技能，通过Tags。
 	/// @param AbilitySystemComponent 用于查询的技能组件。
 	/// @param Tags 

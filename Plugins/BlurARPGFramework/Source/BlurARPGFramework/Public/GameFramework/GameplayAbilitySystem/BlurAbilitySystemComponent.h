@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "GameFramework/BlurGameplayTags.h"
 
 #include "BlurAbilitySystemComponent.generated.h"
 
 struct FSpecialGiveAbilitySet;
 struct FGiveAbilitySet;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityInputPressedDelegate, FGameplayTag, InputTag);
+
 // 技能系统组件基类。
 UCLASS()
 class BLURARPGFRAMEWORK_API UBlurAbilitySystemComponent : public UAbilitySystemComponent
@@ -18,6 +20,12 @@ class BLURARPGFRAMEWORK_API UBlurAbilitySystemComponent : public UAbilitySystemC
 
 public:
 	UBlurAbilitySystemComponent();
+
+#pragma region Delegate
+	// 当获得技能输入按下时。
+	UPROPERTY(BlueprintAssignable, meta = (DisplayName = "On Ability Input Pressed"))
+	FOnAbilityInputPressedDelegate OnAbilityInputPressedDelegate;
+#pragma endregion
 	
 	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
  	void OnAbilityInputReleased(const FGameplayTag& InInputTag);

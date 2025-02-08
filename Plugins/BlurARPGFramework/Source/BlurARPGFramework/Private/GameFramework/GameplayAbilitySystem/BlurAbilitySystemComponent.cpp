@@ -3,7 +3,9 @@
 
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/BlurFunctionLibrary.h"
+#include "GameFramework/BlurGameplayTags.h"
 #include "GameFramework/Components/UI/BlurCharacterUIComponent.h"
 #include "GameFramework/GameplayAbilitySystem/Abilities/BlurGameplayAbility.h"
 #include "GameFramework/Interfaces/BlurPawnUIInterface.h"
@@ -21,54 +23,81 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 
 	// Debug::Print(TEXT("OnAbilityInputPressed 1"));
 
+	// 当有技能输入时广播。无论是否成功激活。此多播委托主要告知玩家进行了技能输入行为。
+	OnAbilityInputPressedDelegate.Broadcast(InInputTag);
+
+	// 确认输入类型。
 	EBlurInputType InputType = EBlurInputType::Normal;
 	if (InInputTag.MatchesTag(BlurGameplayTags::Input_Toggleable))
 		InputType = EBlurInputType::Toggleable;
 	else if (InInputTag.MatchesTag(BlurGameplayTags::Input_MustBeHeld))
 		InputType = EBlurInputType::MustBeHeld;
 
+	// 搜索对应 InInputTag 的技能。
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
-		// Tips：InInputTag 通过 UBlurFunctionLibrary::GetGameplayAbilitySpec 方法在赋予技能时添加到 DynamicAbilityTags。
+		// Tips：InInputTag 通过 UWarriorFunctionLibrary::NativeGetGameplayAbilitySpec 方法在赋予技能时添加到 DynamicAbilityTags。
 		
 		// 确认输入的技能是否存在，通过对比InInputTag。此Tag应当在启动时被添加。
 		if (!AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InInputTag)) continue;
 
+		bool bTryActivateAbility = false;
+
 		if (InputType == EBlurInputType::Normal)
 		{
-			// 尝试触发技能。
-			TryActivateAbility(AbilitySpec.Handle);
+			if (AbilitySpec.IsActive())
+			{
+				FGameplayEventData Data;
+				Data.Instigator = GetAvatarActor();
+				Data.Target = GetAvatarActor();
+				// 在技能激活时重复输入。这是一个公用的事件，可以用来构建连击技能。
+				// Tips：这里我们会先确认 InInputTag ，然后找到对应的GA。保证了事件传输的准确性。
+				UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+					GetAvatarActor(),
+					BlurGameplayTags::Common_Event_RepeatInputWhenAbilityActive,
+					Data);
+			}
+			else
+			{
+				bTryActivateAbility = true;
+			}
 		}
 		// 切换形式的技能。在激活和取消之间切换。比如可切换的愤怒状态。
 		else if (InputType == EBlurInputType::Toggleable)
 		{
 			if (!AbilitySpec.IsActive())
 			{
-				// 尝试触发技能。
-				TryActivateAbility(AbilitySpec.Handle);
+				bTryActivateAbility = true;
 			}
 			else
 			{
-				bool Allow = false;
+				bool Allow = false; // 允许取消技能。
 				// 切换形式的技能如果想在取消时进行确认，可重写 CheckCondition() 方法。不重写时默认返回true。
-				if (UBlurGameplayAbility* GameplayAbility = Cast<UBlurGameplayAbility>(AbilitySpec.GetPrimaryInstance()))
+				// 且需要技能是Actor形式的，否则 GetPrimaryInstance() 无法获得他的实例。
+				if (UBlurGameplayAbility* WarriorGameplayAbility = Cast<UBlurGameplayAbility>(AbilitySpec.GetPrimaryInstance()))
 				{
-					if (GameplayAbility->CheckConditionOnToggleableCancelAbility())
+					// 确认自定义的确认条件是否允许取消。
+					if (WarriorGameplayAbility->CheckConditionOnToggleableCancelAbility())
 					{
-						CancelAbilityHandle(AbilitySpec.Handle);
 						Allow = true;
 					}
+					
 					// Debug::Print(FString::Printf(TEXT("Cancel Ability, Name: %s"), *AbilitySpec.Ability.GetName()));
 				}
+				// 直接取消技能。
 				else
 				{
-					CancelAbilityHandle(AbilitySpec.Handle);
 					Allow = true;
+				}
+				
+				if (Allow)
+				{
+					CancelAbilityHandle(AbilitySpec.Handle);
 				}
 
 				if (const IBlurPawnUIInterface* PawnUIInterface = Cast<IBlurPawnUIInterface>(GetAvatarActor()))
 				{
-					if (PawnUIInterface->GetCharacterUIComponent())
+					if (PawnUIInterface->GetCharacterUIComponent() && AbilitySpec.GetPrimaryInstance())
 						PawnUIInterface->GetCharacterUIComponent()->OnCancelAbility.Broadcast(Allow, AbilitySpec.GetPrimaryInstance()->GetAssetTags().First());
 				}
 			}
@@ -79,11 +108,31 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 			CachedMustBeHeldGameplayAbilityInputTag = InInputTag;
 			CachedMustBeHeldFGameplayAbilitySpecHandle = AbilitySpec.Handle;
 
-			// 尝试触发技能。
-			TryActivateAbility(AbilitySpec.Handle);
+			bTryActivateAbility = true;
 		}
 
-		break;
+		if (bTryActivateAbility)
+		{
+			// 尝试触发技能。
+			if (!TryActivateAbility(AbilitySpec.Handle))
+			{
+				// 触发技能失败时。
+				if (const IBlurPawnUIInterface* PawnUIInterface = Cast<IBlurPawnUIInterface>(GetAvatarActor()))
+				{
+					// TODO：轻攻击和重攻击在使用时会进入此行。但实际上技能能成功使用。问题待确认。
+					// if (AbilitySpec.GetPrimaryInstance()->AbilityTags.First() == FGameplayTag::EmptyTag)
+					// {
+					// 		Debug::Print(InInputTag.GetTagName().ToString());
+					// }
+					
+					if (PawnUIInterface->GetCharacterUIComponent() && AbilitySpec.GetPrimaryInstance())
+						PawnUIInterface->GetCharacterUIComponent()->OnTryActivateAbilityFailed.Broadcast(AbilitySpec.GetPrimaryInstance()->GetAssetTags().First());
+				}
+			}
+		}
+
+		// 允许一个InputTag对应多个GA。
+		// break;
 	}
 }
 
@@ -173,13 +222,13 @@ bool UBlurAbilitySystemComponent::TryActivateAbilityByTag(const FGameplayTag Abi
 {
 	check(AbilityTagToActivate.IsValid());
 
-	//查询所有符合条件的技能。
+	// 查询所有符合条件的技能。
 	TArray<FGameplayAbilitySpec*> FoundAbilitySpecs;
 	GetActivatableGameplayAbilitySpecsByAllMatchingTags(AbilityTagToActivate.GetSingleTagContainer(), FoundAbilitySpecs);
 
 	if (!FoundAbilitySpecs.IsEmpty())
 	{
-		//随机触发一个技能。
+		// 随机触发一个技能。
 		const int32 RandomAbilityIndex = FMath::RandRange(0, FoundAbilitySpecs.Num() - 1);
 		const FGameplayAbilitySpec* AbilitySpecToActivate = FoundAbilitySpecs[RandomAbilityIndex];
 
