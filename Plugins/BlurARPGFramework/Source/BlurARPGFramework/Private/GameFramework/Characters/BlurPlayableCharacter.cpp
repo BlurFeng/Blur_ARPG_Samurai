@@ -29,19 +29,7 @@ ABlurPlayableCharacter::ABlurPlayableCharacter(const FObjectInitializer& ObjectI
 	bUseControllerRotationPitch = false; // 俯仰角。
 	bUseControllerRotationYaw = false; // 偏航角。
 	bUseControllerRotationRoll = false; // 翻滚角。
-
-	// 创建相机臂。
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom")); //创建子对象，这个对象将包含在自身之下。
-	CameraBoom->SetupAttachment(GetRootComponent()); //附着目标为角色自身的Root。
-	CameraBoom->TargetArmLength = 200.f; //目标相机臂长度。
-	CameraBoom->SocketOffset = FVector(0.f, 55.f, 65.f); //相机位置偏移，肩视角。
-	CameraBoom->bUsePawnControlRotation = true; //使用Pawn的旋转作为相机旋转。
-
-	// 创建相机。
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); //附着目标为相机臂。
-	FollowCamera->bUsePawnControlRotation = true;
-
+	
 	// 设置角色移动组件。
 	GetCharacterMovement()->bOrientRotationToMovement = true; // 旋转角色自身到加速度方向。
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f); // 旋转速率。

@@ -78,7 +78,7 @@ void ABlurWeapon::Equip(AActor* SelfOwner)
 
 			// 附加到拥有者Mesh的对应名称插槽。
 			WeaponObject->AttachToComponent(
-				BlurCharacterBase->GetMesh(),
+				BlurCharacterBase->GetCharacterMesh(),
 				AttachmentTransformRules,
 				WeaponObject->WeaponObjectInfo.AttachToSocketName);
 
@@ -88,7 +88,7 @@ void ABlurWeapon::Equip(AActor* SelfOwner)
 
 	// 改变动画连接层。
 	if (WeaponData.AnimLayerForEquip)
-		BlurCharacterBase->GetMesh()->LinkAnimClassLayers(WeaponData.AnimLayerForEquip);
+		BlurCharacterBase->GetCharacterMesh()->LinkAnimClassLayers(WeaponData.AnimLayerForEquip);
 }
 
 void ABlurWeapon::Unequip()

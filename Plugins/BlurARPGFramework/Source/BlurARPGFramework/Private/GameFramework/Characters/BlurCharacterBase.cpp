@@ -51,6 +51,30 @@ UBlurPawnUIComponent* ABlurCharacterBase::GetPawnUIComponent() const
 	return nullptr; // 此接口由子类实现.
 }
 
+USkeletalMeshComponent* ABlurCharacterBase::GetCharacterMesh()
+{
+	if (CharacterMeshName.IsNone())
+		return GetMesh();
+
+	if (CharacterMesh == nullptr)
+	{
+		TArray<USkeletalMeshComponent*> SkeletalMeshComponents;
+		GetComponents<USkeletalMeshComponent>(SkeletalMeshComponents);
+		for (USkeletalMeshComponent* MeshComponent : SkeletalMeshComponents)
+		{
+			if (MeshComponent->GetFName().IsEqual(CharacterMeshName))
+			{
+				CharacterMesh = TObjectPtr<USkeletalMeshComponent>(MeshComponent);
+			}
+		}
+	}
+
+	if (CharacterMesh != nullptr)
+		return CharacterMesh.Get();
+
+	return nullptr;
+}
+
 void ABlurCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

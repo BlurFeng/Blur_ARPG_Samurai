@@ -38,8 +38,6 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 
-private:
-	
 #pragma region Components
 
 	// Notes:
@@ -48,14 +46,6 @@ private:
 	// BlueprintReadOnly：蓝图中只读。如果想要编辑使用BlueprintReadWrite。
 	// Category：分类，有助于整理代码。蓝图中也会显示到相应分类下。
 	// meta = (AllowPrivateAccess = "true")：允许蓝图或编辑器访问private成员变量。
-
-	// 相机臂。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
-
-	// 自动跟随的相机。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
 
 	// UI组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI", meta = (AllowPrivateAccess = "true"))

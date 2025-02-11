@@ -38,6 +38,9 @@ public:
 	//~ Begin IPawnUIInterface Interface.
 	virtual UBlurPawnUIComponent* GetPawnUIComponent() const override;
 	//~ End IPawnUIInterface Interface
+
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Weapon")
+	USkeletalMeshComponent* GetCharacterMesh();
 	
 protected:
 	// 战斗组件。
@@ -58,12 +61,20 @@ protected:
 	 UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Blur ARPG Framework | Ability System")
 	 class UBlurAttributeSet* BlurAttributeSet;
 
+	// 角色Mesh名称。当角色的Mesh不是默认Mesh时，设置此名字来获取。比如当你使用动画重映射时，创建了子Mesh作为实际使用的Mesh。
+	// 使用
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data")
+	FName CharacterMeshName;
+
+	UPROPERTY(Category=Character, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> CharacterMesh;
+
 	// 角色启动数据资源。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data")
 	TSoftObjectPtr<class UBlurDA_CharacterStartup> CharacterStartUpData;
 
 	// 角色胶囊体默认高度。游戏启动时从Capsule上获取。
-	UPROPERTY(BlueprintReadOnly, Category = "CharacterData")
+	UPROPERTY(BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data")
 	float CapsuleHalfHeightCached;
 
 public:
