@@ -21,10 +21,6 @@ class BLURARPGFRAMEWORK_API ABlurSimpleAICharacter : public ABlurCharacterBase
 public:
 	ABlurSimpleAICharacter();
 
-	//~ Begin IPawnCombatInterface Interface.
-	virtual UBlurCombatComponent* GetPawnCombatComponent() const override;
-	//~ End IPawnCombatInterface Interface
-
 	//~ Begin IPawnUIInterface Interface.
 	virtual UBlurPawnUIComponent* GetPawnUIComponent() const override;
 	virtual UBlurCharacterUIComponent* GetCharacterUIComponent() const override;
@@ -39,10 +35,6 @@ protected:
 
 	virtual void InitStartUpData() override;
 	
-	// 战斗组件。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat")
-	UBlurAbilityCombatComponent* AbilityCombatComponent;
-	
 	// 角色UI组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI")
 	UBlurCharacterUIComponent* CharacterUIComponent;
@@ -54,7 +46,4 @@ protected:
 	// AI控制器。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI")
 	ABlurAIController* BlurAIController;
-
-public:
-	FORCEINLINE UBlurAbilityCombatComponent* GetAbilityCombatComponent() const {return AbilityCombatComponent;}
 };

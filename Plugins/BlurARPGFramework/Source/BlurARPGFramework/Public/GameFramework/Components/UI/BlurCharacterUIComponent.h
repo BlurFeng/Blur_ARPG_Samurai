@@ -8,7 +8,7 @@
 
 #include "BlurCharacterUIComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEquippedWeaponChangedDelegate, TSoftObjectPtr<UTexture2D>, SoftWeaponIcon);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCombatWeaponChangedDelegate, TSoftObjectPtr<UTexture2D>, SoftWeaponIcon);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAbilityIconSlotUpdatedDelegate, FGameplayTag, AbilityInputTag, TSoftObjectPtr<UMaterialInterface>, SoftAbilityIconMaterial);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAbilityCooldownBeginDelegate, FGameplayTag, AbilityInputTag, float, TotalCooldownTime, float, RemainingCooldownTime);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStoneInteractedDelegate, bool, bShouldDisplayInputKey);
@@ -34,7 +34,7 @@ public:
 	
 	// 当装备武器变化时。
 	UPROPERTY(BlueprintAssignable)
-	FOnEquippedWeaponChangedDelegate OnEquippedWeaponChangedDelegate;
+	FOnCombatWeaponChangedDelegate OnCombatWeaponChanged;
 
 	// 当取消一个技能时。
 	UPROPERTY(BlueprintAssignable)

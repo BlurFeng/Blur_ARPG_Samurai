@@ -34,7 +34,4 @@ public:
 	//** 回调 **//
 	virtual void OnMeleeHitTargetActor(AActor* HitActor) override; // 当武器命中目标时。
 	virtual void OnMeleePulledFromTargetActor(AActor* HitActor) override; // 当武器离开目标时。
-
-protected:
-	virtual void ToggleBodyCollisionBoxCollision(const bool bShouldEnable, const EToggleDamageType ToggleDamageType) override;
 };

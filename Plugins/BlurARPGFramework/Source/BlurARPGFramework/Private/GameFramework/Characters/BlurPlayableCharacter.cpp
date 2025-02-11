@@ -20,7 +20,8 @@
 #include "GameFramework/BlurGameplayTags.h"
 #include "GameFramework/Common/BlurDebugHelper.h"
 
-ABlurPlayableCharacter::ABlurPlayableCharacter()
+ABlurPlayableCharacter::ABlurPlayableCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBlurAbilityCombatComponent>("AbilityCombatComponent"))
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
@@ -47,16 +48,8 @@ ABlurPlayableCharacter::ABlurPlayableCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 400.f; // 最大移动速度。
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f; // 刹车减速度。
 
-	// 创建技能战斗组件。
-	AbilityCombatComponent = CreateDefaultSubobject<UBlurAbilityCombatComponent>(TEXT("AbilityCombatComponent"));
-
 	// 创建角色UI组件。
 	CharacterUIComponent = CreateDefaultSubobject<UBlurCharacterUIComponent>(TEXT("CharacterUIComponent"));
-}
-
-UBlurCombatComponent* ABlurPlayableCharacter::GetPawnCombatComponent() const
-{
-	return AbilityCombatComponent;
 }
 
 UBlurPawnUIComponent* ABlurPlayableCharacter::GetPawnUIComponent() const

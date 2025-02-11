@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
+#include "GameFramework/Components/Combat/BlurAbilityCombatComponent.h"
 #include "BlurPlayableCharacter.generated.h"
 
 class UCameraComponent;
@@ -20,12 +21,8 @@ class BLURARPGFRAMEWORK_API ABlurPlayableCharacter : public ABlurCharacterBase
 	GENERATED_BODY()
 
 public:
-	ABlurPlayableCharacter();
-
-	//~ Begin IPawnCombatInterface Interface.
-	virtual UBlurCombatComponent* GetPawnCombatComponent() const override;
-	//~ End IPawnCombatInterface Interface
-
+	explicit ABlurPlayableCharacter(const FObjectInitializer& ObjectInitializer);
+	
 	//~ Begin IPawnUIInterface Interface.
 	virtual UBlurPawnUIComponent* GetPawnUIComponent() const override;
 	virtual UBlurCharacterUIComponent* GetCharacterUIComponent() const override;
@@ -60,10 +57,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
-	// 战斗组件，用于管理武器和攻击方式。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat", meta = (AllowPrivateAccess = "true"))
-	UBlurAbilityCombatComponent* AbilityCombatComponent;
-
 	// UI组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI", meta = (AllowPrivateAccess = "true"))
 	UBlurCharacterUIComponent* CharacterUIComponent;
@@ -94,5 +87,5 @@ private:
 #pragma endregion
 
 public:
-	FORCEINLINE UBlurAbilityCombatComponent* GetAbilityCombatComponent() const { return AbilityCombatComponent; }
+	FORCEINLINE UBlurAbilityCombatComponent* GetAbilityCombatComponent() const { return Cast<UBlurAbilityCombatComponent>(CombatComponent); }
 };

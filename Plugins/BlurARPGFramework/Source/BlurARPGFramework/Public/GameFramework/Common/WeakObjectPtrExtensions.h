@@ -7,6 +7,13 @@ namespace WeakObjectPtrExtensions
 	{
 		WeakObjectPtrArray.Add(TWeakObjectPtr<T>(Object));
 	}
+
+	template <class T>
+	static void Remove(TArray<TWeakObjectPtr<T>>& WeakObjectPtrArray, T* Object)
+	{
+		if (!WeakObjectPtrArray.Contains(Object)) return;
+		WeakObjectPtrArray.Remove(TWeakObjectPtr<T>(Object));
+	}
 	
 	template <class T>
 	static bool Equals(const TWeakObjectPtr<T>& WeakObjectPtr, T* Object)

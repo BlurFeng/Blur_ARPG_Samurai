@@ -18,8 +18,9 @@ class BLURARPGFRAMEWORK_API ABlurCharacterBase : public ACharacter, public IAbil
 	GENERATED_BODY()
 
 public:
+	
 	// Sets default values for this character's properties
-	ABlurCharacterBase();
+	ABlurCharacterBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void BeginPlay() override;
 	
@@ -39,6 +40,10 @@ public:
 	//~ End IPawnUIInterface Interface
 	
 protected:
+	// 战斗组件。
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat", meta = (AllowPrivateAccess = "true"))
+	UBlurCombatComponent* CombatComponent;
+	
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
@@ -67,7 +72,7 @@ public:
 	// 非常适合用于访问器方法这样频繁调用且短小的方法，以提高性能。
 	// 它将函数的实现直接嵌入调用点，而不是生成函数调用指令，通过栈跳转来调用函数。
 	// 但需要注意，这会导致代码膨胀，不适合用于较大的函数。否则会增加缓存压力，适得其反。
-	
+
 	FORCEINLINE UBlurAbilitySystemComponent* GetBlurAbilitySystemComponent() const { return BlurAbilitySystemComponent; }
 	FORCEINLINE UBlurAttributeSet* GetBlurAttributeSet() const { return BlurAttributeSet; }
 

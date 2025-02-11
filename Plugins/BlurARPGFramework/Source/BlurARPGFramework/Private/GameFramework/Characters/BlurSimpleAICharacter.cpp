@@ -30,10 +30,7 @@ ABlurSimpleAICharacter::ABlurSimpleAICharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 180.f, 0.f);
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 1000.f;
-
-	// 创建战斗组件。
-	AbilityCombatComponent = CreateDefaultSubobject<UBlurAbilityCombatComponent>("AbilityCombatComponent");
-
+	
 	// 创建UI组件。
 	CharacterUIComponent = CreateDefaultSubobject<UBlurCharacterUIComponent>("CharacterUIComponent");
 
@@ -41,11 +38,6 @@ ABlurSimpleAICharacter::ABlurSimpleAICharacter()
 	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthWidgetComponent");
 	HealthWidgetComponent->SetupAttachment(GetMesh());
 	
-}
-
-UBlurCombatComponent* ABlurSimpleAICharacter::GetPawnCombatComponent() const
-{
-	return AbilityCombatComponent;
 }
 
 UBlurPawnUIComponent* ABlurSimpleAICharacter::GetPawnUIComponent() const
