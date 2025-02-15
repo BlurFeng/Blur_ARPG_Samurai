@@ -28,12 +28,11 @@ public:
 	FGameplayTag CurrentCombatWeapon;
 
 	/// 装备武器。比如将刀从背包拿出放在腰间。
-	/// @param InWeaponTag 
 	/// @param InWeapon 
 	/// @param bEnterCombatWithWeapon 
 	/// @return 
 	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
-	bool Equip(FGameplayTag InWeaponTag, ABlurWeapon* InWeapon, const bool bEnterCombatWithWeapon);
+	bool Equip(ABlurWeapon* InWeapon, const bool bEnterCombatWithWeapon);
 
 	/// 卸下武器。比如将刀从腰间卸下，放回背包。
 	/// @param InWeaponTag 
@@ -83,8 +82,13 @@ public:
 
 	/// 获取角色当前战斗状态下拿着的武器。
 	/// @return 
-	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Combat")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Combat")
 	ABlurWeapon* GetCurrentCombatWeapon() const;
+
+	/// 在战斗状态中。正在使用一个武器。
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Combat")
+	bool IsInCombat() const;
 
 	/// 确认是否是当前战斗状态下持有的武器。
 	/// @param InWeaponTag 

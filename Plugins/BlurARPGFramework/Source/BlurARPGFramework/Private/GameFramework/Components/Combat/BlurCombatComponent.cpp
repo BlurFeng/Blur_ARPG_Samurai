@@ -9,14 +9,14 @@
 #include "GameFramework/Items/Weapons/BlurAbilityWeapon.h"
 #include "GameFramework/Items/Weapons/BlurWeapon.h"
 
-bool UBlurCombatComponent::Equip(const FGameplayTag InWeaponTag, ABlurWeapon* InWeapon, const bool bEnterCombatWithWeapon)
+bool UBlurCombatComponent::Equip(ABlurWeapon* InWeapon, const bool bEnterCombatWithWeapon)
 {
-	if (!InWeapon) return false;
+	if (!InWeapon || !InWeapon->WeaponData.WeaponTag.IsValid()) return false;
 
 	// 注册武器信息。
-	if (!RegisterWeapon(InWeaponTag, InWeapon))
+	if (!RegisterWeapon(InWeapon->WeaponData.WeaponTag, InWeapon))
 	{
-		Debug::Print(FString::Printf(TEXT("A named %s has already been added as carried weapon."), *InWeaponTag.ToString()));
+		Debug::Print(FString::Printf(TEXT("A named %s has already been added as carried weapon."), *InWeapon->WeaponData.WeaponTag.ToString()));
 		return false;
 	}
 
@@ -25,7 +25,7 @@ bool UBlurCombatComponent::Equip(const FGameplayTag InWeaponTag, ABlurWeapon* In
 	// 直接拔出武器进入战斗状态。
 	if(bEnterCombatWithWeapon)
 	{
-		EnterCombatWithWeapon(InWeaponTag);
+		EnterCombatWithWeapon(InWeapon->WeaponData.WeaponTag);
 	}
 
 	return true;
@@ -165,6 +165,11 @@ ABlurWeapon* UBlurCombatComponent::GetCurrentCombatWeapon() const
 	if(!CurrentCombatWeapon.IsValid()) return nullptr;
 	
 	return GetEquippedWeaponByTag(CurrentCombatWeapon);
+}
+
+bool UBlurCombatComponent::IsInCombat() const
+{
+	return CurrentCombatWeapon.IsValid();
 }
 
 bool UBlurCombatComponent::IsCurrentCombatWeapon(const FGameplayTag InWeaponTag) const

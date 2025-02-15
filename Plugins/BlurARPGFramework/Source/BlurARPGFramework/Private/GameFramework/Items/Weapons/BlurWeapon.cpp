@@ -5,9 +5,11 @@
 
 #include "GameFramework/Animation/BlurLinkedAnimLayer.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/BlurFunctionLibrary.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
+#include "GameFramework/Characters/BlurPlayableCharacter.h"
 #include "GameFramework/Components/UI/BlurCharacterUIComponent.h"
 
 ABlurWeapon::ABlurWeapon()
@@ -36,7 +38,7 @@ void ABlurWeapon::Equip(AActor* SelfOwner)
 	if (!BlurCharacterBase) return;
 	OwnerCharacterWeakPtr = TWeakObjectPtr<ABlurCharacterBase>(BlurCharacterBase);
 
-	// 生成武器的Actor并附加到相应的骨骼节点。
+	// 生成武器的Actor。
 	if (WeaponObjects.IsEmpty())
 	{
 		if (UWorld* World = GetWorld())
@@ -60,7 +62,8 @@ void ABlurWeapon::Equip(AActor* SelfOwner)
 			}
 		}
 	}
-	
+
+	// 附加武器到对应拥有者骨骼插槽。
 	if (!WeaponObjects.IsEmpty())
 	{
 		const FAttachmentTransformRules AttachmentTransformRules =
@@ -87,8 +90,14 @@ void ABlurWeapon::Equip(AActor* SelfOwner)
 	}
 
 	// 改变动画连接层。
-	if (WeaponData.AnimLayerForEquip)
-		BlurCharacterBase->GetCharacterMesh()->LinkAnimClassLayers(WeaponData.AnimLayerForEquip);
+	if (WeaponData.AnimLayerWithEquip)
+		BlurCharacterBase->GetCharacterMesh()->LinkAnimClassLayers(WeaponData.AnimLayerWithEquip);
+
+	// 添加装备武器时的输入映射到本地玩家。
+	if (ABlurPlayableCharacter* PlayableCharacter = Cast<ABlurPlayableCharacter>(OwnerCharacterWeakPtr.Get()))
+	{
+		PlayableCharacter->AddInputConfigWithAbilities(WeaponData.InputConfigWithEquip, InputBindingHandles_Equip);
+	}
 }
 
 void ABlurWeapon::Unequip()
@@ -113,8 +122,14 @@ void ABlurWeapon::Unequip()
 	}
 
 	// 改变动画连接层。
-	if (WeaponData.AnimLayerForEquip)
-		BlurCharacterBase->GetMesh()->UnlinkAnimClassLayers(WeaponData.AnimLayerForEquip);
+	if (WeaponData.AnimLayerWithEquip)
+		BlurCharacterBase->GetMesh()->UnlinkAnimClassLayers(WeaponData.AnimLayerWithEquip);
+
+	// 移除装备武器时的输入映射从本地玩家。
+	if (ABlurPlayableCharacter* PlayableCharacter = Cast<ABlurPlayableCharacter>(OwnerCharacterWeakPtr.Get()))
+	{
+		PlayableCharacter->RemoveInputConfigWithAbilities(WeaponData.InputConfigWithEquip, InputBindingHandles_Equip);
+	}
 }
 
 void ABlurWeapon::EnterCombat()
@@ -122,26 +137,18 @@ void ABlurWeapon::EnterCombat()
 	ABlurCharacterBase* BlurCharacterBase;
 	if (!GetOwnerCharacter(BlurCharacterBase)) return;
 	
-	// 添加武器的输入映射到本地玩家。
-	if (const APlayerController* PlayerController = Cast<APlayerController>(BlurCharacterBase->GetController()))
-	{
-		if (const ULocalPlayer* LocalPlayer =  PlayerController->GetLocalPlayer())
-		{
-			UEnhancedInputLocalPlayerSubsystem* Subsystem =
-				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
-
-			// 用优先级更高的武器输入映射覆盖角色的默认输入映射。
-			// 多个输入映射可以同时存在，只有发生冲突的输入会优先使用优先级高的。所以在武器输入映射中，没必要重新配置基础移动的部分。
-			Subsystem->AddMappingContext(WeaponData.WeaponInputMappingContext, WeaponData.WeaponInputMappingPriority);
-		}
-	}
-
 	// 改变动画连接层。根据武器不同，我们会有不同的动画表现。
 	// Tips: 如果你使用PoseSearch等插件来实现动画，根据实际情况可以不配置链接动画层。
-	if (WeaponData.AnimLayerForEquip)
-		BlurCharacterBase->GetMesh()->UnlinkAnimClassLayers(WeaponData.AnimLayerForEquip);
-	if (WeaponData.AnimLayerForEnterCombat)
-		BlurCharacterBase->GetMesh()->LinkAnimClassLayers(WeaponData.AnimLayerForEnterCombat);
+	if (WeaponData.AnimLayerWithEquip)
+		BlurCharacterBase->GetMesh()->UnlinkAnimClassLayers(WeaponData.AnimLayerWithEquip);
+	if (WeaponData.AnimLayerWithEnterCombat)
+		BlurCharacterBase->GetMesh()->LinkAnimClassLayers(WeaponData.AnimLayerWithEnterCombat);
+
+	// 添加使用武器时的输入映射到本地玩家。
+	if (ABlurPlayableCharacter* PlayableCharacter = Cast<ABlurPlayableCharacter>(OwnerCharacterWeakPtr.Get()))
+	{
+		PlayableCharacter->AddInputConfigWithAbilities(WeaponData.InputConfigWithCombat, InputBindingHandles_Combat);
+	}
 
 	// 调用拿出武器时的UI更新委托。
 	if (BlurCharacterBase->GetCharacterUIComponent())
@@ -156,25 +163,17 @@ void ABlurWeapon::ExitCombat()
 	ABlurCharacterBase* BlurCharacterBase;
 	if (!GetOwnerCharacter(BlurCharacterBase)) return;
 	
-	// 移除武器的输入映射从本地玩家。
-	if (const APlayerController* PlayerController = Cast<APlayerController>(BlurCharacterBase->GetController()))
-	{
-		if (const ULocalPlayer* LocalPlayer =  PlayerController->GetLocalPlayer())
-		{
-			UEnhancedInputLocalPlayerSubsystem* Subsystem =
-				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
-
-			// 用优先级更高的武器输入映射覆盖角色的默认输入映射。
-			// 多个输入映射可以同时存在，只有发生冲突的输入会优先使用优先级高的。所以在武器输入映射中，没必要重新配置基础移动的部分。
-			Subsystem->RemoveMappingContext(WeaponData.WeaponInputMappingContext);
-		}
-	}
-
 	// 改变动画连接层。
-	if (WeaponData.AnimLayerForEnterCombat)
-		BlurCharacterBase->GetMesh()->UnlinkAnimClassLayers(WeaponData.AnimLayerForEnterCombat);
-	if (WeaponData.AnimLayerForEquip)
-		BlurCharacterBase->GetMesh()->LinkAnimClassLayers(WeaponData.AnimLayerForEquip);
+	if (WeaponData.AnimLayerWithEnterCombat)
+		BlurCharacterBase->GetMesh()->UnlinkAnimClassLayers(WeaponData.AnimLayerWithEnterCombat);
+	if (WeaponData.AnimLayerWithEquip)
+		BlurCharacterBase->GetMesh()->LinkAnimClassLayers(WeaponData.AnimLayerWithEquip);
+
+	// 移除使用武器时的输入映射从本地玩家。
+	if (ABlurPlayableCharacter* PlayableCharacter = Cast<ABlurPlayableCharacter>(OwnerCharacterWeakPtr.Get()))
+	{
+		PlayableCharacter->RemoveInputConfigWithAbilities(WeaponData.InputConfigWithCombat, InputBindingHandles_Combat);
+	}
 
 	// 调用放回武器时的UI更新委托。
 	if (BlurCharacterBase->GetCharacterUIComponent())
@@ -189,6 +188,26 @@ bool ABlurWeapon::GetOwnerCharacter(ABlurCharacterBase*& OwnerCharacter) const
 	if (!OwnerCharacterWeakPtr.IsValid()) return false;
 	OwnerCharacter = OwnerCharacterWeakPtr.Get();
 	return OwnerCharacter != nullptr;
+}
+
+ABlurWeaponObject* ABlurWeapon::GetWeaponObjectFirst()
+{
+	if (WeaponObjects.IsEmpty()) return nullptr;
+
+	return WeaponObjects[0];
+}
+
+ABlurWeaponObject* ABlurWeapon::GetWeaponObject(const FName WeaponObjectName)
+{
+	if (WeaponObjects.IsEmpty()) return nullptr;
+
+	for (ABlurWeaponObject* WeaponObject : WeaponObjects)
+	{
+		if (WeaponObject->WeaponObjectInfo.Name.IsEqual(WeaponObjectName))
+			return WeaponObject;
+	}
+
+	return nullptr;
 }
 
 void ABlurWeapon::SetCollisionEnabled(const ECollisionEnabled::Type CollisionEnabled)

@@ -5,8 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
 #include "GameFramework/Components/Combat/BlurAbilityCombatComponent.h"
+
 #include "BlurPlayableCharacter.generated.h"
 
+struct FInputBindingHandle;
+class UBlurEnhancedInputComponent;
+class UBlurDA_InputConfigWithAbilities;
 class UCameraComponent;
 class USpringArmComponent;
 struct FInputActionValue;
@@ -38,7 +42,7 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 
-#pragma region Components
+	TWeakObjectPtr<UBlurEnhancedInputComponent> OwnerEnhancedInputComponent;
 
 	// Notes:
 	// UPROPERTY宏用来标记UE类中的成员变量，告知引擎如何管理这些成员变量。
@@ -50,11 +54,22 @@ protected:
 	// UI组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI", meta = (AllowPrivateAccess = "true"))
 	UBlurCharacterUIComponent* CharacterUIComponent;
-	
-#pragma endregion
 
 #pragma region Inputs
+
+public:
 	
+	/// 添加技能输入配置。
+	/// @param InputConfigWithAbilities 输入技能数据资源。
+	/// @param InputBindingHandles 绑定事件Handles的缓存，由调用此方法者自行缓存。
+	void AddInputConfigWithAbilities(const UBlurDA_InputConfigWithAbilities* InputConfigWithAbilities, TArray<FInputBindingHandle>& InputBindingHandles);
+
+	/// 移除技能输入配置。
+	/// @param InputConfigWithAbilities 输入技能数据资源。
+	/// @param InputBindingHandles 绑定事件Handles的缓存，由调用此方法者自行缓存。
+	void RemoveInputConfigWithAbilities(const UBlurDA_InputConfigWithAbilities* InputConfigWithAbilities, const TArray<FInputBindingHandle>& InputBindingHandles);
+	
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Character Data", meta = (AllowPrivateAccess = "true"))
 	UBlurDA_InputConfig* InputConfigDataAsset;
 	

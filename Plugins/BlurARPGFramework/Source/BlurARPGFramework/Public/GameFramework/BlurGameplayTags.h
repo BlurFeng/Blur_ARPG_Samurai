@@ -30,6 +30,8 @@ namespace BlurGameplayTags
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Ability);
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Ability_Toggleable); // 切换形式。在激活和取消之间切换。
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Ability_MustBeHeld); // 持续按住形式。按下时激活，抬起时取消。
+	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Ability_EnterCombat); // 拔出武器进入战斗状态。所有武器的此技能的通用输入Tag。
+	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_Ability_ExitCombat); // 收起武器离开战斗状态。所有武器的此技能的通用输入Tag。
 
 	//** Common Status **//
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Blocking); // 格挡状态，可以防御敌人的进攻。
@@ -45,10 +47,12 @@ namespace BlurGameplayTags
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Status_Dead); // 死亡状态。
 	
 	//** Common Event **//
-	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_PickUp);
+	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_PickUp); // 拾取物品。
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_SwitchTarget_Triggered); // 切换目标输入触发时事件。监听鼠标移动输入量。
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_SwitchTarget_Completed); // 切换目标输入完成时事件。判断鼠标移动输入量是否能够触发切换目标。
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_ResetView); // 触发重置视口技能。
+	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Montage_EnterCombat); // 装备动画用通知。一般在此通知后将武器Actor附加到角色手上。
+	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_Montage_ExitCombat); // 卸下装备动画用通知。一般在此通知后将武器Actor附加到角色背后或腰间的闲置位置。
 	
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_MeleeHit);
 	BLURARPGFRAMEWORK_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Common_Event_MeleePulled);

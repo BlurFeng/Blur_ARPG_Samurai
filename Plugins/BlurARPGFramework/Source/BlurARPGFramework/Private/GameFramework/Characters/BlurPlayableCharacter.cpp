@@ -86,14 +86,15 @@ void ABlurPlayableCharacter::InitStartUpData()
 	// 		break;
 	// 	}
 	// }
-			
+
 	LoadedData->GiveToAbilitySystemComponent(BlurAbilitySystemComponent);
 }
 
 void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	// 调用父类方法，实际上里面没有具体的内容，但之后引擎更新可能会有实际实现的内容。
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
 	// 确认InputConfigDataAsset资源是否配置，不为null。
 #if WITH_EDITOR
 	if (!InputConfigDataAsset)
@@ -105,9 +106,6 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	checkf(InputConfigDataAsset, TEXT("Forgot to assign a valid data asset as Input Config Data Asset."));
 #endif
 	
-	// 调用父类方法，实际上里面没有具体的内容，但之后引擎更新可能会有实际实现的内容。
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 	// 获取本地玩家控制器。
 	const ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
 
@@ -130,6 +128,9 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 #else
 	UBlurEnhancedInputComponent* BlurEnhancedInputComponent = CastChecked<UBlurEnhancedInputComponent>(PlayerInputComponent);
 #endif
+
+	OwnerEnhancedInputComponent = TWeakObjectPtr<UBlurEnhancedInputComponent>(BlurEnhancedInputComponent);
+	
 	// 绑定输入事件。
 	// 基础操作输入。如果子类自己在蓝图中实现，可以不配置这些输入事件。
 	if (InputConfigDataAsset->NativeInputActions.Contains(BlurGameplayTags::Input_Move))
@@ -167,6 +168,44 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 void ABlurPlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ABlurPlayableCharacter::AddInputConfigWithAbilities(
+	const UBlurDA_InputConfigWithAbilities* InputConfigWithAbilities, TArray<FInputBindingHandle>& InputBindingHandles)
+{
+	const ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	// 用优先级更高的武器输入映射覆盖角色的默认输入映射。
+	// 多个输入映射可以同时存在，只有发生冲突的输入会优先使用优先级高的。所以在武器输入映射中，没必要重新配置基础移动的部分。
+	Subsystem->AddMappingContext(InputConfigWithAbilities->InputMappingContext, InputConfigWithAbilities->InputMappingContextPriority);
+	
+	if (OwnerEnhancedInputComponent.IsValid())
+	{
+		InputBindingHandles.Empty();
+		
+		OwnerEnhancedInputComponent.Get()->BindAbilityInputAction(
+			InputConfigWithAbilities->AbilityInputActions, this, &ThisClass::Input_AbilityInputPressed,
+			&ThisClass::Input_AbilityInputReleased, &ThisClass::Input_AbilityInputTriggered, InputBindingHandles);
+	}
+}
+
+void ABlurPlayableCharacter::RemoveInputConfigWithAbilities(
+	const UBlurDA_InputConfigWithAbilities* InputConfigWithAbilities, const TArray<FInputBindingHandle>& InputBindingHandles)
+{
+	const ULocalPlayer* LocalPlayer = GetController<APlayerController>()->GetLocalPlayer();
+	UEnhancedInputLocalPlayerSubsystem* Subsystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+
+	// 用优先级更高的武器输入映射覆盖角色的默认输入映射。
+	// 多个输入映射可以同时存在，只有发生冲突的输入会优先使用优先级高的。所以在武器输入映射中，没必要重新配置基础移动的部分。
+	Subsystem->RemoveMappingContext(InputConfigWithAbilities->InputMappingContext);
+
+	if (OwnerEnhancedInputComponent.IsValid())
+	{
+		OwnerEnhancedInputComponent.Get()->RemoveBindings(InputBindingHandles);
+	}
 }
 
 void ABlurPlayableCharacter::Input_Move(const FInputActionValue& InputActionValue)

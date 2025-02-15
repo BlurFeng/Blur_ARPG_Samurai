@@ -23,6 +23,8 @@ namespace BlurGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_Ability, "Input.Ability");
 	UE_DEFINE_GAMEPLAY_TAG(Input_Ability_Toggleable, "Input.Ability.Toggleable");
 	UE_DEFINE_GAMEPLAY_TAG(Input_Ability_MustBeHeld, "Input.Ability.MustBeHeld");
+	UE_DEFINE_GAMEPLAY_TAG(Input_Ability_EnterCombat, "Input.Ability.EnterCombat");
+	UE_DEFINE_GAMEPLAY_TAG(Input_Ability_ExitCombat, "Input.Ability.ExitCombat");
 
 	//** Common Status **//
 	UE_DEFINE_GAMEPLAY_TAG(Common_Status_Blocking, "Common.Status.Blocking");
@@ -43,6 +45,8 @@ namespace BlurGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_SwitchTarget_Triggered, "Common.Event.SwitchTarget.Triggered");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_SwitchTarget_Completed, "Common.Event.SwitchTarget.Completed");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_ResetView, "Common.Event.ResetView");
+	UE_DEFINE_GAMEPLAY_TAG(Common_Event_Montage_EnterCombat, "Common.Event.Montage.EnterCombat");
+	UE_DEFINE_GAMEPLAY_TAG(Common_Event_Montage_ExitCombat, "Common.Event.Montage.ExitCombat");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_MeleeHit, "Common.Event.MeleeHit");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Event_MeleePulled, "Common.Event.MeleePulled");
