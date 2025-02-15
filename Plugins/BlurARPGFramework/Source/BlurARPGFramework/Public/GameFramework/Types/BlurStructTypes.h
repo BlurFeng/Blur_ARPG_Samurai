@@ -23,6 +23,7 @@
 
 #include "BlurStructTypes.generated.h"
 
+class ABlurWeaponObject;
 class UBlurLinkedAnimLayer;
 class UInputMappingContext;
 
@@ -50,7 +51,7 @@ struct FGiveAbilitySet
 
 // 特殊技能配置。
 USTRUCT(BlueprintType)
-struct FSpecialGiveAbilitySet : public FGiveAbilitySet
+struct FGiveSpecialAbilitySet : public FGiveAbilitySet
 {
 	GENERATED_BODY()
 
@@ -64,13 +65,31 @@ struct FSpecialGiveAbilitySet : public FGiveAbilitySet
 };
 
 USTRUCT(BlueprintType)
-struct FAbilityWeaponData
+struct FWeaponObjectInfo
 {
 	GENERATED_BODY()
 
-	// 武器的链接动画层。在装备武器时Link到角色Mesh并作用于动画蓝图来更改角色动画表现。
+	// 武器部件名称。可以用于查询。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UBlurLinkedAnimLayer> WeaponAnimLayerToLink;
+	FName Name;
+	
+	// 一个武器生成的Actor部件。比如生成的刀和刀鞘。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<ABlurWeaponObject> WeaponObjectClass;
+
+	// 附加到的骨骼插槽名称。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FName AttachToSocketName;
+};
+
+USTRUCT(BlueprintType)
+struct FWeaponInfo
+{
+	GENERATED_BODY()
+	
+	// 武器拥有的部件Actor。比如刀和刀鞘。他们在武器被装备到角色时生成，并附加到对应的骨骼位置。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FWeaponObjectInfo> WeaponObjectInfos;
 	
 	// 武器输入映射。当装备武器时，使用此InputMap覆盖原有的。因为装备武器后操作方式会相应变化。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -80,21 +99,14 @@ struct FAbilityWeaponData
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int WeaponInputMappingPriority = 1;
 
-	// 武器默认技能等级。我们也能在运行时修改 ABlurAbilityWeapon.WeaponAbilityLevel 字段来决定最终赋予拥有者的技能等级。
+	// 武器的链接动画层，Link到角色Mesh来改变动画表现。在武器装备时。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int DefaultWeaponAbilityLevel = 1;
-	
-	// Tips：实际上我们的EquipAxe技能也不应当直接赋予角色，而是在角色获得Axe时赋予。
-	// 但对于这个学习项目，这样就好。否则我们还需要开发相应的道具系统和拾取道具的功能。
-	
-	// 武器默认技能组。在装备武器时赋予角色。比如装备斧子时获得“卸下斧子”、“攻击”、“防御”等技能。
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
-	TArray<FGiveAbilitySet> DefaultWeaponAbilities;
-	
-	// 特殊武器技能。强力的技能，一般有cost 或 CD。
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
-	TArray<FSpecialGiveAbilitySet> SpecialWeaponAbilities;
-	
+	TSubclassOf<UBlurLinkedAnimLayer> AnimLayerForEquip;
+
+	// 武器的链接动画层，Link到角色Mesh来改变动画表现。在使用武器进入战斗状态时。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UBlurLinkedAnimLayer> AnimLayerForEnterCombat;
+
 	// 使用曲线设置武器的基础伤害。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FScalableFloat WeaponBaseDamage;
@@ -102,4 +114,28 @@ struct FAbilityWeaponData
 	// 武器图标Icon。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSoftObjectPtr<UTexture2D> SoftWeaponIconTexture;
+
+	// 武器Actor。用于创建武器模型Actor并赋予
+};
+
+USTRUCT(BlueprintType)
+struct FAbilityWeaponInfo
+{
+	GENERATED_BODY()
+
+	// 武器默认技能等级。一般使用武器的等级来设置技能等级，当没有有效的武器等级时，使用默认等级。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int DefaultWeaponAbilityLevel = 1;
+	
+	// 装备武器技能组。当把武器从背包装备到角色身上时获得的技能。一般会包含 拔出武器 和 收回武器 两个技能。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
+	TArray<FGiveAbilitySet> AbilitiesWithEquip;
+	
+	// 战斗技能组。当调用 EnterCombat 进入战斗状态时，此技能会被赋予角色。一般包含 攻击技能 和 防御技能。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
+	TArray<FGiveAbilitySet> AbilitiesWithCombat;
+	
+	// 战斗特殊技能组。当调用 EnterCombat 进入战斗状态时，此技能会被赋予角色。强力的技能，一般有cost 和 CD。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = "InputTag"))
+	TArray<FGiveSpecialAbilitySet> SpecialAbilitiesWithCombat;
 };

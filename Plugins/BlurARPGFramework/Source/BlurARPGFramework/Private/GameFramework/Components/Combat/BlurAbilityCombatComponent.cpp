@@ -11,17 +11,17 @@
 
 ABlurAbilityWeapon* UBlurAbilityCombatComponent::GetCarriedAbilityWeaponByTag(FGameplayTag InWeaponTag) const
 {
-	return Cast<ABlurAbilityWeapon>(GetCarriedWeaponByTag(InWeaponTag));
+	return Cast<ABlurAbilityWeapon>(GetEquippedWeaponByTag(InWeaponTag));
 }
 
 ABlurAbilityWeapon* UBlurAbilityCombatComponent::GetCurrentEquippedAbilityWeapon() const
 {
-	return Cast<ABlurAbilityWeapon>(GetCurrentEquippedWeapon());
+	return Cast<ABlurAbilityWeapon>(GetCurrentCombatWeapon());
 }
 
 float UBlurAbilityCombatComponent::GetCurrentEquippedAbilityWeaponDamageAtLevel(const float InLevel) const
 {
-	return GetCurrentEquippedAbilityWeapon()->AbilityWeaponData.WeaponBaseDamage.GetValueAtLevel(InLevel);
+	return GetCurrentEquippedAbilityWeapon()->WeaponData.WeaponBaseDamage.GetValueAtLevel(InLevel);
 }
 
 void UBlurAbilityCombatComponent::OnMeleeHitTargetActor(AActor* HitActor)
@@ -85,10 +85,4 @@ void UBlurAbilityCombatComponent::OnMeleePulledFromTargetActor(AActor* HitActor)
 		BlurGameplayTags::Common_Event_MeleePulled,
 		Data
 		);
-}
-
-void UBlurAbilityCombatComponent::ToggleBodyCollisionBoxCollision(
-	const bool bShouldEnable, const EToggleDamageType ToggleDamageType)
-{
-	Super::ToggleBodyCollisionBoxCollision(bShouldEnable, ToggleDamageType);
 }

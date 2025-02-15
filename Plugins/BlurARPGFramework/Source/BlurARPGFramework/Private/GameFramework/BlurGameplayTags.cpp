@@ -19,9 +19,10 @@ namespace BlurGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Input_PickUp, "Input.PickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Input_SwitchTarget, "Input.SwitchTarget");
 	UE_DEFINE_GAMEPLAY_TAG(Input_ResetView, "Input.ResetView");
-	
-	UE_DEFINE_GAMEPLAY_TAG(Input_Toggleable, "Input.Toggleable");
-	UE_DEFINE_GAMEPLAY_TAG(Input_MustBeHeld, "Input.MustBeHeld");
+
+	UE_DEFINE_GAMEPLAY_TAG(Input_Ability, "Input.Ability");
+	UE_DEFINE_GAMEPLAY_TAG(Input_Ability_Toggleable, "Input.Ability.Toggleable");
+	UE_DEFINE_GAMEPLAY_TAG(Input_Ability_MustBeHeld, "Input.Ability.MustBeHeld");
 
 	//** Common Status **//
 	UE_DEFINE_GAMEPLAY_TAG(Common_Status_Blocking, "Common.Status.Blocking");
@@ -32,6 +33,8 @@ namespace BlurGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(Common_Status_Stamina_Empty, "Common.Status.Stamina.Empty");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Status_Rage_Full, "Common.Status.Rage.Full");
 	UE_DEFINE_GAMEPLAY_TAG(Common_Status_Rage_Empty, "Common.Status.Rage.Empty");
+	UE_DEFINE_GAMEPLAY_TAG(Common_Status_InCombat, "Common.Status.InCombat");
+	
 	
 	UE_DEFINE_GAMEPLAY_TAG(Common_Status_Dead, "Common.Status.Dead");
 

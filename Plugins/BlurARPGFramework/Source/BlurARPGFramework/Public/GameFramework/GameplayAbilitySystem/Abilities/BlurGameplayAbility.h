@@ -9,6 +9,7 @@
 
 #include "BlurGameplayAbility.generated.h"
 
+class UBlurCombatComponent;
 class UBlurAbilityCombatComponent;
 class UBlurCharacterUIComponent;
 class UBlurPawnUIComponent;
@@ -78,10 +79,15 @@ protected:
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
 	ABlurCharacterBase* GetCharacterFromActorInfo();
 	
-	/// 获取角色战斗组件。
+	/// 获取战斗组件。
 	/// @return 
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
-	UBlurAbilityCombatComponent* GetCombatComponentFromActorInfo() const;
+	UBlurCombatComponent* GetCombatComponentFromActorInfo();
+
+	/// 获取技能战斗组件。
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Ability")
+	UBlurAbilityCombatComponent* GetAbilityCombatComponentFromActorInfo();
 
 	/// 获取PawnUI组件。
 	/// @return 

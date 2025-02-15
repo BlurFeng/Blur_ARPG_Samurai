@@ -7,9 +7,11 @@
 #include "GameFramework/GameplayAbilitySystem/BlurAbilitySystemComponent.h"
 #include "GameFramework/GameplayAbilitySystem/BlurAttributeSet.h"
 #include "GameFramework/Common/BlurDebugHelper.h"
+#include "GameFramework/Components/Combat/BlurCombatComponent.h"
 
 // Sets default values
-ABlurCharacterBase::ABlurCharacterBase()
+ABlurCharacterBase::ABlurCharacterBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -22,6 +24,9 @@ ABlurCharacterBase::ABlurCharacterBase()
 	BlurAbilitySystemComponent = CreateDefaultSubobject<UBlurAbilitySystemComponent>(TEXT("BlurAbilitySystemComponent"));
 	BlurAbilitySystemComponent->SetIsReplicated(true);
 	BlurAttributeSet = CreateDefaultSubobject<UBlurAttributeSet>(TEXT("BlurAttributeSet"));
+
+	// 创建技能战斗组件。
+	CombatComponent = CreateDefaultSubobject<UBlurCombatComponent>(TEXT("CombatComponent"));
 }
 
 void ABlurCharacterBase::BeginPlay()
@@ -38,12 +43,36 @@ UAbilitySystemComponent* ABlurCharacterBase::GetAbilitySystemComponent() const
 
 UBlurCombatComponent* ABlurCharacterBase::GetPawnCombatComponent() const
 {
-	return nullptr; // 此接口由子类实现.
+	return CombatComponent;
 }
 
 UBlurPawnUIComponent* ABlurCharacterBase::GetPawnUIComponent() const
 {
 	return nullptr; // 此接口由子类实现.
+}
+
+USkeletalMeshComponent* ABlurCharacterBase::GetCharacterMesh()
+{
+	if (CharacterMeshName.IsNone())
+		return GetMesh();
+
+	if (CharacterMesh == nullptr)
+	{
+		TArray<USkeletalMeshComponent*> SkeletalMeshComponents;
+		GetComponents<USkeletalMeshComponent>(SkeletalMeshComponents);
+		for (USkeletalMeshComponent* MeshComponent : SkeletalMeshComponents)
+		{
+			if (MeshComponent->GetFName().IsEqual(CharacterMeshName))
+			{
+				CharacterMesh = TObjectPtr<USkeletalMeshComponent>(MeshComponent);
+			}
+		}
+	}
+
+	if (CharacterMesh != nullptr)
+		return CharacterMesh.Get();
+
+	return nullptr;
 }
 
 void ABlurCharacterBase::PossessedBy(AController* NewController)

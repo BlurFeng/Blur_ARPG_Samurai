@@ -23,22 +23,20 @@ class BLURARPGFRAMEWORK_API ABlurAbilityWeapon : public ABlurWeapon
 public:
 	// 技能武器数据。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Weapon Data")
-	FAbilityWeaponData AbilityWeaponData;
+	FAbilityWeaponInfo AbilityWeaponData;
 
 	// 武器技能等级，决定了武器赋予拥有者技能等级。
 	UPROPERTY(BlueprintReadWrite, Category = "Blur ARPG Framework | Weapon Data")
 	int WeaponAbilityLevel;
 
-	// 装备武器到所有者。
-	UFUNCTION()
-	void HandleEquipWeapon(AActor* SelfOwner);
-
-	// 卸下武器从所有者。
-	UFUNCTION()
-	void HandleUnequipWeapon(AActor* SelfOwner);
+	virtual void Equip(AActor* SelfOwner) override;
+	virtual void Unequip() override;
+	virtual void EnterCombat() override;
+	virtual void ExitCombat() override;
 	
 private:
-
-	// 赋予拥有者技能时返回的查询句柄。
-	TArray<FGameplayAbilitySpecHandle> GaveAbilitySpecHandles;
+	
+	//技能查询句柄。用于记录被赋予拥有者的技能。
+	TArray<FGameplayAbilitySpecHandle> GaveAbilitySpecHandlesWithEquip;
+	TArray<FGameplayAbilitySpecHandle> GaveAbilitySpecHandlesWithCombat;
 };

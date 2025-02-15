@@ -150,12 +150,14 @@ public:
 	static UBlurAbilitySystemComponent* GetAbilitySystemComponentFromActor(AActor* InActor);
 
 	/// 向Actor（的技能组件）添加一个还未包含的Tag。
+	/// 注意，使用 AddLooseGameplayTag 添加Tag，并不会被网络同步。需要同步的Tag使用GE来添加和移除。
 	/// @param InActor 目标Actor。
 	/// @param TagToAdd 添加Tag。
 	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library")
 	static void AddGameplayTagToActorIfNone(AActor* InActor, FGameplayTag TagToAdd);
 
 	/// 移除一个Tag从Actor。
+	/// 注意，使用 RemoveLooseGameplayTag 移除Tag，并不会被网络同步。需要同步的Tag使用GE来添加和移除。
 	/// @param InActor 目标Actor。
 	/// @param TagToRemove 移除Tag。
 	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Function Library")

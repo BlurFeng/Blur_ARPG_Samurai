@@ -83,7 +83,7 @@ void UBlurEnhancedInputComponent::BindAbilityInputAction(
 		// 比如通过 Started 触发一个GA。但GA可能不是这一帧立即执行的。之后触发了Trigger事件（即使Trigger事件里没有任何逻辑）。
 		// 然后当我们在GA中通过 GetLastMovementInputVector 获取移动方向时返回的是 Zero。此方法的缓存和输入系统相关，可能在Trigger事件触发时清空了缓存。
 		
-		if (AbilityInputActionConfig.InputTag.MatchesTag(BlurGameplayTags::Input_MustBeHeld))
+		if (AbilityInputActionConfig.InputTag.MatchesTag(BlurGameplayTags::Input_Ability_MustBeHeld))
 			BindAction(AbilityInputActionConfig.InputAction, ETriggerEvent::Triggered, ContextObject, InputTriggeredFunc, AbilityInputActionConfig.InputTag);
 	}
 }

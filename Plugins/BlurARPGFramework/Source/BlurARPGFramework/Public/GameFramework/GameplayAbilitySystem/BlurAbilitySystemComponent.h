@@ -7,7 +7,7 @@
 
 #include "BlurAbilitySystemComponent.generated.h"
 
-struct FSpecialGiveAbilitySet;
+struct FGiveSpecialAbilitySet;
 struct FGiveAbilitySet;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityInputPressedDelegate, FGameplayTag, InputTag);
@@ -32,13 +32,19 @@ public:
  	void OnAbilityInputTriggered(const FGameplayTag& InInputTag);
 
 	/// 赋予武器技能。在装备武器时使用此方法为角色赋予装备技能。
-	/// @param InDefaultWeaponAbilities
-	/// @param InSpecialWeaponAbilities 
+	/// @param InAbilities
 	/// @param ApplyLevel 
 	/// @param OutGaveAbilitySpecHandles 
 	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability", meta = (ApplyLevel = 1))
-	void GiveWeaponAbilities(const TArray<FGiveAbilitySet> InDefaultWeaponAbilities, const TArray<FSpecialGiveAbilitySet> InSpecialWeaponAbilities, int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGaveAbilitySpecHandles);
+	void GiveWeaponAbilities(const TArray<FGiveAbilitySet>& InAbilities, const int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGaveAbilitySpecHandles);
 
+	/// 赋予武器特殊技能。在装备武器时使用此方法为角色赋予装备技能。
+	/// @param InAbilities 
+	/// @param ApplyLevel 
+	/// @param OutGaveAbilitySpecHandles 
+	UFUNCTION(BlueprintCallable, Category = "Blur ARPG Framework | Ability", meta = (ApplyLevel = 1))
+	void GiveWeaponSpecialAbilities(const TArray<FGiveSpecialAbilitySet>& InAbilities, const int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGaveAbilitySpecHandles);
+	
 	// Notes：使用UPARAM(ref)宏告知UE此参数不是输出参数。
 	// 只添加 & 时，此参数进行引用传递。在UE蓝图中，此参数还会被认为是输出参数。
 	// 在作为输入参数时就要添加 UPARAM(ref) 宏。

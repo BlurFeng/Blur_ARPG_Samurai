@@ -20,7 +20,8 @@
 #include "GameFramework/BlurGameplayTags.h"
 #include "GameFramework/Common/BlurDebugHelper.h"
 
-ABlurPlayableCharacter::ABlurPlayableCharacter()
+ABlurPlayableCharacter::ABlurPlayableCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBlurAbilityCombatComponent>("AbilityCombatComponent"))
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
@@ -28,35 +29,15 @@ ABlurPlayableCharacter::ABlurPlayableCharacter()
 	bUseControllerRotationPitch = false; // 俯仰角。
 	bUseControllerRotationYaw = false; // 偏航角。
 	bUseControllerRotationRoll = false; // 翻滚角。
-
-	// 创建相机臂。
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom")); //创建子对象，这个对象将包含在自身之下。
-	CameraBoom->SetupAttachment(GetRootComponent()); //附着目标为角色自身的Root。
-	CameraBoom->TargetArmLength = 200.f; //目标相机臂长度。
-	CameraBoom->SocketOffset = FVector(0.f, 55.f, 65.f); //相机位置偏移，肩视角。
-	CameraBoom->bUsePawnControlRotation = true; //使用Pawn的旋转作为相机旋转。
-
-	// 创建相机。
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); //附着目标为相机臂。
-	FollowCamera->bUsePawnControlRotation = true;
-
+	
 	// 设置角色移动组件。
 	GetCharacterMovement()->bOrientRotationToMovement = true; // 旋转角色自身到加速度方向。
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 500.f, 0.f); // 旋转速率。
 	GetCharacterMovement()->MaxWalkSpeed = 400.f; // 最大移动速度。
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f; // 刹车减速度。
 
-	// 创建技能战斗组件。
-	AbilityCombatComponent = CreateDefaultSubobject<UBlurAbilityCombatComponent>(TEXT("AbilityCombatComponent"));
-
 	// 创建角色UI组件。
 	CharacterUIComponent = CreateDefaultSubobject<UBlurCharacterUIComponent>(TEXT("CharacterUIComponent"));
-}
-
-UBlurCombatComponent* ABlurPlayableCharacter::GetPawnCombatComponent() const
-{
-	return AbilityCombatComponent;
 }
 
 UBlurPawnUIComponent* ABlurPlayableCharacter::GetPawnUIComponent() const
@@ -175,7 +156,7 @@ void ABlurPlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	// 拾取物品输入。
 	BlurEnhancedInputComponent->BindNativeInputAction(
 		InputConfigDataAsset, BlurGameplayTags::Input_PickUp, ETriggerEvent::Started, this,
-		&ThisClass::Input_PickUpStonesStarted);
+		&ThisClass::Input_PickUpStarted);
 	
 	// 技能输入。
 	BlurEnhancedInputComponent->BindAbilityInputAction(
@@ -259,7 +240,7 @@ void ABlurPlayableCharacter::Input_ResetView(const FInputActionValue& InputActio
 		Data);
 }
 
-void ABlurPlayableCharacter::Input_PickUpStonesStarted(const FInputActionValue& InputActionValue)
+void ABlurPlayableCharacter::Input_PickUpStarted(const FInputActionValue& InputActionValue)
 {
 	const FGameplayEventData Data;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(

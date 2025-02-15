@@ -94,12 +94,24 @@ ABlurCharacterBase* UBlurGameplayAbility::GetCharacterFromActorInfo()
 	return CachedBlurCharacterBase.IsValid() ? CachedBlurCharacterBase.Get() : nullptr;
 }
 
-UBlurAbilityCombatComponent* UBlurGameplayAbility::GetCombatComponentFromActorInfo() const
+UBlurCombatComponent* UBlurGameplayAbility::GetCombatComponentFromActorInfo()
 {
-	if (!CurrentActorInfo) return nullptr;
+	if (const ABlurCharacterBase* CharacterBase = GetCharacterFromActorInfo())
+	{
+		return CharacterBase->GetPawnCombatComponent();
+	}
 	
-	// FindComponentByClass通过遍历查找返回第一个有效的目标。当存在多个UPawnCombatComponent的子类时可能无法按预期工作。
-	return GetAvatarActorFromActorInfo()->FindComponentByClass<UBlurAbilityCombatComponent>();
+	return nullptr;
+}
+
+UBlurAbilityCombatComponent* UBlurGameplayAbility::GetAbilityCombatComponentFromActorInfo()
+{
+	if (UBlurCombatComponent* CombatComponent = GetCombatComponentFromActorInfo())
+	{
+		return Cast<UBlurAbilityCombatComponent>(CombatComponent);
+	}
+
+	return nullptr;
 }
 
 UBlurPawnUIComponent* UBlurGameplayAbility::GetPawnUIComponentFromActorInfo()

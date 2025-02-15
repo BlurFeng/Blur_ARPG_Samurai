@@ -28,9 +28,9 @@ void UBlurAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InIn
 
 	// 确认输入类型。
 	EBlurInputType InputType = EBlurInputType::Normal;
-	if (InInputTag.MatchesTag(BlurGameplayTags::Input_Toggleable))
+	if (InInputTag.MatchesTag(BlurGameplayTags::Input_Ability_Toggleable))
 		InputType = EBlurInputType::Toggleable;
-	else if (InInputTag.MatchesTag(BlurGameplayTags::Input_MustBeHeld))
+	else if (InInputTag.MatchesTag(BlurGameplayTags::Input_Ability_MustBeHeld))
 		InputType = EBlurInputType::MustBeHeld;
 
 	// 搜索对应 InInputTag 的技能。
@@ -141,7 +141,7 @@ void UBlurAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InI
 	if (!InInputTag.IsValid()) return;
 	
 	// 如果是必须持续按住的技能，在松开时取消技能。
-	if (InInputTag.MatchesTag(BlurGameplayTags::Input_MustBeHeld))
+	if (InInputTag.MatchesTag(BlurGameplayTags::Input_Ability_MustBeHeld))
 	{
 		for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 		{
@@ -172,14 +172,12 @@ void UBlurAbilitySystemComponent::OnAbilityInputTriggered(const FGameplayTag& In
 	}
 }
 
-void UBlurAbilitySystemComponent::GiveWeaponAbilities(const TArray<FGiveAbilitySet> InDefaultWeaponAbilities,
-                                                              const TArray<FSpecialGiveAbilitySet> InSpecialWeaponAbilities, int32 ApplyLevel,
-                                                              TArray<FGameplayAbilitySpecHandle>& OutGaveAbilitySpecHandles)
+void UBlurAbilitySystemComponent::GiveWeaponAbilities(const TArray<FGiveAbilitySet>& InAbilities,
+	const int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGaveAbilitySpecHandles)
 {
-	if (InDefaultWeaponAbilities.IsEmpty()) return;
+	if (InAbilities.IsEmpty()) return;
 
-	// 默认武器技能。
-	for (const FGiveAbilitySet& AbilitySet : InDefaultWeaponAbilities)
+	for (const FGiveAbilitySet& AbilitySet : InAbilities)
 	{
 		if (!AbilitySet.IsValid()) continue;
 		
@@ -189,9 +187,14 @@ void UBlurAbilitySystemComponent::GiveWeaponAbilities(const TArray<FGiveAbilityS
 		// 缓存赋予技能Handle，方便之后用于移除技能等操作。
 		OutGaveAbilitySpecHandles.AddUnique(GiveAbility(AbilitySpec));
 	}
+}
 
-	// 特殊武器技能。
-	for (const FSpecialGiveAbilitySet& AbilitySet : InSpecialWeaponAbilities)
+void UBlurAbilitySystemComponent::GiveWeaponSpecialAbilities(const TArray<FGiveSpecialAbilitySet>& InAbilities,
+	const int32 ApplyLevel, TArray<FGameplayAbilitySpecHandle>& OutGaveAbilitySpecHandles)
+{
+	if (InAbilities.IsEmpty()) return;
+
+	for (const FGiveAbilitySet& AbilitySet : InAbilities)
 	{
 		if (!AbilitySet.IsValid()) continue;
 		

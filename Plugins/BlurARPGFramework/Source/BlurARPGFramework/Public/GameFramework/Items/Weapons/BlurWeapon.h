@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/BlurActorBase.h"
+#include "GameFramework/Types/BlurStructTypes.h"
+#include "GameFramework/Items/Weapons/BlurWeaponObject.h"
+
 #include "BlurWeapon.generated.h"
 
 class UBoxComponent;
 
-// 委托。用于通知CombatComponent。
-DECLARE_DELEGATE_OneParam(FOnTargetInteractedDelegate, AActor*);
+
 
 // 武器基类。武器能够赋予角色新的技能。
 UCLASS()
@@ -20,29 +22,41 @@ class BLURARPGFRAMEWORK_API ABlurWeapon : public ABlurActorBase
 public:
 	ABlurWeapon();
 
-	// Tips：武器只处理近战攻击。弓箭或投射物使用 BlurProjectile 类。
+	virtual void BeginDestroy() override;
+
+	USceneComponent* RootComponent;
+
+	// 武器数据。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Blur ARPG Framework | Weapon Data")
+	FWeaponInfo WeaponData;
 	
 	FOnTargetInteractedDelegate OnWeaponMeleeHitTarget;
 	FOnTargetInteractedDelegate OnWeaponMeleePulledFromTarget;
 
+	// 装备武器到所有者。
+	virtual void Equip(AActor* SelfOwner);
+
+	// 卸下武器从所有者。
+	virtual void Unequip();
+
+	// 进入战斗状态。拔出武器。
+	virtual void EnterCombat();
+
+	// 离开战斗状态。收起武器。
+	virtual void ExitCombat();
+
+	// 获取拥有者角色。
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Weapon")
+	bool GetOwnerCharacter(ABlurCharacterBase*& OwnerCharacter) const;
+
+	/// 设置武器碰撞
+	/// @param CollisionEnabled 
+	void SetCollisionEnabled(const ECollisionEnabled::Type CollisionEnabled);
+	
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Weapons")
-	UStaticMeshComponent* WeaponMesh;
+	// 拥有者角色。
+	TWeakObjectPtr<ABlurCharacterBase> OwnerCharacterWeakPtr;
 
-	// 武器碰撞盒，用于检测攻击碰撞。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Weapons")
-	UBoxComponent* WeaponCollisionBox;
-
-	// 武器可以造成效果的目标。未配置时默认所有目标。
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Bitmask, BitmaskEnum = "ETeamAttitudeFlags"))
-	int32 EffectTargets;
-	
-	UFUNCTION()
-	virtual void OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-
-	UFUNCTION()
-	virtual void OnCollisionBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	
-public:
-	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const {return WeaponCollisionBox;}
+	// 武器拥有的物体Actor，比如刀和刀鞘。
+	TArray<ABlurWeaponObject*> WeaponObjects;
 };

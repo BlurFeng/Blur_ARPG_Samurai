@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Characters/BlurCharacterBase.h"
+#include "GameFramework/Components/Combat/BlurAbilityCombatComponent.h"
 #include "BlurPlayableCharacter.generated.h"
 
 class UCameraComponent;
@@ -20,12 +21,8 @@ class BLURARPGFRAMEWORK_API ABlurPlayableCharacter : public ABlurCharacterBase
 	GENERATED_BODY()
 
 public:
-	ABlurPlayableCharacter();
-
-	//~ Begin IPawnCombatInterface Interface.
-	virtual UBlurCombatComponent* GetPawnCombatComponent() const override;
-	//~ End IPawnCombatInterface Interface
-
+	explicit ABlurPlayableCharacter(const FObjectInitializer& ObjectInitializer);
+	
 	//~ Begin IPawnUIInterface Interface.
 	virtual UBlurPawnUIComponent* GetPawnUIComponent() const override;
 	virtual UBlurCharacterUIComponent* GetCharacterUIComponent() const override;
@@ -41,8 +38,6 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void BeginPlay() override;
 
-private:
-	
 #pragma region Components
 
 	// Notes:
@@ -51,18 +46,6 @@ private:
 	// BlueprintReadOnly：蓝图中只读。如果想要编辑使用BlueprintReadWrite。
 	// Category：分类，有助于整理代码。蓝图中也会显示到相应分类下。
 	// meta = (AllowPrivateAccess = "true")：允许蓝图或编辑器访问private成员变量。
-
-	// 相机臂。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
-
-	// 自动跟随的相机。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
-
-	// 战斗组件，用于管理武器和攻击方式。
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | Ability Combat", meta = (AllowPrivateAccess = "true"))
-	UBlurAbilityCombatComponent* AbilityCombatComponent;
 
 	// UI组件。
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Blur ARPG Framework | UI", meta = (AllowPrivateAccess = "true"))
@@ -83,7 +66,7 @@ private:
 	void Input_SwitchTargetCompleted(const FInputActionValue& InputActionValue);
 	void Input_ResetView(const FInputActionValue& InputActionValue);
 
-	void Input_PickUpStonesStarted(const FInputActionValue& InputActionValue);
+	void Input_PickUpStarted(const FInputActionValue& InputActionValue);
 	
 	// Tips：这里没有使用const和&关键字，因为此回调方法最终作为UEnhancedInputComponent->BindAction()方法的参数使用，而此类对回调方法的格式是这么要求的。
 	// 技能输入。
@@ -94,5 +77,5 @@ private:
 #pragma endregion
 
 public:
-	FORCEINLINE UBlurAbilityCombatComponent* GetAbilityCombatComponent() const { return AbilityCombatComponent; }
+	FORCEINLINE UBlurAbilityCombatComponent* GetAbilityCombatComponent() const { return Cast<UBlurAbilityCombatComponent>(CombatComponent); }
 };
