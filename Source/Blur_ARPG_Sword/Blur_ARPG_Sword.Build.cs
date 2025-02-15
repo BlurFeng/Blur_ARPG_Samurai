@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class Blur_ARPG_Samurai : ModuleRules
+public class Blur_ARPG_Sword : ModuleRules
 {
-	public Blur_ARPG_Samurai(ReadOnlyTargetRules Target) : base(Target)
+	public Blur_ARPG_Sword(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

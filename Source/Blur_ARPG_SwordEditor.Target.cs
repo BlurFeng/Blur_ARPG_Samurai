@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class Blur_ARPG_SamuraiEditorTarget : TargetRules
+public class Blur_ARPG_SwordEditorTarget : TargetRules
 {
-	public Blur_ARPG_SamuraiEditorTarget( TargetInfo Target) : base(Target)
+	public Blur_ARPG_SwordEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_4;
-		ExtraModuleNames.Add("Blur_ARPG_Samurai");
+		ExtraModuleNames.Add("Blur_ARPG_Sword");
 	}
 }
