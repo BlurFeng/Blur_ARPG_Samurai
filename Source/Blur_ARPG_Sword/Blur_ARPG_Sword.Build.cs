@@ -16,7 +16,10 @@ public class Blur_ARPG_Sword : ModuleRules
 			"InputCore", 
 			"EnhancedInput",
 			"GameplayTasks",
+			
+			//~ Begin Plugins.
 			"BlurARPGFramework",
+			//~ End Plugins.
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
