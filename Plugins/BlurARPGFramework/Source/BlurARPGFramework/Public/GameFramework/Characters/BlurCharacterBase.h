@@ -39,7 +39,7 @@ public:
 	virtual UBlurPawnUIComponent* GetPawnUIComponent() const override;
 	//~ End IPawnUIInterface Interface
 
-	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Weapon")
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Character Data")
 	USkeletalMeshComponent* GetCharacterMesh();
 	
 protected:

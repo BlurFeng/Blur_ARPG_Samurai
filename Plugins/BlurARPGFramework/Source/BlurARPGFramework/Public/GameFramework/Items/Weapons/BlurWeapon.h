@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnhancedInputComponent.h"
 #include "GameFramework/BlurActorBase.h"
 #include "GameFramework/Types/BlurStructTypes.h"
 #include "GameFramework/Items/Weapons/BlurWeaponObject.h"
@@ -10,8 +11,6 @@
 #include "BlurWeapon.generated.h"
 
 class UBoxComponent;
-
-
 
 // 武器基类。武器能够赋予角色新的技能。
 UCLASS()
@@ -49,6 +48,16 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Weapon")
 	bool GetOwnerCharacter(ABlurCharacterBase*& OwnerCharacter) const;
 
+	// 获取武器第一个组件Actor。
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Weapon")
+	ABlurWeaponObject* GetWeaponObjectFirst();
+
+	/// 获取对应名称的武器部件Actor。
+	/// @param WeaponObjectName 
+	/// @return 
+	UFUNCTION(BlueprintPure, Category = "Blur ARPG Framework | Weapon")
+	ABlurWeaponObject* GetWeaponObject(const FName WeaponObjectName);
+
 	/// 设置武器碰撞
 	/// @param CollisionEnabled 
 	void SetCollisionEnabled(const ECollisionEnabled::Type CollisionEnabled);
@@ -59,4 +68,7 @@ protected:
 
 	// 武器拥有的物体Actor，比如刀和刀鞘。
 	TArray<ABlurWeaponObject*> WeaponObjects;
+
+	TArray<FInputBindingHandle> InputBindingHandles_Equip;
+	TArray<FInputBindingHandle> InputBindingHandles_Combat;
 };

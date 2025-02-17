@@ -23,6 +23,7 @@
 
 #include "BlurStructTypes.generated.h"
 
+class UBlurDA_InputConfigWithAbilities;
 class ABlurWeaponObject;
 class UBlurLinkedAnimLayer;
 class UInputMappingContext;
@@ -86,26 +87,30 @@ USTRUCT(BlueprintType)
 struct FWeaponInfo
 {
 	GENERATED_BODY()
+
+	// 武器Tag。由项目创建Tag并设置且要保证唯一性。
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag WeaponTag;
 	
 	// 武器拥有的部件Actor。比如刀和刀鞘。他们在武器被装备到角色时生成，并附加到对应的骨骼位置。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FWeaponObjectInfo> WeaponObjectInfos;
 	
-	// 武器输入映射。当装备武器时，使用此InputMap覆盖原有的。因为装备武器后操作方式会相应变化。
+	// 输入配置数据。当装备武器时。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UInputMappingContext* WeaponInputMappingContext;
+	UBlurDA_InputConfigWithAbilities* InputConfigWithEquip;
 
-	// 武器输入映射的优先级，应当高于角色默认的输入映射优先级。
+	// 输入配置数据。当进入战斗状态时。设置优先级要高于InputConfigWithEquip。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int WeaponInputMappingPriority = 1;
-
+	UBlurDA_InputConfigWithAbilities* InputConfigWithCombat;
+	
 	// 武器的链接动画层，Link到角色Mesh来改变动画表现。在武器装备时。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UBlurLinkedAnimLayer> AnimLayerForEquip;
+	TSubclassOf<UBlurLinkedAnimLayer> AnimLayerWithEquip;
 
 	// 武器的链接动画层，Link到角色Mesh来改变动画表现。在使用武器进入战斗状态时。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UBlurLinkedAnimLayer> AnimLayerForEnterCombat;
+	TSubclassOf<UBlurLinkedAnimLayer> AnimLayerWithEnterCombat;
 
 	// 使用曲线设置武器的基础伤害。
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

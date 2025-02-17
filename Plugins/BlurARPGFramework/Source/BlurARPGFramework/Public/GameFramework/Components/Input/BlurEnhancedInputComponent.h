@@ -24,6 +24,15 @@ public:
 	void BindAbilityInputAction(
 		const UBlurDA_InputConfig* InInputConfig, UserObject* ContextObject,
 		CallbackFunc InputPressedFunc,  CallbackFunc InputReleasedFunc, CallbackFunc InputTriggeredFunc);
+
+	template<class UserObject, typename CallbackFunc>
+	void BindAbilityInputAction(
+	const TArray<FInputActionConfig>& InInputConfig, UserObject* ContextObject,
+	CallbackFunc InputPressedFunc,  CallbackFunc InputReleasedFunc, CallbackFunc InputTriggeredFunc, TArray<FInputBindingHandle>& InputBindingHandle);
+
+	/// 移除输入绑定。
+	/// @param InputBindingHandles 
+	void RemoveBindings(const TArray<FInputBindingHandle>& InputBindingHandles);
 };
 
 // Notes：C++ template
@@ -85,5 +94,31 @@ void UBlurEnhancedInputComponent::BindAbilityInputAction(
 		
 		if (AbilityInputActionConfig.InputTag.MatchesTag(BlurGameplayTags::Input_Ability_MustBeHeld))
 			BindAction(AbilityInputActionConfig.InputAction, ETriggerEvent::Triggered, ContextObject, InputTriggeredFunc, AbilityInputActionConfig.InputTag);
+	}
+}
+
+template <class UserObject, typename CallbackFunc>
+void UBlurEnhancedInputComponent::BindAbilityInputAction(
+	const TArray<FInputActionConfig>& InInputConfig, UserObject* ContextObject,
+	CallbackFunc InputPressedFunc, CallbackFunc InputReleasedFunc, CallbackFunc InputTriggeredFunc, TArray<FInputBindingHandle>& InputBindingHandle)
+{
+	if (InInputConfig.IsEmpty()) return;
+
+	for (const FInputActionConfig& AbilityInputActionConfig : InInputConfig)
+	{
+		if(!AbilityInputActionConfig.IsValid()) continue;
+
+		InputBindingHandle.Add(BindAction(AbilityInputActionConfig.InputAction, ETriggerEvent::Started, ContextObject, InputPressedFunc, AbilityInputActionConfig.InputTag));
+		InputBindingHandle.Add(BindAction(AbilityInputActionConfig.InputAction, ETriggerEvent::Completed, ContextObject, InputReleasedFunc, AbilityInputActionConfig.InputTag));
+		
+		// Notes：
+		// 需要按住的技能，绑定Triggered事件。否则我们不绑定。
+		// 绑定的IA需要在Triggers中配置Hold。否则Trigger事件会在Started后直接触发，导致一些UE原生的缓存数据在Trigger事件后清空。
+		// 已知的一个Bug：
+		// 比如通过 Started 触发一个GA。但GA可能不是这一帧立即执行的。之后触发了Trigger事件（即使Trigger事件里没有任何逻辑）。
+		// 然后当我们在GA中通过 GetLastMovementInputVector 获取移动方向时返回的是 Zero。此方法的缓存和输入系统相关，可能在Trigger事件触发时清空了缓存。
+		
+		if (AbilityInputActionConfig.InputTag.MatchesTag(BlurGameplayTags::Input_Ability_MustBeHeld))
+			InputBindingHandle.Add(BindAction(AbilityInputActionConfig.InputAction, ETriggerEvent::Triggered, ContextObject, InputTriggeredFunc, AbilityInputActionConfig.InputTag));
 	}
 }
